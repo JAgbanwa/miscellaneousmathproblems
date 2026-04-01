@@ -1,0 +1,7 @@
+# SageMath auto-compiled Python files (generated from .sage sources)
+*.sage.py
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo

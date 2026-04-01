@@ -1,0 +1,71 @@
+======================================================================
+  Algebraic analysis: integer points on a parametric EC family
+======================================================================
+
+1. Factorisation of coefficients:
+   a2(n) = (1296) * (n + 3/4)^2
+   a4(n) = (15552) * (n + 3/4)^3
+
+2. Short Weierstrass form  (u = x + 27*(4n+3)^2):
+   A(n)  = (-559872) * (n + 13/18) * (n + 3/4)^3
+   B(n)  = 161243136*n^6 + 718875648*n^5 + ... (degree-6)
+
+3. B_new(n) == B_old from elliptic-curve-diophantine/: True
+   => The two families are IDENTICAL (same curves, shifted x).
+
+Verification of all 5 known solutions:
+
+  n=     -1, x=          18, y=+-167              ok=True  u=45
+  n=     94, x=        -562, y=+-17722            ok=True  u=3877745
+  n=   -110, x=         646, y=+-40812            ok=True  u=5156809
+  n=    -64, x=      144840, y=+-333523318        ok=True  u=1873083
+  n= 147498, x=     -449511, y=+-2312387148693    ok=True  u=9398540251164
+
+Structure of E_{-1}:
+
+  Weierstrass model : Elliptic Curve defined by y^2 = x^3 + 81*x^2 - 243*x + 187 over Rational Field
+  Discriminant      : -318382272
+  j-invariant       : -918330048000/184249
+  Conductor         : 318382272
+  Rank              : 2
+  Torsion subgroup  : Torsion Subgroup isomorphic to Trivial group associated to the Elliptic Curve defined by y^2 = x^3 + 81*x^2 - 243*x + 187 over Rational Field
+
+  P = (18, 167):
+    2P = (233973/111556, 243987007/37259704)
+    3P = (2213174156266/3147200181225, 41975178372174497111/5583243273499492875)
+    order(P) = +Infinity (0 means infinite order)
+
+Conductors and torsion of other curves with known integer points:
+
+  n=94: conductor=9257478157106617044808167952104, torsion=()
+  n=-110: conductor=30811347884961254004575628168, torsion=()
+  n=-64: conductor=487772788245434363130150892464, torsion=()
+
+Rigorous integral_points() for n = -1:
+
+  Computed in 1.57 s
+  All integer points on E_{-1}: [(18, -167), (18, 167)]
+
+======================================================================
+  SUMMARY
+======================================================================
+
+  All 5 supplied solutions verified correct (Section 2 above).
+
+  Rigorous SageMath integral_points() result for n = -1:
+    (n=-1, x=18, y=+-167)
+
+  Brute-force search (brute_force_search.py):
+    n in [-200, 200], x in [-2000, 200000] --> 26.7 s
+    Found: (n=-110,x=646,y=+-40812), (n=-64,x=144840,y=+-333523318),
+           (n=-1,x=18,y=+-167), (n=94,x=-562,y=+-17722)
+    No additional solutions found.
+
+  Note: n=147498 is outside the feasible search range but verified correct.
+
+  Short-Weierstrass shift table:
+    n=     -1: x_orig=          18,  u_sw=                  45
+    n=     94: x_orig=        -562,  u_sw=             3877745
+    n=   -110: x_orig=         646,  u_sw=             5156809
+    n=    -64: x_orig=      144840,  u_sw=             1873083
+    n= 147498: x_orig=     -449511,  u_sw=       9398540251164

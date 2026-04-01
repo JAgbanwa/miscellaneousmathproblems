@@ -54,3 +54,51 @@ $$+\; 161243136n^6 + 718875648n^5 + 1335341376n^4 + 1322837568n^3 + 737088984n^2
 **Result:** The only integer solutions are
 
 $$(n,\, x,\, y) \;=\; (-1,\; 45,\; \pm 167)$$
+
+---
+
+### [`integer-points-weierstrass-family/`](integer-points-weierstrass-family/)
+
+**Problem:** Find all integer solutions $(n, x, y) \in \mathbb{Z}^3$ to the parametric
+elliptic curve (in **general Weierstrass form**):
+
+$$y^2 = x^3 + (36n+27)^2\,x^2
+       + \bigl(15552n^3 + 34992n^2 + 26244n + 6561\bigr)\,x
+       + \bigl(46656n^4 + 139968n^3 + 157464n^2 + 78713n + 14748\bigr)$$
+
+**Files:**
+- [`integer_points_family.sage`](integer-points-weierstrass-family/integer_points_family.sage) — SageMath script: algebraic structure, rigorous integral-points computation for $n=-1$, curve invariants.
+- [`brute_force_search.py`](integer-points-weierstrass-family/brute_force_search.py) — Pure Python brute-force search over $n\in[-200,200]$, $x\in[-2000,200000]$.
+- [`analysis_notes.md`](integer-points-weierstrass-family/analysis_notes.md) — Detailed mathematical analysis and open questions.
+- [`sage_output.txt`](integer-points-weierstrass-family/sage_output.txt) — Full output of the SageMath computation.
+
+**Key structural facts:**
+- The $x$-coefficient factors as $15552n^3 + \cdots = 243(4n+3)^3$.
+- The $x^2$-coefficient is $(36n+27)^2 = 81(4n+3)^2$.
+- The substitution $u = x + 27(4n+3)^2$ reduces this to the **same short Weierstrass
+  family** as in `elliptic-curve-diophantine/`, confirming polynomial identity
+  $B_\text{new}(n) = B_\text{old}(n)$ for all $n$.
+- The two problem families are identical; integer-point sets correspond via
+  $x_\text{new} = u - 27(4n+3)^2$.
+
+**Results (verified computationally):**
+
+| $n$ | $x$ | $y$ | Method |
+|---|---|---|---|
+| $-110$ | $646$ | $\pm 40812$ | brute-force search |
+| $-64$ | $144840$ | $\pm 333523318$ | brute-force search |
+| $-1$ | $18$ | $\pm 167$ | SageMath `integral_points()` + brute-force |
+| $94$ | $-562$ | $\pm 17722$ | brute-force search |
+| $147498$ | $-449511$ | $\pm 2312387148693$ | direct verification |
+
+A brute-force search over $n\in[-200,200]$, $x\in[-2000,200000]$ found **no solutions beyond the four listed** (excluding $n=147498$ which is outside the range). The solution at $n=147498$ was supplied by the user and independently verified by direct substitution.
+
+**Structure of $E_{-1}$:**
+- Weierstrass model: $y^2 = x^3 + 81x^2 - 243x + 187$
+- Discriminant: $-318382272$; Conductor: $318382272$
+- Rank: **2**; Torsion: trivial
+- $P = (18, 167)$ has infinite order; `integral_points()` returns $\{(18,\pm 167)\}$ only.
+
+**Open questions:** See [`analysis_notes.md`](integer-points-weierstrass-family/analysis_notes.md)
+for a discussion of whether infinitely many $n$ yield integer points, and for
+references to Baker's theorem, Siegel's theorem, and Silverman's specialisation theorem.
