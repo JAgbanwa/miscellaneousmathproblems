@@ -1,4 +1,4 @@
- # miscellaneousmathproblems
+  # miscellaneousmathproblems
 
 A collection of miscellaneous mathematics problems and computational solutions.
 
