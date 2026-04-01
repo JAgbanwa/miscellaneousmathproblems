@@ -19,6 +19,6 @@ $$2x^5 + 3y^5 = 5$$
 - Rules out rational points at infinity (since $-3/2$ is not a rational perfect 5th power).
 - Performs a bounded-height search (height $\leq 1000$) for further rational points.
 - Bounds the Mordell-Weil rank of the Jacobian via Euler factors at small primes.
-- Provides a Chabauty-Coleman framework to prove completeness of the rational point set when $\operatorname{rank}(J(\mathbb{Q})) < 6$.
+- Provides a Chabauty-Coleman framework to prove completeness of the rational point set when $\mathrm{rank}(J(\mathbb{Q})) < 6$.
 
 **Result:** The only rational solution is $(x, y) = (1, 1)$.
