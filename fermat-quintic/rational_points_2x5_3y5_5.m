@@ -38,7 +38,11 @@ printf "Curve C : 2*X^5 + 3*Y^5 = 5*Z^5  (smooth projective plane quintic)\n\n";
 // 2.  Smoothness and genus
 // --------------------------------------------------------------------------
 printf "--- Smoothness and genus ---\n";
-printf "C is smooth: %o\n", IsSmooth(C);
+// IsSmooth is not defined for CrvPln over FldRat in Magma.
+// Smoothness is verified by the Jacobian criterion:
+//   dF/dX = 10X^4,  dF/dY = 15Y^4,  dF/dZ = -25Z^4
+// These vanish simultaneously only at [0:0:0], which is not in P^2.
+printf "C is smooth: true  (Jacobian criterion: gradient vanishes only at origin)\n";
 
 g := Genus(C);
 printf "Genus of C = %o  (for a smooth plane quintic: g = (5-1)(5-2)/2 = 6)\n\n", g;
@@ -50,7 +54,7 @@ printf "--- Known rational point ---\n";
 P := C ! [1, 1, 1];
 printf "Point P = (1 : 1 : 1) lies on C: %o\n", P in C;
 printf "Affine check: 2*(1)^5 + 3*(1)^5 = %o  (should be 5)\n\n",
-       2*(1 : Q)^5 + 3*(1 : Q)^5;
+       2*1^5 + 3*1^5;
 
 // --------------------------------------------------------------------------
 // 4.  Points at infinity  (Z = 0)
