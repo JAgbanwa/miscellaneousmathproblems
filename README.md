@@ -68,6 +68,8 @@ $$y^2 = x^3 + (36n+27)^2 \cdot x^2
 **Files:**
 - [`integer_points_family.sage`](integer-points-weierstrass-family/integer_points_family.sage) — SageMath script: algebraic structure, rigorous integral-points computation for $n=-1$, curve invariants.
 - [`brute_force_search.py`](integer-points-weierstrass-family/brute_force_search.py) — Pure Python brute-force search over $n\in[-200,200]$, $x\in[-2000,200000]$.
+- [`parallel_search.py`](integer-points-weierstrass-family/parallel_search.py) — Multiprocessing Python search; default range $n\in[-10000,10000]$, $x\in[\pm 1.5\times10^6]$; ~1 hour on 8 cores.
+- [`sage_integral_points_extended.sage`](integer-points-weierstrass-family/sage_integral_points_extended.sage) — SageMath `integral_points()` for $n\in[-1000,1000]$ with per-curve timeout.
 - [`analysis_notes.md`](integer-points-weierstrass-family/analysis_notes.md) — Detailed mathematical analysis and open questions.
 - [`sage_output.txt`](integer-points-weierstrass-family/sage_output.txt) — Full output of the SageMath computation.
 

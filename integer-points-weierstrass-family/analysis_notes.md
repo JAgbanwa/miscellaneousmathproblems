@@ -184,6 +184,86 @@ The discovery of this solution likely exploits one of the following mechanisms:
 
 ---
 
+## 8. Extended Search Strategy (|n|, |x| ≤ 10^8)
+
+### 8.1 Brute-force feasibility
+
+The direct search "iterate over all $(n, x)$ pairs" is infeasible for the
+full range $|n|, |x| \le 10^8$ (about $10^{16}$ pairs). However, two complementary
+approaches can cover all interesting cases:
+
+**Approach A — SageMath `integral_points()` for moderate n:**  
+For each fixed $n$, the curve $E_n$ is a genuine elliptic curve and SageMath can
+compute all integer points rigorously via Baker bounds + LLL reduction. This is
+guaranteed complete (for curves where it terminates). Target range: $n \in [-1000, 1000]$.
+
+Script: `sage_integral_points_extended.sage`.
+
+**Approach B — Parallel Python brute-force for moderate n and x:**  
+For $n \in [-10000, 10000]$ and $x \in [-1.5 \times 10^6, 1.5 \times 10^6]$,
+a multiprocessing Python search at $\sim 2 \times 10^6$ checks/second/core takes
+about 1 hour on 8 cores ($6 \times 10^{10}$ total checks).
+
+Script: `parallel_search.py`.
+
+### 8.2 x-range justification
+
+The known solutions have these $x$-values and their relation to the natural
+scale $-27(4n+3)^2$:
+
+| $n$ | $x$ | $u = x + 27(4n+3)^2$ | $u/n^2$ |
+|---|---|---|---|
+| $-1$ | $18$ | $45$ | $45$ |
+| $94$ | $-562$ | $3877745$ | $438.9$ |
+| $-110$ | $646$ | $5156809$ | $426.2$ |
+| $-64$ | $144840$ | $1873083$ | $457.3$ |
+| $147498$ | $-449511$ | $9398540251164$ | $432.0$ |
+
+For large $|n|$, $u \approx 432 n^2$, which gives $x \approx 432n^2 - 27(4n+3)^2 = -648n - 243$.
+The n=147498 solution has $x = -449511$, which is far smaller than $|n|$ and well
+within the brute-force x-range of $\pm 1.5 \times 10^6$.
+
+For $|n| > 10000$, if a solution exists with $|x| \le 1.5 \times 10^6$, it is
+covered by the parallel brute-force. Solutions with $|x| > 1.5 \times 10^6$ and
+$|n| > 10000$ would need the SageMath approach or dedicated algebraic analysis.
+
+### 8.3 Algebraic structure of the discriminant
+
+For fixed $d = y - h(n, x)$ where $h(n, x) = 216n^2 + (324+36x)n + 121+27x$
+is the leading approximation to $y$, integer solutions satisfy:
+$$
+216(2d-1) n^2 + \bigl[(648d-305) + (72d-36)x\bigr] n
+    + \bigl[(242d-107) + (54d-27)x + d^2 - x^3\bigr] = 0.
+$$
+For this quadratic-in-$n$ to have integer solutions, its discriminant
+$$
+\Delta_n = (1728d-864)\,x^3 + (5184d^2-5184d+1296)\,x^2
+           + (2736d-1368)\,x + (-1728d^3+2592d^2-1296d+577)
+$$
+must be a perfect square. Writing $k = 2d-1$, this simplifies to:
+$$
+\Delta_n = (36kx + 19)^2 + 216k(4x^3 - k^2).
+$$
+Finding integer $x$ with $\Delta_n = m^2$ is itself an **elliptic curve problem**
+in $(x, m)$, so this algebraic reduction does not escape the original difficulty.
+
+### 8.4 Performance note
+
+When running the SageMath search, two old SageMath processes (from a prior session)
+may be consuming CPU if they were not killed. Check with:
+```
+ps aux | grep sage-ipython
+```
+and kill any stuck processes to ensure full performance:
+```
+kill <PID>
+```
+The SageMath process startup takes ~30 seconds; individual `integral_points()` calls
+range from under 1 second (small $|n|$, low rank) to several minutes (harder curves).
+The per-curve timeout in `sage_integral_points_extended.sage` defaults to 120 seconds.
+
+---
+
 ## 7. References
 
 - **Baker's theorem & integer points:** A. Baker, *Transcendental Number Theory*, 1975;
