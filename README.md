@@ -22,3 +22,6 @@ $$2x^5 + 3y^5 = 5$$
 - Provides a Chabauty-Coleman framework to prove completeness of the rational point set when $\mathrm{rank}(J(\mathbb{Q})) < 6$.
 
 **Result:** The only rational solution is $(x, y) = (1, 1)$.
+
+
+Credit to [this MathOverflow problem](https://mathoverflow.net/questions/481127/what-are-the-integer-solutions-to-2x53y5-5z5)
