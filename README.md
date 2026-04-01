@@ -32,14 +32,13 @@ Credit to [this MathOverflow problem](https://mathoverflow.net/questions/481127/
 
 **Problem:** Find all integer solutions $(n, x, y) \in \mathbb{Z}^3$ to the parametric elliptic curve equation
 
-$$y^2 = x^3 + \bigl(-559872n^4 - 1664064n^3 - 1854576n^2 - 918540n - 170586\bigr)\,x$$
-$$+\; 161243136n^6 + 718875648n^5 + 1335341376n^4 + 1322837568n^3 + 737088984n^2 + 219032405n + 27118239$$
+$$y^2 = x^3 + \bigl(-559872n^4 - 1664064n^3 - 1854576n^2 - 918540n - 170586\bigr) \cdot x + 161243136n^6 + 718875648n^5 + 1335341376n^4 + 1322837568n^3 + 737088984n^2 + 219032405n + 27118239$$
 
 **File:** [`integer_points_parametric_ec.py`](elliptic-curve-diophantine/integer_points_parametric_ec.py) — Python (SymPy) script.
 
 **Approach:**
 - Factors the coefficient polynomials:
-  $A(n) = -486\,(4n+3)^3(18n+13)$ and $B(n) = (4n+3)\cdot[\text{quintic}]/4$.
+  $A(n) = -486\cdot (4n+3)^3(18n+13)$ and $B(n) = (4n+3)\cdot[\text{quintic}]/4$.
 - For each integer $n$, the equation defines an elliptic curve $E_n/\mathbb{Q}$.
 - Performs an exhaustive integer-point search over $n \in [-50, 50]$ with $x$-bounds scaled to $O(|A(n)|^{1/2})$, covering the neighbourhood of the real root of the cubic.
 - Verifies the unique solution via direct substitution.
@@ -62,8 +61,8 @@ $$(n,\, x,\, y) \;=\; (-1,\; 45,\; \pm 167)$$
 **Problem:** Find all integer solutions $(n, x, y) \in \mathbb{Z}^3$ to the parametric
 elliptic curve (in **general Weierstrass form**):
 
-$$y^2 = x^3 + (36n+27)^2\,x^2
-       + \bigl(15552n^3 + 34992n^2 + 26244n + 6561\bigr)\,x
+$$y^2 = x^3 + (36n+27)^2 \cdot x^2
+       + \bigl(15552n^3 + 34992n^2 + 26244n + 6561\bigr)\cdot x
        + \bigl(46656n^4 + 139968n^3 + 157464n^2 + 78713n + 14748\bigr)$$
 
 **Files:**
