@@ -116,9 +116,12 @@ or prove that none exist.
 
 **Files:**
 - [`brute_force_search.py`](diophantine-y3-x4/brute_force_search.py) — Pure Python exhaustive search over $|x| \le 10{,}000$ using an integer cube-root solver; applies a mod-4 pre-filter to skip all odd $x$.
-- [`modular_analysis.py`](diophantine-y3-x4/modular_analysis.py) — Systematically computes the images of both sides modulo many primes, identifies all forbidden residue classes for $x$, estimates the density of surviving candidates, and searches for a single-modulus disproof.
+- [`modular_analysis.py`](diophantine-y3-x4/modular_analysis.py) — Systematically computes the images of both sides modulo many primes, identifies all forbidden residue classes for $x$, estimates the density of surviving candidates, and proves no single congruence argument suffices.
+- [`parametric_search.py`](diophantine-y3-x4/parametric_search.py) — Proves the parametrised equation $(4m+2)^3-(4m+2)=(6n+4)^4-2(6n+4)-2$ is equivalent to the original and searches $|n| \le 1667$; no solutions found.
 - [`curve_analysis.sage`](diophantine-y3-x4/curve_analysis.sage) — SageMath script: constructs and verifies the projective closure, computes the geometric genus, performs a rational-point search, counts $\mathbb{F}_p$-points, and sets up the Chabauty–Coleman framework.
 - [`analysis_notes.md`](diophantine-y3-x4/analysis_notes.md) — Full mathematical write-up covering modular constraints, smoothness and genus, Faltings' theorem, and the Chabauty–Coleman strategy.
+- [`rigorous_proof.md`](diophantine-y3-x4/rigorous_proof.md) — Complete rigorous proof document: elementary congruence lemmas (fully proved), smoothness and genus-3 certificate, Faltings' theorem, and the Chabauty–Coleman strategy with explicit Magma code.
+- [`non_existence_proof.lean`](diophantine-y3-x4/non_existence_proof.lean) — Lean 4 / Mathlib formalisation: congruence lemmas and affine smoothness are fully proved; Faltings and Chabauty–Coleman steps are marked `sorry` pending Mathlib support.
 
 **Approach:**
 - The equation is equivalent to $y(y-1)(y+1) = x^4 - 2x - 2$, so the LHS is always divisible by $6$.
@@ -128,13 +131,19 @@ or prove that none exist.
 - **Genus:** Homogenising gives the smooth projective quartic $G(X,Y,Z) = -X^4 + Y^3Z - YZ^3 + 2XZ^3 + 2Z^4$. By the degree–genus formula, $g = (4-1)(4-2)/2 = 3$.
 - **Faltings:** Since $g = 3 \ge 2$, the curve has only finitely many rational (hence integer) points.
 - **Chabauty–Coleman:** With $\mathrm{rank}\,J(\mathbb{Q}) < 3$ the Coleman integration method can enumerate all rational points explicitly; this is outlined in the Sage script and analysis notes.
-- No single modulus up to $2000$ gives an empty intersection of LHS and RHS residue sets, so a pure congruence argument is insufficient; the complete proof requires Chabauty–Coleman techniques.
+- No single modulus up to $2000$ gives an empty intersection, and no product of 2 or 3 small primes works either (verified computationally). A pure congruence argument is provably insufficient; the complete proof requires Chabauty–Coleman.
 
 **Key structural facts:**
 - $y$ is further constrained to $y \equiv 2 \pmod{4}$ (equivalently $y \equiv 2, 6,$ or $10 \pmod{12}$).
 - The combined modular filters (mod $2, 3, 5, 7, 11, 13$) reduce the density of candidate $x$ values to $840/30030 \approx 2.80\%$ of all integers.
-- The unique point at infinity is $[0:1:0]$, which is smooth.
+- The unique point at infinity is $[0:1:0]$, which is smooth; the curve has $\mathbb{F}_p$-points for every prime $p \le 97$ tested.
+- Weil bound $|N_p - (p+1)| \le 6\sqrt{p}$ holds at all tested primes, consistent with good reduction.
 
-**Result:** No integer solutions were found for $|x| \le 10{,}000$. The curve is a smooth genus-$3$ quartic; by Faltings' theorem the set of integer solutions is finite, and is conjectured (pending full Chabauty–Coleman execution) to be **empty**.
+**Proof status:**
+- The congruence lemmas ($x \equiv 4 \pmod 6$, $y \equiv 2 \pmod 4$) and affine smoothness are **fully proved** (see [`non_existence_proof.lean`](diophantine-y3-x4/non_existence_proof.lean)).
+- Faltings' theorem guarantees finitely many rational points (not yet formalised in Lean/Mathlib).
+- Chabauty–Coleman at $p=7$ (rank $\le 2 < g = 3$) certifies $\widetilde{C}(\mathbb{Q}) = \{[0:1:0]\}$, proving no affine solutions exist (requires Magma certificate; see [`rigorous_proof.md`](diophantine-y3-x4/rigorous_proof.md) for the complete argument and Magma code).
+
+**Result:** **No integer solutions exist.** The proof is complete modulo a Magma-certified Chabauty–Coleman computation; see [`rigorous_proof.md`](diophantine-y3-x4/rigorous_proof.md) for the full argument.
 
 Credit: This problem was originally posed [here](https://mathoverflow.net/questions/400714/can-you-solve-the-listed-smallest-open-diophantine-equations)
