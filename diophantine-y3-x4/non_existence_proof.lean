@@ -31,12 +31,12 @@ import Mathlib
 
 /-- The image of `y ↦ y^3 - y` in `ZMod 4` is `{0, 2}`;
     in particular it never equals `1`. -/
-lemma lhs_mod4_ne_one (y : ZMod 4) : y ^ 3 - y ≠ 1 := by decide
+lemma lhs_mod4_ne_one (y : ZMod 4) : y ^ 3 - y ≠ 1 := by revert y; decide
 
 /-- For every `x : ZMod 4`, `x^4 - 2*x - 2` takes value 1 iff x is odd (1 or 3),
     and never equals 1 when x is even. -/
 lemma rhs_mod4_of_x (x : ZMod 4) : x ^ 4 - 2 * x - 2 = 0 ∨ x ^ 4 - 2 * x - 2 = 1 ∨
-    x ^ 4 - 2 * x - 2 = 2 ∨ x ^ 4 - 2 * x - 2 = 3 := by decide
+    x ^ 4 - 2 * x - 2 = 2 ∨ x ^ 4 - 2 * x - 2 = 3 := by revert x; decide
 
 /-- **Key mod-4 fact:** if the equation holds mod 4 and x is odd mod 4,
     then LHS ≡ 1 (mod 4), contradicting lhs_mod4_ne_one. -/
@@ -62,7 +62,8 @@ lemma x_even (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
     -- All 4 values; odd ones are inconsistent with heq4.
     have hcases : (x : ZMod 4) = 0 ∨ (x : ZMod 4) = 1 ∨
                   (x : ZMod 4) = 2 ∨ (x : ZMod 4) = 3 := by
-      fin_cases (x : ZMod 4) <;> simp
+      have h : ∀ a : ZMod 4, a = 0 ∨ a = 1 ∨ a = 2 ∨ a = 3 := by decide
+      exact h _
     rcases hcases with h0 | h1 | h2 | h3
     · exact ⟨0, h0, Or.inl rfl⟩
     · exfalso; have : (y : ZMod 4) ^ 3 - (y : ZMod 4) = 1 := by
@@ -85,14 +86,15 @@ lemma x_even (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
       have h4 : (4 : ℤ) ∣ (x - 2) := (ZMod.intCast_zmod_eq_zero_iff_dvd (x - 2) 4).mp hminus
       obtain ⟨m, hm⟩ := h4
       exact ⟨2 * m + 1, by linarith⟩
-  exact Int.even_iff_two_dvd.mpr hdvd
+  obtain ⟨r, hr⟩ := hdvd
+  exact ⟨r, by linarith⟩
 
 /-- `y^3 - y ≡ 0 (mod 3)` for every `y : ZMod 3`. -/
-lemma lhs_mod3_zero (y : ZMod 3) : y ^ 3 - y = 0 := by decide
+lemma lhs_mod3_zero (y : ZMod 3) : y ^ 3 - y = 0 := by revert y; decide
 
 /-- `x^4 - 2x - 2 ≡ 0 (mod 3)` only when `x ≡ 1 (mod 3)`. -/
 lemma rhs_mod3_zero_iff (x : ZMod 3) :
-    x ^ 4 - 2 * x - 2 = 0 ↔ x = 1 := by decide
+    x ^ 4 - 2 * x - 2 = 0 ↔ x = 1 := by revert x; decide
 
 /-- **Lemma 2.** Any integer solution must have `x ≡ 1 (mod 3)`. -/
 lemma x_mod3 (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
@@ -112,7 +114,8 @@ lemma x_mod6 (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
   have hmod3 := x_mod3 x y h
   -- x = 2k (since 2 ∣ x).  k ≡ 2 (mod 3) since 2k ≡ 1 (mod 3).
   -- 3 ∣ (k - 2), so k = 3m + 2, x = 6m + 4, (x : ZMod 6) = 4.
-  obtain ⟨k, hk⟩ := (Int.even_iff_two_dvd.mp heven)
+  obtain ⟨r, hr⟩ := heven
+  obtain ⟨k, hk⟩ : (2 : ℤ) ∣ x := ⟨r, by linarith⟩
   have hk3 : (k : ZMod 3) = 2 := by
     have hx3 : (x : ZMod 3) = 1 := hmod3
     rw [hk] at hx3; push_cast at hx3
@@ -137,10 +140,12 @@ lemma y_mod4 (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
     have := congr_arg (Int.cast : ℤ → ZMod 4) h; push_cast at this; exact this
   -- x = 2k; k even → x ≡ 0 (mod 4), k odd → x ≡ 2 (mod 4).
   -- In both cases the equation mod 4 forces y ≡ 2 (mod 4).
-  obtain ⟨k, hk⟩ := (Int.even_iff_two_dvd.mp heven)
+  obtain ⟨r, hr⟩ := heven
+  obtain ⟨k, hk⟩ : (2 : ℤ) ∣ x := ⟨r, by linarith⟩
   -- Case split on k mod 2.
   have hk2 : (k : ZMod 2) = 0 ∨ (k : ZMod 2) = 1 := by
-    fin_cases (k : ZMod 2) <;> simp
+    have h : ∀ a : ZMod 2, a = 0 ∨ a = 1 := by decide
+    exact h _
   have hfin : ∀ (b : ZMod 4), b ^ 3 - b = 2 → b = 2 := by decide
   rcases hk2 with hk0 | hk1
   · -- k even: k = 2m, x = 4m, x ≡ 0 (mod 4)
