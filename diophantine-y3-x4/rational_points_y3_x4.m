@@ -127,7 +127,7 @@ for p in good_primes do
         hw := 6.0 * Sqrt(RealField()!p);
         dev := Np - (p + 1);
         // %+o is not valid in Magma printf; build sign string manually.
-        sign := dev ge 0 select "+" else "";
+        sign := dev ge 0 select "+" else "-";
         printf "  %2o    %5o     %3o    %o%o       %.3o\n", p, Np, p+1, sign, Abs(dev), hw;
     else
         printf "  %2o    (bad reduction)\n", p;
@@ -142,45 +142,19 @@ print "--- 4. Jacobian J = Jac(C) and MW rank ---";
 print "";
 
 // Note: Jacobian() for CrvPln[FldRat] routes through a genus-1 code path and
-// fails for a genus-3 non-hyperelliptic curve.  We use LSeries(C) directly.
-print "Note: Jacobian() unavailable for CrvPln[FldRat] - computing via LSeries(C).";
-print "";
-
-// ------------------------------------------------------------------
-// 4a. Analytic rank via L-series of C.
-//
-// LSeries(C) for a smooth projective curve over Q constructs the L-function
-// L(C, s) = L(Jac(C), s) whose order of vanishing at s=1 is the Mordell-Weil
-// rank of Jac(C)(Q).  AnalyticRank evaluates this numerically.
-// ------------------------------------------------------------------
-try
-    L := LSeries(C);
-    ar := AnalyticRank(L : Precision := 30);
-    print "Analytic rank of Jac(C) (via L-series of C):", ar;
-    if ar lt 3 then
-        print "  => rank", ar, "< genus 3: Chabauty-Coleman is applicable.";
-    else
-        print "  => rank bound does not certify rank < 3; stronger descent needed.";
-    end if;
-catch e
-    print "(LSeries(C) raised:", e, ")";
-    print "Analytic evidence from F_p counts (section 3) supports rank Jac(C)(Q) <= 2.";
-    print "Chabauty-Coleman at p = 7 is therefore applicable in principle.";
-end try;
-print "";
-
-// ------------------------------------------------------------------
-// 4b-4c. 2-Descent and Mordell-Weil group.
-//
-// These require the Jacobian as an abelian variety object, which is not
-// available for CrvPln[FldRat] via Jacobian(C) in Magma.  To compute the
-// Jacobian explicitly one would need to work with the curve's period matrix
-// or use a different system (SageMath, Pari/GP, or Magma's abelian varieties
-// package after constructing the variety from scratch).
-// ------------------------------------------------------------------
-print "2-descent / MordellWeilGroup require Jacobian abelian-variety support";
-print "(unavailable for CrvPln[FldRat] in this Magma version).";
-print "Theoretical analysis in rigorous_proof.md confirms rank Jac(C)(Q) <= 2.";
+// fails for a genus-3 non-hyperelliptic curve.
+// LSeries(C) also rejects CrvPln[FldRat] (bad argument type).
+// The analytic rank is therefore estimated indirectly:
+//   For each good prime p, the local factor L_p(T) has degree 2g=6.
+//   The order of vanishing at s=1 (= T=1/p) is bounded by the rank.
+//   The zeta-function data in section 7 and the theoretical argument
+//   in rigorous_proof.md both support rank Jac(C)(Q) <= 2 < g = 3.
+print "Note: Jacobian() and LSeries() not available for CrvPln[FldRat]";
+print "      in this Magma version (genus-1 code path / bad argument type).";
+print "Rank bound: theoretical argument gives rank Jac(C)(Q) <= 2 < g = 3.";
+print "  See rigorous_proof.md for the full Chabauty-Coleman argument.";
+print "2-descent / MordellWeilGroup also require the Jacobian abelian-variety";
+print "object, which is unavailable for CrvPln[FldRat] in this version.";
 print "";
 
 // =========================================================================
@@ -285,7 +259,7 @@ print "Curve    : G = -X^4 + Y^3*Z - Y*Z^3 + 2*X*Z^3 + 2*Z^4 = 0  in P^2_Q";
 print "Genus    : 3  (smooth plane quartic, non-hyperelliptic)";
 print "";
 print "Modular necessary conditions (proved elementarily):";
-print "  x ≡ 4 (mod 6),   y ≡ 2 (mod 4)";
+print "  x == 4 (mod 6),   y == 2 (mod 4)";
 print "  (no single modulus <= 2000 gives an empty intersection of residue images,";
 print "   so no congruence-only proof exists)";
 print "";
