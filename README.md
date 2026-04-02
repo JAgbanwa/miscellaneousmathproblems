@@ -136,3 +136,5 @@ or prove that none exist.
 - The unique point at infinity is $[0:1:0]$, which is smooth.
 
 **Result:** No integer solutions were found for $|x| \le 10{,}000$. The curve is a smooth genus-$3$ quartic; by Faltings' theorem the set of integer solutions is finite, and is conjectured (pending full Chabauty–Coleman execution) to be **empty**.
+
+Credit: This problem was originally posed [here](https://mathoverflow.net/questions/400714/can-you-solve-the-listed-smallest-open-diophantine-equations)
