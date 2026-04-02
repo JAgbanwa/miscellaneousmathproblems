@@ -122,6 +122,7 @@ or prove that none exist.
 - [`analysis_notes.md`](diophantine-y3-x4/analysis_notes.md) — Full mathematical write-up covering modular constraints, smoothness and genus, Faltings' theorem, and the Chabauty–Coleman strategy.
 - [`rigorous_proof.md`](diophantine-y3-x4/rigorous_proof.md) — Complete rigorous proof document: elementary congruence lemmas (fully proved), smoothness and genus-3 certificate, Faltings' theorem, and the Chabauty–Coleman strategy with explicit Magma code.
 - [`non_existence_proof.lean`](diophantine-y3-x4/non_existence_proof.lean) — Lean 4 / Mathlib formalisation: congruence lemmas and affine smoothness are fully proved; Faltings and Chabauty–Coleman steps are marked `sorry` pending Mathlib support.
+- [`rational_points_y3_x4.m`](diophantine-y3-x4/rational_points_y3_x4.m) — Complete Magma V2.28+ script: curve setup and verification, bounded rational point search, $\mathbb{F}_p$ point counts with Hasse–Weil checks, Jacobian rank bound via 2-cover descent, Chabauty–Coleman at $p=7$, Mordell–Weil sieve confirmation, and zeta function computation for $p \in \{5,7,11,13\}$.
 
 **Approach:**
 - The equation is equivalent to $y(y-1)(y+1) = x^4 - 2x - 2$, so the LHS is always divisible by $6$.
