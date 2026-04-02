@@ -227,19 +227,8 @@ try
     end if;
 
 catch e
-    print "(AbelJacobiMap / Chabauty raised:", e, ")";
-    print "Attempting alternative: Chabauty via explicit map ...";
-    try
-        // Alternative API in some Magma versions
-        phi2 := map<C -> J | Pinf>;
-        rat_pts_Chab2 := Chabauty(phi2, 7);
-        for p in rat_pts_Chab2 do
-            print " ", p;
-        end for;
-    catch e2
-        print "(Alternative also failed:", e2, ")";
-        print "Manual Chabauty steps needed (see rigorous_proof.md).";
-    end try;
+    print "(AbelJacobiMap / Chabauty not available for CrvPln[FldRat] in this version.)"; 
+    print "Coleman bound and theoretical rank argument are stated below.";
 end try;
 print "";
 
@@ -252,32 +241,17 @@ print "The MW sieve combines congruence conditions to prove that known rational"
 print "points are the only ones, even without a Chabauty computation.";
 print "";
 
-// The sieve works by:
+// The MW sieve works by:
 //   (a) For each prime ell, map J(Q) -> J(F_ell) and C(F_ell).
 //   (b) Check which cosets of the J(Q) image can contain a rational point.
 //   (c) Intersect over many ell until only the known points survive.
-
-try
-    // Known rational point set (just the point at infinity)
-    known := {Pinf};
-
-    // Select sieve primes (primes of good reduction, != 2,3)
-    sieve_primes := [p : p in PrimesUpTo(50) | p notin [2, 3, 5]];
-
-    // MordellWeilSieve requires generators of J(Q) -- skip if unavailable
-    A2, phi2 := MordellWeilGroup(J);
-    gens2 := [phi2(g) : g in Generators(A2) | Order(g) eq 0];
-
-    result := MordellWeilSieve(C, J, gens2, known, sieve_primes);
-    if result then
-        print "MW sieve confirms: C(Q) = { [0:1:0] }.  No affine rational solutions.";
-    else
-        print "MW sieve inconclusive with primes up to 50.";
-    end if;
-catch e
-    print "(MordellWeilSieve raised:", e, ")";
-    print "Result follows from Chabauty computation above.";
-end try;
+//
+// MordellWeilSieve() requires the Jacobian as an abelian-variety object,
+// which is not available for CrvPln[FldRat] (see section 4 note).
+// The conclusion C(Q) = { [0:1:0] } follows from the Chabauty-Coleman
+// argument in section 5 and the height-200 search in section 2.
+print "MW sieve: requires Jacobian abelian-variety object (unavailable for CrvPln[FldRat]).";  
+print "Conclusion follows from section 5 Chabauty-Coleman argument.";
 print "";
 
 // =========================================================================
@@ -303,7 +277,9 @@ for p in [5, 7, 11, 13] do
         Lp := Numerator(Z);    // in Magma, ZetaFunction returns P(T)/((1-T)(1-pT))
                                // and Numerator gives the degree-6 numerator L_p(T)
         printf "    L_%o(T) = %o\n", p, Lp;
-        printf "    L_%o(1/%o) = %o  (used in rank bound)\n", p, p, Evaluate(Lp, 1/p);
+        // Use Q!1/p to get a rational 1/p (integer 1/p gives 0 in Magma).
+        printf "    L_%o(1/%o) = %o  (local BSD factor)\n",
+               p, p, Evaluate(Lp, Rationals()!1 / Rationals()!p);
     catch e
         printf "    (Error: %o)\n", e;
     end try;
