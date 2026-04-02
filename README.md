@@ -103,3 +103,36 @@ A brute-force search over $n\in[-200,200]$, $x\in[-2000,200000]$ found **no solu
 **Open questions:** See [`analysis_notes.md`](integer-points-weierstrass-family/analysis_notes.md)
 for a discussion of whether infinitely many $n$ yield integer points, and for
 references to Baker's theorem, Siegel's theorem, and Silverman's specialisation theorem.
+
+---
+
+### [`diophantine-y3-x4/`](diophantine-y3-x4/)
+
+**Problem:** Find all integer solutions $(x, y) \in \mathbb{Z}^2$ to the Diophantine equation
+
+$$y^3 - y = x^4 - 2x - 2$$
+
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-y3-x4/brute_force_search.py) — Pure Python exhaustive search over $|x| \le 10{,}000$ using an integer cube-root solver; applies a mod-4 pre-filter to skip all odd $x$.
+- [`modular_analysis.py`](diophantine-y3-x4/modular_analysis.py) — Systematically computes the images of both sides modulo many primes, identifies all forbidden residue classes for $x$, estimates the density of surviving candidates, and searches for a single-modulus disproof.
+- [`curve_analysis.sage`](diophantine-y3-x4/curve_analysis.sage) — SageMath script: constructs and verifies the projective closure, computes the geometric genus, performs a rational-point search, counts $\mathbb{F}_p$-points, and sets up the Chabauty–Coleman framework.
+- [`analysis_notes.md`](diophantine-y3-x4/analysis_notes.md) — Full mathematical write-up covering modular constraints, smoothness and genus, Faltings' theorem, and the Chabauty–Coleman strategy.
+
+**Approach:**
+- The equation is equivalent to $y(y-1)(y+1) = x^4 - 2x - 2$, so the LHS is always divisible by $6$.
+- **Mod-4:** Odd $x$ forces RHS $\equiv 1 \pmod{4}$, which is not attainable by LHS; hence $x$ must be **even**.
+- **Mod-3:** By Fermat's little theorem LHS $\equiv 0 \pmod{3}$ always; RHS $\equiv 0 \pmod{3}$ only when $x \equiv 1 \pmod{3}$.
+- **CRT:** Combining gives $x \equiv 4 \pmod{6}$. Further mod-5 analysis refines this to $x \equiv 4$ or $22 \pmod{30}$.
+- **Genus:** Homogenising gives the smooth projective quartic $G(X,Y,Z) = -X^4 + Y^3Z - YZ^3 + 2XZ^3 + 2Z^4$. By the degree–genus formula, $g = (4-1)(4-2)/2 = 3$.
+- **Faltings:** Since $g = 3 \ge 2$, the curve has only finitely many rational (hence integer) points.
+- **Chabauty–Coleman:** With $\mathrm{rank}\,J(\mathbb{Q}) < 3$ the Coleman integration method can enumerate all rational points explicitly; this is outlined in the Sage script and analysis notes.
+- No single modulus up to $2000$ gives an empty intersection of LHS and RHS residue sets, so a pure congruence argument is insufficient; the complete proof requires Chabauty–Coleman techniques.
+
+**Key structural facts:**
+- $y$ is further constrained to $y \equiv 2 \pmod{4}$ (equivalently $y \equiv 2, 6,$ or $10 \pmod{12}$).
+- The combined modular filters (mod $2, 3, 5, 7, 11, 13$) reduce the density of candidate $x$ values to $840/30030 \approx 2.80\%$ of all integers.
+- The unique point at infinity is $[0:1:0]$, which is smooth.
+
+**Result:** No integer solutions were found for $|x| \le 10{,}000$. The curve is a smooth genus-$3$ quartic; by Faltings' theorem the set of integer solutions is finite, and is conjectured (pending full Chabauty–Coleman execution) to be **empty**.
