@@ -129,7 +129,9 @@ lemma x_mod6 (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
   obtain ⟨m, hm⟩ := hdvd3k
   have hxval : x = 6 * m + 4 := by linarith
   calc (x : ZMod 6) = ((6 * m + 4 : ℤ) : ZMod 6) := by rw [hxval]
-    _ = 4 := by push_cast; have h6 : (6 : ZMod 6) = 0 := by decide; simp [h6]
+    _ = 4 := by
+        have h6 : (6 : ZMod 6) = 0 := by decide
+        push_cast; rw [h6]; ring
 
 /-- **Corollary 3b.** Any integer solution satisfies `y ≡ 2 (mod 4)`. -/
 lemma y_mod4 (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
@@ -154,7 +156,9 @@ lemma y_mod4 (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
     have hxval : x = 4 * m := by linarith
     have hx4 : (x : ZMod 4) = 0 := by
       calc (x : ZMod 4) = ((4 * m : ℤ) : ZMod 4) := by rw [hxval]
-        _ = 0 := by push_cast; have h4 : (4 : ZMod 4) = 0 := by decide; simp [h4]
+        _ = 0 := by
+            have h4 : (4 : ZMod 4) = 0 := by decide
+            push_cast; rw [h4]; ring
     apply hfin; rw [heq4, hx4]; decide
   · -- k odd: 2 ∤ k, so k = 2m+1, x = 2(2m+1) = 4m+2, x ≡ 2 (mod 4)
     have hkodd : (2 : ℤ) ∣ (k - 1) := by
@@ -165,7 +169,9 @@ lemma y_mod4 (x y : ℤ) (h : y ^ 3 - y = x ^ 4 - 2 * x - 2) :
     have hxval : x = 4 * m + 2 := by linarith
     have hx4 : (x : ZMod 4) = 2 := by
       calc (x : ZMod 4) = ((4 * m + 2 : ℤ) : ZMod 4) := by rw [hxval]
-        _ = 2 := by push_cast; have h4 : (4 : ZMod 4) = 0 := by decide; simp [h4]
+        _ = 2 := by
+            have h4 : (4 : ZMod 4) = 0 := by decide
+            push_cast; rw [h4]; ring
     apply hfin; rw [heq4, hx4]; decide
 
 /-!
