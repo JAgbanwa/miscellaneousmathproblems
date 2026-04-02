@@ -61,6 +61,13 @@ KNOWN = {
 # Worker function: search one chunk of n values
 # ---------------------------------------------------------------------------
 
+def _worker_init():
+    """Worker initializer: ignore SIGINT so the pool survives Ctrl-C in the
+    parent shell.  The main process handles graceful shutdown."""
+    import signal as _sig
+    _sig.signal(_sig.SIGINT, _sig.SIG_IGN)
+
+
 def search_chunk(args):
     n_start, n_end, x_low, x_high, worker_id = args
     results = []
@@ -91,6 +98,12 @@ def search_chunk(args):
 # ---------------------------------------------------------------------------
 
 def main():
+    # Ignore SIGINT so this long-running background search survives accidental
+    # Ctrl-C in a shell sharing this terminal session.  SIGTERM is intentional
+    # (e.g., `kill PID`) and should still terminate the process normally.
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+
     parser = argparse.ArgumentParser(description="Parallel brute-force integer point search")
     parser.add_argument("--n_low",   type=int, default=-10000, help="Lower bound for n (default: -10000)")
     parser.add_argument("--n_high",  type=int, default=10000,  help="Upper bound for n (default: 10000)")
@@ -147,7 +160,7 @@ def main():
     t_global_start = time.time()
     chunks_done = 0
 
-    with mp.Pool(processes=num_workers) as pool:
+    with mp.Pool(processes=num_workers, initializer=_worker_init) as pool:
         for results, worker_id, n_s, n_e, elapsed in pool.imap_unordered(search_chunk, chunks):
             chunks_done += 1
             for sol in results:
