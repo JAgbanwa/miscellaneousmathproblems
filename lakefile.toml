@@ -1,6 +1,9 @@
 name = "miscellaneousmathproblems"
 version = "0.1.0"
-defaultTargets = []
+
+[[lean_lib]]
+name = "DiophantineY3X4"
+srcDir = "diophantine-y3-x4"
 
 [[require]]
 name = "mathlib"
