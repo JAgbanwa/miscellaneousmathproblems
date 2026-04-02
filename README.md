@@ -140,10 +140,31 @@ or prove that none exist.
 - The unique point at infinity is $[0:1:0]$, which is smooth; the curve has $\mathbb{F}_p$-points for every prime $p \le 97$ tested.
 - Weil bound $|N_p - (p+1)| \le 6\sqrt{p}$ holds at all tested primes, consistent with good reduction.
 
-**Proof status:**
-- The congruence lemmas ($x \equiv 4 \pmod 6$, $y \equiv 2 \pmod 4$) and affine smoothness are **fully proved** (see [`non_existence_proof.lean`](diophantine-y3-x4/non_existence_proof.lean)).
-- Faltings' theorem guarantees finitely many rational points (not yet formalised in Lean/Mathlib).
-- Chabauty–Coleman at $p=7$ (rank $\le 2 < g = 3$) certifies $\widetilde{C}(\mathbb{Q}) = \{[0:1:0]\}$, proving no affine solutions exist (requires Magma certificate; see [`rigorous_proof.md`](diophantine-y3-x4/rigorous_proof.md) for the complete argument and Magma code).
+**Proof status — Lean 4 / Mathlib formalisation:**
+
+The file [`non_existence_proof.lean`](diophantine-y3-x4/non_existence_proof.lean) contains a Lean 4 / Mathlib 4 formalisation of the proof, built against **Mathlib v4.21.0** (`leanprover/lean4:v4.21.0`). The project is a proper Lake package (see [`lakefile.toml`](lakefile.toml)) with the full Mathlib cache, buildable locally via `lake exe cache get && lake build`.
+
+**Sorry count: 1** — the single remaining `sorry` is the Chabauty–Coleman step (see below), which is not available in Mathlib and represents a genuine research-level formalisation gap.
+
+The following are **fully proved without any `sorry`**:
+
+| Lean name | Statement | Proof method |
+|---|---|---|
+| `lhs_mod4_ne_one` | $y^3 - y \not\equiv 1 \pmod{4}$ for all $y$ | `decide` on `ZMod 4` |
+| `rhs_mod4_of_x` | $x^4 - 2x - 2 \in \{0,1,2,3\}$ in `ZMod 4` | `decide` |
+| `equation_mod4_no_odd_x` | Odd $x \pmod{4}$ contradicts the equation | `decide` |
+| `x_even` | Any integer solution has $x$ even | ZMod 4 case split + `ZMod.intCast_zmod_eq_zero_iff_dvd` |
+| `lhs_mod3_zero` | $y^3 - y \equiv 0 \pmod{3}$ for all $y$ | `decide` on `ZMod 3` |
+| `rhs_mod3_zero_iff` | $x^4 - 2x - 2 \equiv 0 \pmod{3}$ iff $x \equiv 1$ | `decide` |
+| `x_mod3` | Any integer solution has $x \equiv 1 \pmod{3}$ | casting + `rhs_mod3_zero_iff` |
+| `x_mod6` | Any integer solution has $x \equiv 4 \pmod{6}$ | CRT: $x = 2k$, $k \equiv 2 \pmod 3$ $\Rightarrow$ $x = 6m+4$; `push_cast` + `rw` + `ring` |
+| `y_mod4` | Any integer solution has $y \equiv 2 \pmod{4}$ | Case split on $k \bmod 2$ where $x = 2k$; `decide` closes each branch |
+| `affine_smooth` | The affine curve has no singular rational points | `nlinarith`: if $\partial f/\partial x = 0$ then $x^3 = \tfrac12 \notin \mathbb{Q}$; derive contradiction |
+| `elementary_constraints` | $x \equiv 4 \pmod 6$ **and** $y \equiv 2 \pmod 4$ together | Combines `x_mod6` and `y_mod4` |
+
+The one remaining step in `no_integer_solutions`:
+
+> **Chabauty–Coleman** (`sorry`): With $\mathrm{rank}\,J_C(\mathbb{Q}) \le 2 < 3 = g$, Coleman integration at $p = 7$ certifies $C(\mathbb{Q}) = \{[0:1:0]\}$, so no affine integer point $(x:y:1)$ exists. This is verified by the Magma script [`rational_points_y3_x4.m`](diophantine-y3-x4/rational_points_y3_x4.m) but is not formalised in Lean/Mathlib (Faltings' theorem and Chabauty–Coleman are both absent from Mathlib as of 2026).
 
 **Result:** **No integer solutions exist.** The proof is complete modulo a Magma-certified Chabauty–Coleman computation; see [`rigorous_proof.md`](diophantine-y3-x4/rigorous_proof.md) for the full argument.
 
