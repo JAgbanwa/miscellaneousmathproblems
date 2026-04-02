@@ -23,13 +23,7 @@
   Dependencies: Mathlib4  (tested with nightly-2026-04-02)
 -/
 
-import Mathlib.Data.ZMod.Basic
-import Mathlib.Data.Int.Cast.Lemmas
-import Mathlib.Tactic.NormCast
-import Mathlib.Tactic.NormNum
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.Omega
-import Mathlib.Tactic.Decide
+import Mathlib
 
 /-!
 ## Section 1 — Congruence Lemmas (elementary, fully proved)
