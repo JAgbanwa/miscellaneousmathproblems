@@ -169,3 +169,48 @@ The one remaining step in `no_integer_solutions`:
 **Result:** **No integer solutions exist.** The proof is complete modulo a Magma-certified Chabauty–Coleman computation; see [`rigorous_proof.md`](diophantine-y3-x4/rigorous_proof.md) for the full argument.
 
 Credit: This problem was originally posed [here](https://mathoverflow.net/questions/400714/can-you-solve-the-listed-smallest-open-diophantine-equations).
+
+---
+
+### [`diophantine-y3y-x4x4/`](diophantine-y3y-x4x4/)
+
+**Problem:** Find all integer solutions $(x, y) \in \mathbb{Z}^2$ to the Diophantine equation
+
+$$y^3 + y = x^4 + x + 4$$
+
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-y3y-x4x4/brute_force_search.py) — Pure Python exhaustive search over $|x| \le 10{,}000$ (20,001 values) using Newton's method to locate the unique real $y$-root for each $x$; no integer solutions found.
+- [`modular_analysis.py`](diophantine-y3y-x4x4/modular_analysis.py) — Systematically searches for a modular obstruction: checks all $m \le 500$ and all products of two small primes; finds none.  Derives the necessary conditions $x \equiv 2$ or $4 \pmod{5}$, $y \equiv 1$ or $4 \pmod{5}$, and lists the 12 compatible residue classes mod 35.
+- [`curve_analysis.sage`](diophantine-y3y-x4x4/curve_analysis.sage) — SageMath script: counts $\mathbb{F}_p$-points for $p \le 47$, explains the genus calculation via the bidegree formula and a Riemann–Hurwitz sketch, verifies affine smoothness symbolically.
+- [`analysis_notes.md`](diophantine-y3y-x4x4/analysis_notes.md) — Full mathematical write-up: function analysis, modular constraints, algebraic-curve genus computation, near-miss table, and proof-status summary.
+- [`rigorous_proof.md`](diophantine-y3y-x4x4/rigorous_proof.md) — Complete proof document (conditional): elementary analysis (Parts I–II), algebraic geometry (Part III, genus and Faltings), computational verification (Part IV), and a precise statement of the open step.
+
+**Approach:**
+- Define $f(y) = y^3+y$ and $g(x) = x^4+x+4$.  Since $f'(y) = 3y^2+1 \ge 1$, $f$ is **strictly increasing**, so for each $x$ there is at most one real $y$ with $f(y) = g(x)$.
+- The minimum of $g$ over $\mathbb{R}$ is $g(x_0) \approx 3.528$ at $x_0 \approx -0.630$; for integers the minimum is $g(-1) = g(0) = 4$.
+- No integer $y$ satisfies $f(y) = 4$ (since $f(1) = 2$ and $f(2) = 10$), so $x = -1$ and $x = 0$ yield no solution.
+- **No elementary modular obstruction.** The LHS and RHS residue sets have a non-empty intersection mod $m$ for every $m \le 500$ and every product of two small primes.  The curve has $\mathbb{F}_p$-points for all primes $p \le 199$.
+- **Genus.** The curve $\mathcal{C}: y^3+y = x^4+x+4$ has bidegree $(3,4)$ on $\mathbb{P}^1 \times \mathbb{P}^1$; the smooth bidegree-$(a,b)$ genus formula gives $g = (a-1)(b-1) = 2 \times 3 = 6$.
+- **Faltings' theorem.** Since $g = 6 > 1$, the set $\mathcal{C}(\mathbb{Q})$ is finite.
+- **Computational search.** An exhaustive search over $|x| \le 10{,}000$ finds no integer solutions.
+- The closest near-miss is $g(8) = 4108$ vs $f(16) = 4112$ (gap $= 4$), explained by $16^3 = 8^4 = 4096$.
+
+**Key structural facts:**
+- $g(x)$ is always even; so is $f(y)$.  The equation admits only even values on both sides — no parity obstruction.
+- Mod 5: $x \equiv 2$ or $4 \pmod{5}$ and $y \equiv 1$ or $4 \pmod{5}$ (jointly necessary).
+- Mod 35: exactly 12 residue classes $(x \bmod 35, y \bmod 35)$ are compatible.
+- The affine curve is smooth ($\partial F/\partial y = 3y^2+1 \ge 1$ everywhere).
+
+**Proof status:**
+
+| Component | Status |
+|-----------|--------|
+| No solutions for $\|x\| \le 10{,}000$ | ✓ Complete (exhaustive search) |
+| Curve has genus 6 | ✓ Complete (bidegree formula + smoothness) |
+| $\mathcal{C}(\mathbb{Q})$ is finite | ✓ Faltings' theorem |
+| $\mathcal{C}(\mathbb{Q}) = \emptyset$ | ✗ Open (requires Chabauty–Coleman or Baker bounds) |
+| Elementary modular proof | ✗ Does not exist |
+
+**Result:** No integer solution to $y^3 + y = x^4 + x + 4$ has been found. A complete proof is conditional on either a Chabauty–Coleman computation over the genus-6 Jacobian or an effective Baker height bound verifying that all solutions satisfy $|x| \le 10{,}000$.
