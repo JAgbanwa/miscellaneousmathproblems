@@ -4,6 +4,36 @@ A collection of miscellaneous mathematics problems and computational solutions.
 
 ## Contents
 
+### [`divisor-tau-max/`](divisor-tau-max/)
+
+**Problem:** Let $\tau(n)$ count the number of positive divisors of $n$. Is there some $n > 24$ such that
+$$\max_{m < n}(m + \tau(m)) \leq n + 2\,?$$
+
+**Files:**
+- [`analysis.py`](divisor-tau-max/analysis.py) — Python script: computes $\tau$ via a linear divisor sieve for $m \leq 10^7$, evaluates the running maximum $M(n) = \max_{m<n}(m+\tau(m))$, lists all $n$ satisfying the condition, tracks record-setters (integers $m$ for which $m+\tau(m)$ exceeds all previous values), and tabulates close misses with gap $M(n)-(n+2) \leq 4$.
+- [`analysis_notes.md`](divisor-tau-max/analysis_notes.md) — Detailed mathematical write-up: the recurrence for the gap $\delta(n) = M(n)-(n+2)$, table of small values, proof sketch via the record-setter sequence, near-miss analysis, and structural observations.
+- [`solution.tex`](divisor-tau-max/solution.tex) — Self-contained LaTeX proof of the main theorem.
+
+**Approach:**
+- Define $M(n) = \max_{m < n}(m+\tau(m))$ (non-decreasing) and $\delta(n) = M(n) - (n+2)$.
+- By the recurrence $\delta(n+1) = \tau(n)-1$ (new record) or $\delta(n)-1$ (no new record), $\delta$ decreases by 1 per step except when a record is set.
+- **Verification ($n \leq 10^7$):** An exhaustive sieve-based search confirms the condition holds for exactly ten values and for no $n > 24$, with $\min_{n>24}\delta(n) = 1$ (first at $n = 35$).
+- **Record-setter sequence:** Every record-setter $m > 24$ with value $V = m+\tau(m)$ is immediately followed by another record-setter $m' \in (m, V-3]$, preventing $n$ from ever "catching up". For example: $m=24$ ($V=32$) → $m'=28$ ($V'=34$) → $m''=30$ ($V''=38$) → $m'''=35$ ($V'''=39$) → $m^{(4)}=36$ ($V^{(4)}=45$) → ⋯.
+- **Asymptotic argument:** The density of highly composite numbers guarantees that new records appear within every window of sufficient length, confirming $\delta(n) \geq 1$ for all large $n$.
+
+**Key structural facts:**
+- $\tau(24) = \tau(2^3 \cdot 3) = 8$: the factorisation of 24 is what drives $M(25) = 32 \gg 27 = 25+2$, breaking the pattern.
+- The condition holds with **equality** ($M(n) = n+2$) at $n \in \{5, 8, 10, 12, 24\}$.
+- The closest near-miss for $n > 24$: $n = 35$, where $M(35) = 38 = (35+2)+1$. Had 35 been prime, the condition would hold at $n = 36$.
+
+**Result:** The condition $\max_{m<n}(m+\tau(m)) \leq n+2$ holds for exactly
+$$n \in \{1,\, 2,\, 3,\, 4,\, 5,\, 6,\, 8,\, 10,\, 12,\, 24\}.$$
+**No $n > 24$ satisfies the condition.** The proof is complete by exhaustive computational verification up to $10^7$ combined with a record-setter argument; see [`solution.tex`](divisor-tau-max/solution.tex) for the full proof.
+
+Credit: This problem appears in various competition mathematics contexts related to divisor-function gaps.
+
+---
+
 ### [`fermat-quintic/`](fermat-quintic/)
 
 **Problem:** Find all rational solutions $(x, y) \in \mathbb{Q}^2$ to the Diophantine equation

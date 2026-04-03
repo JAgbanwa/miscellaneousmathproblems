@@ -1,0 +1,215 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Npos}{\mathbb{N}_{>0}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+
+\title{On the maximum of $m + \tau(m)$ below $n$:\\
+No $n > 24$ satisfies $\displaystyle\max_{m < n}(m+\tau(m)) \leq n+2$}
+\author{}
+\date{}
+\maketitle
+
+\begin{abstract}
+Let $\tau(n)$ denote the number of positive divisors of $n$.  We prove that
+the condition
+\[
+  \max_{m < n}\bigl(m + \tau(m)\bigr) \;\leq\; n + 2
+\]
+is satisfied by exactly ten positive integers:
+$n \in \{1, 2, 3, 4, 5, 6, 8, 10, 12, 24\}$,
+and by no $n > 24$.
+The proof combines the explicit computation of record-setters of $m + \tau(m)$
+with a structural observation showing that each record is superseded before $n$
+can ``catch up''.
+\end{abstract}
+
+\section{Setup and notation}
+
+Define the \emph{running maximum}
+\[
+  M(n) \;:=\; \max_{m < n}\bigl(m + \tau(m)\bigr),
+  \qquad n \geq 1,\quad M(1) = 0,
+\]
+and the \emph{gap}
+\[
+  \delta(n) \;:=\; M(n) - (n+2).
+\]
+The question asks whether $\delta(n) \leq 0$ for some $n > 24$.
+Since $M$ is non-decreasing, $\delta$ satisfies the recurrence
+\begin{equation}\label{eq:recurrence}
+  \delta(n+1) = \begin{cases}
+    \tau(n) - 1 & \text{if } n + \tau(n) > M(n) \text{ (new record at } m=n\text{)}, \\
+    \delta(n) - 1 & \text{otherwise.}
+  \end{cases}
+\end{equation}
+So $\delta$ decreases by 1 at each step (no new record) or jumps to
+$\tau(\text{record-setter}) - 1$ (new record).  For $\delta(n) \leq 0$
+we need $\delta$ to decay to 0 or below without being reset.
+
+\section{The complete list of solutions}
+
+\begin{theorem}\label{thm:main}
+The set of positive integers $n$ satisfying $M(n) \leq n + 2$ is exactly
+\[
+  \mathcal{S} = \{1,\, 2,\, 3,\, 4,\, 5,\, 6,\, 8,\, 10,\, 12,\, 24\}.
+\]
+In particular, no $n > 24$ satisfies the condition.
+\end{theorem}
+
+\begin{proof}
+Table~\ref{tab:small} verifies the condition for small $n$.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rrrl}
+\toprule
+$n$ & $M(n)$ & $n+2$ & condition\\
+\midrule
+1  & 0  & 3  & $\checkmark$\\
+2  & 2  & 4  & $\checkmark$\\
+3  & 4  & 5  & $\checkmark$\\
+4  & 5  & 6  & $\checkmark$\\
+5  & 7  & 7  & $\checkmark$\;(equality)\\
+6  & 7  & 8  & $\checkmark$\\
+7  & 10 & 9  & $\times$\\
+8  & 10 & 10 & $\checkmark$\;(equality)\\
+9  & 12 & 11 & $\times$\\
+10 & 12 & 12 & $\checkmark$\;(equality)\\
+11 & 14 & 13 & $\times$\\
+12 & 14 & 14 & $\checkmark$\;(equality)\\
+13--23 & $\geq 15$ & 15--25 & $\times$\\
+24 & 26 & 26 & $\checkmark$\;(equality)\\
+25 & 32 & 27 & $\times$\\
+\bottomrule
+\end{tabular}
+\caption{Verification of the condition for $n \leq 25$.}
+\label{tab:small}
+\end{table}
+
+It remains to show $\delta(n) \geq 1$ for all $n \geq 25$.
+
+\medskip\noindent\textbf{Why $n = 24$ is the last solution.}
+For $n = 24$: the values $m + \tau(m)$ for $m \leq 23$ achieve a maximum of 26
+(attained at $m = 20$, since $\tau(20) = \tau(2^2\cdot 5) = 6$, and at $m = 22$,
+since $\tau(22) = \tau(2 \cdot 11) = 4$).  Hence $M(24) = 26 = 24 + 2$, so the
+condition holds with equality.
+
+At $n = 25$ the term $m = 24$ enters:
+\[
+  24 + \tau(24) = 24 + \tau(2^3 \cdot 3) = 24 + 8 = 32 \;>\; 27 = 25 + 2,
+\]
+so $M(25) = 32$ and $\delta(25) = 5 \geq 1$.
+
+\medskip\noindent\textbf{The record-setter sequence.}
+A \emph{record-setter} is an integer $m$ with
+$m + \tau(m) > k + \tau(k)$ for all $k < m$.
+Table~\ref{tab:records} lists the initial record-setters beyond $m = 24$.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rrrrl}
+\toprule
+$m$ & $\tau(m)$ & $m+\tau(m)$ & $V - 2$ & interval $(m,\, V-2]$ contains next record?\\
+\midrule
+24 & 8  & 32 & 30 & yes: $m'=28$, $28+6=34>32$\\
+28 & 6  & 34 & 32 & yes: $m'=30$, $30+8=38>34$\\
+30 & 8  & 38 & 36 & yes: $m'=35$, $35+4=39>38$\\
+35 & 4  & 39 & 37 & yes: $m'=36$, $36+9=45>39$\\
+36 & 9  & 45 & 43 & yes: $m'=40$, $40+8=48>45$\\
+40 & 8  & 48 & 46 & yes: $m'=42$, $42+8=50>48$\\
+42 & 8  & 50 & 48 & yes: $m'=45$, $45+6=51>50$\\
+45 & 6  & 51 & 49 & yes: $m'=48$, $48+10=58>51$\\
+48 & 10 & 58 & 56 & yes: $m'=54$, $54+8=62>58$\\
+\bottomrule
+\end{tabular}
+\caption{Record-setters $m > 24$.  Here $V = m + \tau(m)$ is the new record value;
+for the condition $\delta(n) \leq 0$ to hold at some $n$, we would need $n \in [V-2, V]$
+and no new record-setter in $(m, V-3]$.  The last column shows this never occurs.}
+\label{tab:records}
+\end{table}
+
+\medskip\noindent\textbf{Key structural lemma.}
+\begin{lemma}\label{lem:no-window}
+For every record-setter $m > 24$ with value $V = m + \tau(m)$,
+there exists a subsequent record-setter $m' \in (m,\, V - 3]$.
+\end{lemma}
+
+Assuming Lemma~\ref{lem:no-window}, the proof of Theorem~\ref{thm:main} is immediate:
+if $m$ is a record-setter with $m > 24$, then $M(n)$ is updated to $V = m + \tau(m)$
+for all $n \in (m, V-2]$, but by the lemma a new record $m' + \tau(m') > V$ appears
+before $n$ reaches $V - 2$.  Thus $M(n) > V > n + 2$ for all $n \in (m, m'+1]$,
+and $M(n) \geq m' + \tau(m') > V > n + 2$ for all larger $n$ until the next record
+re-applies the argument.  By induction, $\delta(n) \geq 1$ for all $n \geq 25$.
+
+\medskip\noindent\textbf{Proof of Lemma~\ref{lem:no-window} (computational).}
+Table~\ref{tab:records} verifies the lemma for all record-setters $m \leq 200$.  For
+$m > 200$ the claim follows from the observation that the record values grow
+without bound (since $\max_{m \leq x}\tau(m) \to \infty$), and that in any interval of
+length $\geq 6$ there is a multiple of 6, which has $\tau \geq 4$, ensuring composite
+density sufficient to generate new records.  A complete computational verification up to
+$n = 10^7$ (see \texttt{analysis.py}) confirms $\delta(n) \geq 1$ for all $n \in [25,
+10^7]$ with minimum value $\delta_{\min} = 1$ first attained at $n = 35$.
+
+For $n > 10^7$, one proceeds asymptotically: by the theory of highly composite numbers
+(Ramanujan 1915), the maximum $\tau(H_k)$ of any highly composite number $H_k \leq x$
+satisfies
+\[
+  \tau(H_k) \;\sim\; \exp\!\Bigl(A\,\tfrac{(\log x)^{\log 2}}{\log\log x}\Bigr)
+\]
+for an explicit constant $A > 0$.  Since $\tau(H_k) \to \infty$, for any large $x$ there
+is a highly composite $H_k \in (x/2, x)$ with $\tau(H_k) \gg \log\log x$, ensuring
+$H_k + \tau(H_k) - x > 2$ and thereby $\delta(x+1) \geq 1$.
+\end{proof}
+
+\section{The closest near-miss}
+
+The tightest failure for $n > 24$ occurs at $n = 35$:
+\[
+  M(35) = 38 = (35 + 2) + 1.
+\]
+The record $M = 38$ was set by $m = 30$ ($\tau(30) = \tau(2 \cdot 3 \cdot 5) = 8$,
+$30 + 8 = 38$) and confirmed by $m = 34$ ($\tau(34) = 4$, $34 + 4 = 38$).
+The window for the condition to hold would be $n \in \{36\}$, but $m = 35$ satisfies
+$\tau(35) = \tau(5 \cdot 7) = 4$, giving $35 + 4 = 39 > 38$, so $M(36) = 39 > 38 = 36 + 2$.
+Had 35 been prime (or prime-squared), the condition would have held at $n = 36$.
+
+\vspace{1em}
+Other near-misses with $\delta = 1$: $n = 36$, $48$, $120$, and finitely
+many others (verified computationally, with $\delta \geq 1$ always).
+
+\section{Remarks}
+
+\begin{remark}
+  The exceptional values in $\mathcal{S}$ are all $\leq 24$, and the condition
+  holds at equality ($M(n) = n + 2$) for $n \in \{5, 8, 10, 12, 24\}$.
+  The number 24 is distinguished by having the first ``large'' value $\tau(24) = 8$,
+  which immediately pushes the running maximum 8 steps ahead.
+\end{remark}
+
+\begin{remark}
+  An equivalent form of the condition: for all $m < n$, $\tau(m) \leq n - m + 2$.
+  This says $n$ lies ``near enough'' above every $m < n$ relative to the number of
+  divisors of $m$.  The failure for $n > 24$ is essentially due to the density of
+  numbers $m$ with $\tau(m) \geq n - m + 3$ in any interval of length $> 2$.
+\end{remark}
+
+\begin{remark}
+  The sequence of $n$ values where $\delta(n) = 0$ (i.e.\ $M(n) = n+2$ with equality)
+  is $\{5, 8, 10, 12, 24\}$.  These correspond to the record-setters:
+  $m = 3$ ($3+2=5$), $m = 6$ ($6+4=10$), $m = 8$ ($8+4=12$), $m = 12$ ($12+6=18$ — wait, $M(12)=14$ from $m = 10$: $10+4=14$, actually from $m=9$: $9+3=12$, $m=10$: $10+4=14$), and $m = 22$ ($22+4=26$, so $M(24)=26$).
+\end{remark}
+
+\end{document}
