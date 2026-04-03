@@ -83,7 +83,9 @@ lemma runningMax_zero : runningMax 0 = 0 := by
 /-- **Recurrence.**  `M(n + 1) = max M(n)  (n + τ(n))`. -/
 lemma runningMax_succ (n : ℕ) :
     runningMax (n + 1) = (n + numDivisors n) ⊔ runningMax n := by
-  simp only [runningMax, Finset.range_succ, Finset.sup_insert]
+  unfold runningMax
+  rw [show Finset.range (n + 1) = insert n (Finset.range n) from Finset.range_succ,
+      Finset.sup_insert]
 
 /-- `runningMax` is **monotone**: `n ≤ n' → M(n) ≤ M(n')`. -/
 lemma runningMax_mono : Monotone runningMax := by
@@ -172,9 +174,9 @@ theorem tau_max_no_solution_fin :
 theorem tau_max_no_solution_small (n : ℕ) (h1 : 25 ≤ n) (h2 : n ≤ 120) :
     runningMax n > n + 2 := by
   have key := tau_max_no_solution_fin ⟨n - 25, by omega⟩
-  simp only [Fin.val] at key
   have heq : n - 25 + 25 = n := Nat.sub_add_cancel h1
-  rwa [heq] at key
+  simp only [heq] at key
+  exact key
 
 /-!
 ## Section 5 — No solution for n ≥ 121
@@ -262,9 +264,8 @@ theorem complete_solution_set (n : ℕ) (hn : 0 < n) :
     by_cases hle : n ≤ 24
     · -- n ∈ [1, 24]: solutions_in_range identifies the exact solutions
       have key := (solutions_in_range ⟨n - 1, by omega⟩).mp
-      simp only [Fin.val] at key
       have heq : n - 1 + 1 = n := Nat.sub_add_cancel hn
-      rw [heq] at key
+      simp only [heq] at key
       exact hnotin (key h)
     · -- n > 24: Theorem A refutes M(n) ≤ n + 2
       exact absurd h (Nat.not_le.mpr (no_n_gt_24 n (by omega)))
