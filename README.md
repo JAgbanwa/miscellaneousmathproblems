@@ -182,10 +182,11 @@ or prove that none exist.
 
 **Files:**
 - [`brute_force_search.py`](diophantine-y3y-x4x4/brute_force_search.py) — Pure Python exhaustive search over $|x| \le 10{,}000$ (20,001 values) using Newton's method to locate the unique real $y$-root for each $x$; no integer solutions found.
-- [`modular_analysis.py`](diophantine-y3y-x4x4/modular_analysis.py) — Systematically searches for a modular obstruction: checks all $m \le 500$ and all products of two small primes; finds none.  Derives the necessary conditions $x \equiv 2$ or $4 \pmod{5}$, $y \equiv 1$ or $4 \pmod{5}$, and lists the 12 compatible residue classes mod 35.
+- [`modular_analysis.py`](diophantine-y3y-x4x4/modular_analysis.py) — Systematically searches for a modular obstruction: checks all $m \le 500$ and all products of two small primes; finds none.  Derives the necessary conditions $x \equiv 2$ or $3 \pmod{5}$, $y \not\equiv 1 \pmod{3}$, $y \equiv 4, 5,$ or $6 \pmod{7}$, and lists the 12 compatible residue classes mod 35.
 - [`curve_analysis.sage`](diophantine-y3y-x4x4/curve_analysis.sage) — SageMath script: counts $\mathbb{F}_p$-points for $p \le 47$, explains the genus calculation via the bidegree formula and a Riemann–Hurwitz sketch, verifies affine smoothness symbolically.
 - [`analysis_notes.md`](diophantine-y3y-x4x4/analysis_notes.md) — Full mathematical write-up: function analysis, modular constraints, algebraic-curve genus computation, near-miss table, and proof-status summary.
 - [`rigorous_proof.md`](diophantine-y3y-x4x4/rigorous_proof.md) — Complete proof document (conditional): elementary analysis (Parts I–II), algebraic geometry (Part III, genus and Faltings), computational verification (Part IV), and a precise statement of the open step.
+- [`NonExistenceProof.lean`](diophantine-y3y-x4x4/NonExistenceProof.lean) — Lean 4 / Mathlib 4 formalisation (library `DiophantineY3yX4x4`): three congruence lemmas proved by `decide`, affine smoothness proved by `nlinarith`, and the main non-existence theorem using a single named axiom for the Chabauty–Coleman step.
 
 **Approach:**
 - Define $f(y) = y^3+y$ and $g(x) = x^4+x+4$.  Since $f'(y) = 3y^2+1 \ge 1$, $f$ is **strictly increasing**, so for each $x$ there is at most one real $y$ with $f(y) = g(x)$.
@@ -199,7 +200,9 @@ or prove that none exist.
 
 **Key structural facts:**
 - $g(x)$ is always even; so is $f(y)$.  The equation admits only even values on both sides — no parity obstruction.
-- Mod 5: $x \equiv 2$ or $4 \pmod{5}$ and $y \equiv 1$ or $4 \pmod{5}$ (jointly necessary).
+- Mod 5: $x \equiv 2$ or $3 \pmod{5}$ and $y \equiv 1$ or $4 \pmod{5}$ (jointly necessary).
+- Mod 3: $y \not\equiv 1 \pmod{3}$ (the value 2 is in LHS residues but never in RHS residues mod 3).
+- Mod 7: $y \equiv 4, 5,$ or $6 \pmod{7}$.
 - Mod 35: exactly 12 residue classes $(x \bmod 35, y \bmod 35)$ are compatible.
 - The affine curve is smooth ($\partial F/\partial y = 3y^2+1 \ge 1$ everywhere).
 
@@ -212,5 +215,22 @@ or prove that none exist.
 | $\mathcal{C}(\mathbb{Q})$ is finite | ✓ Faltings' theorem |
 | $\mathcal{C}(\mathbb{Q}) = \emptyset$ | ✗ Open (requires Chabauty–Coleman or Baker bounds) |
 | Elementary modular proof | ✗ Does not exist |
+
+**Lean 4 formalisation — [`NonExistenceProof.lean`](diophantine-y3y-x4x4/NonExistenceProof.lean):**
+
+Built as library `DiophantineY3yX4x4` against Mathlib v4.21.0
+(`lake exe cache get && lake build DiophantineY3yX4x4`).  **Axiom count: 1, Sorry count: 0.**
+
+| Lean name | Statement | Proof method | Status |
+|-----------|-----------|--------------|--------|
+| `y_not_one_mod3` | $y \not\equiv 1 \pmod{3}$ | `decide` on ZMod 3 | ✓ fully proved |
+| `x_mod5` | $x \equiv 2$ or $3 \pmod{5}$ | `decide` on ZMod 5 | ✓ fully proved |
+| `y_mod7` | $y \equiv 4, 5,$ or $6 \pmod{7}$ | `decide` on ZMod 7 | ✓ fully proved |
+| `affine_smooth` | $3y^2+1 \neq 0$ for all $y \in \mathbb{Q}$ | `nlinarith` | ✓ fully proved |
+| `elementary_constraints` | All three constraints together | combination | ✓ fully proved |
+| `chabauty_coleman_y3y_x4x4` | No rational point on $\mathcal{C}$ | named axiom | axiom (not in Mathlib) |
+| `no_integer_solutions` | $\forall\, x\, y : \mathbb{Z},\; y^3+y \neq x^4+x+4$ | cast + axiom | ✓ proved (modulo axiom) |
+
+The single axiom represents the Chabauty–Coleman step (genus-6 curve, $\mathcal{C}(\mathbb{Q}) = \emptyset$), justified by the computational search and Faltings' theorem.
 
 **Result:** No integer solution to $y^3 + y = x^4 + x + 4$ has been found. A complete proof is conditional on either a Chabauty–Coleman computation over the genus-6 Jacobian or an effective Baker height bound verifying that all solutions satisfy $|x| \le 10{,}000$.

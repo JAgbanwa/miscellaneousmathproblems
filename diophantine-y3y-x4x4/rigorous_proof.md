@@ -89,13 +89,13 @@ The closest approach in this range is $g(8) = 4108$ vs $f(16) = 4112$ (gap $= 4$
 
 **Necessary conditions** (useful for any future search, but not sufficient for a proof)
 
-*From $\mathbb{F}_5$:* By Fermat's little theorem, $y^3 \equiv y$ and $x^4 \equiv x$ (mod 5), so
-
-$$\text{LHS} \equiv 2y \pmod{5}, \qquad \text{RHS} \equiv 2x + 4 \pmod{5}.$$
+*From $\mathbb{F}_5$:* Direct computation over $\mathbb{Z}/5\mathbb{Z}$ gives
+$\{y^3+y \bmod 5 : y \in \mathbb{Z}/5\mathbb{Z}\} = \{0, 2, 3\}$ and
+$\{x^4+x+4 \bmod 5 : x \in \mathbb{Z}/5\mathbb{Z}\} = \{1, 2, 3, 4\}$.
 
 The residue intersection is $\{2, 3\}$, forcing
 
-$$x \equiv 2 \text{ or } 4 \pmod{5}, \qquad y \equiv 1 \text{ or } 4 \pmod{5}.$$
+$$x \equiv 2 \text{ or } 3 \pmod{5}, \qquad y \equiv 1 \text{ or } 4 \pmod{5}.$$
 
 *From $\mathbb{F}_7$:* The intersection is $\{4, 5\}$, giving (combined with mod 5 via CRT):
 

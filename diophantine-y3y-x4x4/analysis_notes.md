@@ -51,10 +51,11 @@ In every small case, $g(x)$ falls strictly between consecutive values of $f$ —
 
 **Useful partial constraints (necessary conditions for any solution):**
 
-From $\mathbb{F}_5$: Fermat gives $y^3 \equiv y$, $x^4 \equiv x$ (mod 5), so
-LHS $\equiv 2y$ and RHS $\equiv 2x+4$ (mod 5).  The intersection $\{2, 3\}$ forces:
+From $\mathbb{F}_5$: For $x \not\equiv 0 \pmod 5$, Fermat gives $x^4 \equiv 1 \pmod 5$; for $x \equiv 0$, $x^4 \equiv 0$.
+Direct computation gives RHS residues $\{x \equiv 0\to 4,\; x\equiv 1\to 1,\; x\equiv 2\to 2,\; x\equiv 3\to 3,\; x\equiv 4\to 4\}$,
+and LHS residues $\{0, 2, 3\}$.  The intersection $\{2, 3\}$ forces:
 
-$$x \equiv 2 \text{ or } 4 \pmod{5}, \qquad y \equiv 1 \text{ or } 4 \pmod{5}.$$
+$$x \equiv 2 \text{ or } 3 \pmod{5}, \qquad y \equiv 1 \text{ or } 4 \pmod{5}.$$
 
 From $\mathbb{F}_7$: the intersection is $\{4, 5\}$, giving further constraints.
 

@@ -94,15 +94,18 @@ print()
 print("=" * 60)
 print("4. Necessary conditions mod 5")
 print("=" * 60)
-print("   x^4 ≡ x (mod 5) by Fermat  =>  RHS ≡ 2x + 4  (mod 5).")
-print("   y^3 ≡ y (mod 5) by Fermat  =>  LHS ≡ 2y      (mod 5).")
-print("   Intersection {2, 3}:")
-for r in [2, 3]:
-    xs = [x for x in range(5) if (2 * x + 4) % 5 == r]
-    ys = [y for y in range(5) if (2 * y) % 5 == r]
-    print(f"     LHS = RHS ≡ {r} (mod 5)  =>  x ≡ {xs} (mod 5),  y ≡ {ys} (mod 5)")
+print("   For x ≢ 0 (mod 5), Fermat gives x^4 ≡ 1 (mod 5).")
+print("   For x ≡ 0 (mod 5), x^4 ≡ 0 (mod 5).")
+print("   So RHS mod 5: x=0→0+0+4=4, x=1→1+1+4=6≡1, x=2→1+2+4=7≡2,")
+print("                  x=3→1+3+4=8≡3, x=4→1+4+4=9≡4.")
+print("   LHS mod 5: y=0→0, y=1→2, y=2→10≡0, y=3→30≡0, y=4→68≡3.")
+print("   LHS residues: {0,2,3}.  RHS residues: {1,2,3,4}.  Intersection: {2,3}.")
+print("   RHS=2 only when x≡2; RHS=3 only when x≡3.")
 print()
-print("   => x ≡ 2 or 4 (mod 5)  and  y ≡ 1 or 4 (mod 5).")
+print("   => x ≡ 2 or 3 (mod 5)  and  y ≡ 1 or 4 (mod 5).")
+print()
+print("   (Note: x≡0,1,4 (mod 5) are all forbidden; their RHS residues {4,1,4}")
+print("   are not achievable by the LHS.)")
 
 # ── 5. Compatible residue classes mod 35 ────────────────────────────────────
 
