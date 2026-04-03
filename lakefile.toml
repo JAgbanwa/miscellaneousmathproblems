@@ -10,6 +10,11 @@ name = "DiophantineY3yX4x4"
 srcDir = "diophantine-y3y-x4x4"
 roots = ["NonExistenceProof"]
 
+[[lean_lib]]
+name = "DivisorTauMax"
+srcDir = "divisor-tau-max"
+roots = ["DivisorTauMax"]
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"

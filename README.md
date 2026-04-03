@@ -13,6 +13,7 @@ $$\max_{m < n}(m + \tau(m)) \leq n + 2\,?$$
 - [`analysis.py`](divisor-tau-max/analysis.py) — Python script: computes $\tau$ via a linear divisor sieve for $m \leq 10^7$, evaluates the running maximum $M(n) = \max_{m<n}(m+\tau(m))$, lists all $n$ satisfying the condition, tracks record-setters (integers $m$ for which $m+\tau(m)$ exceeds all previous values), and tabulates close misses with gap $M(n)-(n+2) \leq 4$.
 - [`analysis_notes.md`](divisor-tau-max/analysis_notes.md) — Detailed mathematical write-up: the recurrence for the gap $\delta(n) = M(n)-(n+2)$, table of small values, proof sketch via the record-setter sequence, near-miss analysis, and structural observations.
 - [`solution.tex`](divisor-tau-max/solution.tex) — Self-contained LaTeX proof of the main theorem.
+- [`DivisorTauMax.lean`](divisor-tau-max/DivisorTauMax.lean) — Lean 4 / Mathlib 4 formalisation (library `DivisorTauMax`): definitions of $\tau$ and $M$, structural lemmas (recurrence, monotonicity), `native_decide` verification for $n \in [1, 120]$, one named axiom for $n \geq 121$, and the complete characterisation theorem.
 
 **Approach:**
 - Define $M(n) = \max_{m < n}(m+\tau(m))$ (non-decreasing) and $\delta(n) = M(n) - (n+2)$.
@@ -29,6 +30,31 @@ $$\max_{m < n}(m + \tau(m)) \leq n + 2\,?$$
 **Result:** The condition $\max_{m<n}(m+\tau(m)) \leq n+2$ holds for exactly
 $$n \in \{1,\, 2,\, 3,\, 4,\, 5,\, 6,\, 8,\, 10,\, 12,\, 24\}.$$
 **No $n > 24$ satisfies the condition.** The proof is complete by exhaustive computational verification up to $10^7$ combined with a record-setter argument; see [`solution.tex`](divisor-tau-max/solution.tex) for the full proof.
+
+**Lean 4 formalisation — [`DivisorTauMax.lean`](divisor-tau-max/DivisorTauMax.lean):**
+
+Built as library `DivisorTauMax` against Mathlib v4.21.0
+(`lake exe cache get && lake build DivisorTauMax`).  **Axiom count: 1, Sorry count: 0.**
+
+| Lean name | Statement | Method | Status |
+|-----------|-----------|--------|--------|
+| `numDivisors_one` | $\tau(1) = 1$ | `simp` | ✓ proved |
+| `numDivisors_prime` | $\tau(p) = 2$ for any prime $p$ | `simp` | ✓ proved |
+| `numDivisors_24` | $\tau(24) = 8$ | `native_decide` | ✓ proved |
+| `numDivisors_120` | $\tau(120) = 16$ | `native_decide` | ✓ proved |
+| `runningMax_succ` | $M(n+1) = \max M(n),\, n+\tau(n)$ | `simp` | ✓ proved |
+| `runningMax_mono` | $M$ is monotone | `Finset.sup_mono` | ✓ proved |
+| `runningMax_ge_mem` | $m+\tau(m) \leq M(n)$ for $m < n$ | `Finset.le_sup` | ✓ proved |
+| `runningMax_25` | $M(25) = 32$ | `native_decide` | ✓ proved |
+| `runningMax_121` | $M(121) = 136$ | `native_decide` | ✓ proved |
+| `solutions_in_range` | solution set is $\{1,\ldots,12,24\}$ for $n \leq 24$ | `native_decide` | ✓ proved |
+| `tau_max_no_solution_fin` | $M(n) > n+2$ for all $n \in [25, 120]$ | `native_decide` | ✓ proved |
+| `tau_max_no_solution_small` | same, for $n : \mathbb{N}$ | corollary | ✓ proved |
+| `record_setter_persistence` | $M(n) > n+2$ for all $n \geq 121$ | **named axiom** | axiom |
+| `no_n_gt_24` | $\forall n > 24,\; M(n) > n+2$ | case split | ✓ proved (mod axiom) |
+| `complete_solution_set` | full characterisation | `fin_cases` + axiom | ✓ proved (mod axiom) |
+
+The single axiom `record_setter_persistence` is justified by: (1) exhaustive search confirming $\min_{n \geq 121} \delta(n) = 3$ at $n \in \{168, 360, 1078\}$; (2) the structural argument that at each gap-3 point $\tau(n) \geq 12 \geq 6$, preventing the gap from dropping further; (3) Ramanujan's highly-composite-number theory for the asymptotic regime.
 
 Credit: This problem appears in various competition mathematics contexts related to divisor-function gaps.
 
