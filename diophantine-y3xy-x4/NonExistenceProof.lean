@@ -73,7 +73,7 @@ lemma x_even (x y : ℤ) (h : y ^ 3 + x * y + x ^ 4 + 4 = 0) :
   have heq : (y : ZMod 2) ^ 3 + (x : ZMod 2) * (y : ZMod 2) +
              (x : ZMod 2) ^ 4 + 4 = 0 := by
     have := congr_arg (Int.cast : ℤ → ZMod 2) h
-    push_cast at this; linarith [this]
+    push_cast at this; exact this
   have key : ∀ (a b : ZMod 2),
       b ^ 3 + a * b + a ^ 4 + 4 = 0 → a = 0 := by decide
   exact key (x : ZMod 2) (y : ZMod 2) heq
@@ -85,7 +85,7 @@ lemma y_even (x y : ℤ) (h : y ^ 3 + x * y + x ^ 4 + 4 = 0) :
   have heq : (y : ZMod 2) ^ 3 + (x : ZMod 2) * (y : ZMod 2) +
              (x : ZMod 2) ^ 4 + 4 = 0 := by
     have := congr_arg (Int.cast : ℤ → ZMod 2) h
-    push_cast at this; linarith [this]
+    push_cast at this; exact this
   have key : ∀ (a b : ZMod 2),
       b ^ 3 + a * b + a ^ 4 + 4 = 0 → b = 0 := by decide
   exact key (x : ZMod 2) (y : ZMod 2) heq
@@ -104,7 +104,7 @@ lemma y_mod3 (x y : ℤ) (h : y ^ 3 + x * y + x ^ 4 + 4 = 0) :
   have heq : (y : ZMod 3) ^ 3 + (x : ZMod 3) * (y : ZMod 3) +
              (x : ZMod 3) ^ 4 + 4 = 0 := by
     have := congr_arg (Int.cast : ℤ → ZMod 3) h
-    push_cast at this; linarith [this]
+    push_cast at this; exact this
   have key : ∀ (a b : ZMod 3),
       b ^ 3 + a * b + a ^ 4 + 4 = 0 → b = 2 := by decide
   exact key (x : ZMod 3) (y : ZMod 3) heq
@@ -125,7 +125,7 @@ lemma x_y_mod8 (x y : ℤ) (h : y ^ 3 + x * y + x ^ 4 + 4 = 0) :
   have heq : (y : ZMod 8) ^ 3 + (x : ZMod 8) * (y : ZMod 8) +
              (x : ZMod 8) ^ 4 + 4 = 0 := by
     have := congr_arg (Int.cast : ℤ → ZMod 8) h
-    push_cast at this; linarith [this]
+    push_cast at this; exact this
   have key : ∀ (a b : ZMod 8),
       b ^ 3 + a * b + a ^ 4 + 4 = 0 →
       (a = 2 ∨ a = 6) ∧ (b = 2 ∨ b = 6) := by decide
@@ -156,15 +156,22 @@ lemma affine_smooth (x y : ℚ)
     rw [hy] at hdy; ring_nf at hdy ⊢; linarith
   -- Case split on x = 0 or 48x⁵ + 1 = 0
   rcases mul_eq_zero.mp hx with hx0 | hx5
-  · -- x = 0 → y = 0 → F(0,0) = 4 ≠ 0
-    rw [hx0, hy] at hF; norm_num at hF
-  · -- 48x⁵ + 1 = 0 → x = -(1/48)^(1/5): F ≠ 0 at this point.
-    -- Use hF directly: substituting y = -4x³ gives x⁴(-4x³)⁴... use nlinarith.
-    have hxne : x ≠ 0 := by
-      intro h0; rw [h0] at hx5; norm_num at hx5
+  · -- x = 0 → y = -4·0³ = 0 → F(0,0) = 4 ≠ 0
+    rw [hy, hx0] at hF; norm_num at hF
+  · -- 48x⁵ + 1 = 0: derive contradiction algebraically
     rw [hy] at hF
-    nlinarith [sq_nonneg x, sq_nonneg (x^3), mul_self_nonneg (x^2),
-               pow_pos (show (0 : ℚ) < 48 by norm_num)]
+    have hx5v : x ^ 5 = -1 / 48 := by linarith
+    have hx9 : x ^ 9 = x ^ 4 * (-1 / 48) := by
+      have key : x ^ 9 = x ^ 4 * x ^ 5 := by ring
+      rw [hx5v] at key; exact key
+    have hF2 : -64 * x ^ 9 - 3 * x ^ 4 + 4 = 0 := by nlinarith [sq_nonneg (x ^ 3)]
+    have hF3 : (4 : ℚ) / 3 * x ^ 4 - 3 * x ^ 4 + 4 = 0 := by nlinarith
+    have hx4 : x ^ 4 = 12 / 5 := by linarith
+    have hxv : x = -5 / 576 := by
+      have h1 : x * x ^ 4 = x ^ 5 := by ring
+      rw [hx4, hx5v] at h1; linarith
+    rw [hxv] at hx4
+    norm_num at hx4
 
 /-!
 ## Section 3 — Sophie Germain Factorisation (fully proved)

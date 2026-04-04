@@ -20,6 +20,11 @@ name = "DiophantineY2X3yZ4"
 srcDir = "diophantine-y2-x3y-z4"
 roots = ["NonExistenceProof"]
 
+[[lean_lib]]
+name = "DiophantineY3xyX4"
+srcDir = "diophantine-y3xy-x4"
+roots = ["NonExistenceProof"]
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
