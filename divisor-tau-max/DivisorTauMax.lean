@@ -84,8 +84,11 @@ lemma runningMax_zero : runningMax 0 = 0 := by
 lemma runningMax_succ (n : ℕ) :
     runningMax (n + 1) = (n + numDivisors n) ⊔ runningMax n := by
   unfold runningMax
-  rw [show Finset.range (n + 1) = insert n (Finset.range n) from Finset.range_succ,
-      Finset.sup_insert]
+  have hrange : Finset.range (n + 1) = insert n (Finset.range n) := by
+    ext x
+    simp only [Finset.mem_insert, Finset.mem_range]
+    omega
+  rw [hrange, Finset.sup_insert]
 
 /-- `runningMax` is **monotone**: `n ≤ n' → M(n) ≤ M(n')`. -/
 lemma runningMax_mono : Monotone runningMax := by
