@@ -4,6 +4,10 @@ A collection of miscellaneous mathematics problems and computational solutions.
 
 ## Contents
 
+---
+
+## Part I — Number-Theoretic Extremal Problems
+
 ### [`divisor-tau-max/`](divisor-tau-max/)
 
 **Problem:** Let $\tau(n)$ count the number of positive divisors of $n$. Is there some $n > 24$ such that
@@ -59,6 +63,8 @@ The single axiom `record_setter_persistence` is justified by: (1) exhaustive sea
 Credit: This problem appears in various competition mathematics contexts related to divisor-function gaps.
 
 ---
+
+## Part II — Diophantine Equations
 
 ### [`fermat-quintic/`](fermat-quintic/)
 
