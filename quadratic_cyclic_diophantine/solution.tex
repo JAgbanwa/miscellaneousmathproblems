@@ -20,6 +20,8 @@
 \pgfplotsset{compat=1.18}
 
 \geometry{margin=2.5cm}
+\setlength{\headheight}{13.60001pt}
+\addtolength{\topmargin}{-1.60001pt}
 
 % ── Theorem environments ─────────────────────────────────────────────────────
 \newtheorem{theorem}{Theorem}[section]
@@ -46,6 +48,7 @@
   framerule=0pt,
   rulecolor=\color{gray!30},
   xleftmargin=6pt, xrightmargin=6pt,
+  mathescape=true,
 }
 
 \lstdefinelanguage{Lean4}{
@@ -242,14 +245,14 @@ on the line.
 \subsection{Specialisations}
 
 \begin{lemma}[Equal coordinates]\label{lem:equal}
-  \begin{enumlist}
-    \item[(i)] $f(a,a,a) = 3a^3$.
-    \item[(ii)] $f(a,a,b) = a^3 + a^2b + b^2a = a^2(a+b) + ab^2$.
-    \item[(iii)] $f(a,b,a) = a^2b + b^2a + a^3 = a^2(a+b) + ab^2$ as well
+  \begin{enumerate}[label=(\roman*)]
+    \item $f(a,a,a) = 3a^3$.
+    \item $f(a,a,b) = a^3 + a^2b + b^2a = a^2(a+b) + ab^2$.
+    \item $f(a,b,a) = a^2b + b^2a + a^3 = a^2(a+b) + ab^2$ as well
           (same as (ii) by a relabelling).
-    \item[(iv)] $f(0,b,c) = b^2c$ and $f(a,0,c) = c^2a$,
+    \item $f(0,b,c) = b^2c$ and $f(a,0,c) = c^2a$,
           $f(a,b,0) = a^2b$.
-  \end{enumlist}
+  \end{enumerate}
 \end{lemma}
 
 \begin{proof}
@@ -840,13 +843,13 @@ The obstruction to a formal proof is as follows:
   $\pi_z(S(\Z))$ is not bounded above.  In Lean~4:
   \begin{lstlisting}[language=Lean4]
 theorem solutions_zproj_infinite
-    : (solutions.image (·.2.2)).Infinite := by
+    : (solutions.image ($\cdot$.2.2)).Infinite := by
   apply Set.infinite_of_not_bddAbove
   rw [not_bddAbove_iff]
   intro N
-  obtain ⟨x, y, z, hmem, hz⟩ := solutions_unbounded_z N
-  exact ⟨z, Set.mem_image_of_mem (·.2.2)
-    (show (x, y, z) ∈ solutions by simp [solutions, hmem]), hz⟩
+  obtain $\langle$x, y, z, hmem, hz$\rangle$ := solutions_unbounded_z N
+  exact $\langle$z, Set.mem_image_of_mem ($\cdot$.2.2)
+    (show (x, y, z) $\in$ solutions by simp [solutions, hmem]), hz$\rangle$
   \end{lstlisting}
   Since the projection $\pi_z\colon S(\Z) \to \Z$ has infinite image,
   the domain $S(\Z)$ is infinite. \qed
@@ -916,9 +919,9 @@ The build completes with:
 
 \noindent\textbf{Definition and cyclic symmetry:}
 \begin{lstlisting}[language=Lean4]
-def cyclicForm (x y z : ℤ) : ℤ := x ^ 2 * y + y ^ 2 * z + z ^ 2 * x
+def cyclicForm (x y z : $\mathbb{Z}$) : $\mathbb{Z}$ := x ^ 2 * y + y ^ 2 * z + z ^ 2 * x
 
-theorem cyclicForm_cyclic (x y z : ℤ) :
+theorem cyclicForm_cyclic (x y z : $\mathbb{Z}$) :
     cyclicForm y z x = cyclicForm x y z := by
   unfold cyclicForm; ring
 \end{lstlisting}
@@ -930,27 +933,27 @@ theorem sol_34453_m3916 :
     cyclicForm 34453 (-3916) 11395 = 1 := by norm_num [cyclicForm]
 
 -- Closed proof for all N < 11395
-theorem solutions_unbounded_z_bounded (N : ℤ) (hN : N < 11395) :
-    ∃ x y z : ℤ, cyclicForm x y z = 1 ∧ N < z :=
-  ⟨34453, -3916, 11395, sol_34453_m3916, hN⟩
+theorem solutions_unbounded_z_bounded (N : $\mathbb{Z}$) (hN : N < 11395) :
+    $\exists$ x y z : $\mathbb{Z}$, cyclicForm x y z = 1 $\wedge$ N < z :=
+  $\langle$34453, -3916, 11395, sol_34453_m3916, hN$\rangle$
 \end{lstlisting}
 
 \noindent\textbf{The residual sorry (scope precisely isolated):}
 \begin{lstlisting}[language=Lean4]
-/-- Residual: for N ≥ 11395 a solution with z > N exists.
-    No sorry-free proof is currently available; see §8.3. -/
-theorem solutions_unbounded_z_large (N : ℤ) (hN : 11395 ≤ N) :
-    ∃ x y z : ℤ, cyclicForm x y z = 1 ∧ N < z := by
+/-- Residual: for N >= 11395 a solution with z > N exists.
+    No sorry-free proof is currently available; see Sec. 8.3. -/
+theorem solutions_unbounded_z_large (N : $\mathbb{Z}$) (hN : 11395 $\leq$ N) :
+    $\exists$ x y z : $\mathbb{Z}$, cyclicForm x y z = 1 $\wedge$ N < z := by
   sorry
 \end{lstlisting}
 
 \noindent\textbf{Combining both cases:}
 \begin{lstlisting}[language=Lean4]
-theorem solutions_unbounded_z (N : ℤ) :
-    ∃ x y z : ℤ, cyclicForm x y z = 1 ∧ N < z := by
+theorem solutions_unbounded_z (N : $\mathbb{Z}$) :
+    $\exists$ x y z : $\mathbb{Z}$, cyclicForm x y z = 1 $\wedge$ N < z := by
   by_cases hN : N < 11395
-  · exact solutions_unbounded_z_bounded N hN
-  · exact solutions_unbounded_z_large N (le_of_not_gt hN)
+  $\cdot$ exact solutions_unbounded_z_bounded N hN
+  $\cdot$ exact solutions_unbounded_z_large N (le_of_not_gt hN)
 \end{lstlisting}
 
 % ════════════════════════════════════════════════════════════════════════════
