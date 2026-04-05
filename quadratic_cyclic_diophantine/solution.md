@@ -1,4 +1,4 @@
-# Solution to x^2 \cdot y + y^2 \cdot z + z^2 \cdot x = 1
+# Solution to $x^2 \cdot y + y^2 \cdot z + z^2 \cdot x = 1$
 
 ## All integer solutions
 
