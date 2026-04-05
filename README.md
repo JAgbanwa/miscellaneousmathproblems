@@ -458,6 +458,64 @@ The single axiom `chabauty_coleman_surface` encodes the fact (computationally ve
 
 ---
 
+### [`diophantine-x5y4-2z2/`](diophantine-x5y4-2z2/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$x^5 + y^4 = 2z^2$$
+
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-x5y4-2z2/brute_force_search.py) — Pure Python exhaustive search over $|x|, |y| \leq 200$; identifies members of the parametric family $(t^4, t^5, t^{10})$, the secondary family $(2m^2, 0, 4m^5)$, and other isolated solutions.
+- [`analysis_notes.md`](diophantine-x5y4-2z2/analysis_notes.md) — Full mathematical write-up: derivation of the parametric family via weighted homogeneity, the explicit solution table, secondary families, infinitude argument, and modular constraints.
+- [`InfinitelyManySolutions.lean`](diophantine-x5y4-2z2/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation of the infinitude theorem. **Sorry count: 0.**
+- [`solution.tex`](diophantine-x5y4-2z2/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Seed solution.** The triple $(1, 1, 1)$ satisfies $1^5 + 1^4 = 2 = 2 \cdot 1^2$.
+- **Weighted homogeneity.** Assigning weights $\mathrm{wt}(x) = 4$, $\mathrm{wt}(y) = 5$, $\mathrm{wt}(z) = 10$, every monomial has the same weighted degree 20. Hence if $(x, y, z)$ is a solution, so is $(t^4 x,\, t^5 y,\, t^{10} z)$ for any $t \in \mathbb{Z}$.
+- **Parametric family.** Scaling the seed gives $(t^4, t^5, t^{10})$ for all $t \in \mathbb{Z}$. Verification: $(t^4)^5 + (t^5)^4 = t^{20} + t^{20} = 2t^{20} = 2(t^{10})^2$.
+- **Infinitude.** The map $t \mapsto t^4$ is strictly increasing on $\mathbb{N}_0$, so distinct non-negative $t$ give distinct solutions.
+- **Secondary family.** Setting $y = 0$ gives the family $(2m^2, 0, 4m^5)$ for $m \in \mathbb{Z}$.
+
+**Key structural facts:**
+- The equation is a **weighted projective hypersurface** in $\mathbb{P}^2_{(4,5,10)}$ of weighted degree 20.
+- Unlike the other Diophantine equations in this repository (which have genus $\geq 2$ and hence finite rational point sets by Faltings' theorem), this equation defines a rational curve parametrised by $(t^4, t^5, t^{10})$, so infinitely many solutions are expected.
+- **Parity constraint:** Any integer solution has $x \equiv y \pmod{2}$ (both even or both odd), since $x^5 + y^4 \equiv 0 \pmod{2}$.
+- No modular obstruction exists (consistent with the existence of solutions modulo every prime).
+
+**Proof status:**
+
+| Component | Status | Method |
+|-----------|--------|--------|
+| Seed solution $(1, 1, 1)$ | ✓ Complete | Direct substitution |
+| Parametric family $(t^4, t^5, t^{10})$ verified | ✓ Complete | `ring` identity |
+| Infinitely many distinct solutions | ✓ Complete | Strict monotonicity of $n^4$ on $\mathbb{N}$ |
+| Lean 4 formalisation (0 sorry) | ✓ **Complete** | Mathlib tactics |
+| Full classification of all solutions | Open | Weighted projective geometry |
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](diophantine-x5y4-2z2/InfinitelyManySolutions.lean):**
+
+Built as library `DiophantineX5Y4Z2` against Mathlib v4.21.0
+(`lake exe cache get && lake build DiophantineX5Y4Z2`). **Axiom count: 0, Sorry count: 0.**
+
+| Lean name | Statement | Proof method |
+|-----------|-----------|--------------|
+| `parametric_solution` | $(t^4)^5 + (t^5)^4 = 2(t^{10})^2$ for all $t : \mathbb{Z}$ | `ring` |
+| `sol_1_1_1` | $(1, 1, 1)$ is a solution | `norm_num` |
+| `sol_2_0_4` | $(2, 0, 4)$ is a solution | `norm_num` |
+| `natMap_mem` | Every $(n^4, n^5, n^{10})$, $n : \mathbb{N}$, is a solution | `push_cast`, `ring` |
+| `pow4_strictMono` | $n \mapsto n^4$ is strictly monotone on $\mathbb{N}$ | `Nat.pow_lt_pow_left` |
+| `natMap_injective` | $n \mapsto (n^4, n^5, n^{10})$ is injective | `pow4_strictMono.injective` |
+| `solutions_infinite` | The solution set is infinite | `Set.infinite_range_of_injective` |
+
+The proof is entirely elementary: equation verification by `ring`, injectivity by Nat monotonicity, and infinitude by a standard Mathlib utility — no axioms, no sorries.
+
+**Result:** The equation $x^5 + y^4 = 2z^2$ has **infinitely many** integer solutions. The primary parametric family is $(x, y, z) = (t^4, t^5, t^{10})$ for $t \in \mathbb{Z}$. This is the first entry in this repository where the result is a **complete, unconditional Lean 4 proof with zero sorry and zero additional axioms**.
+
+---
+
 ### [`quadratic_cyclic_diophantine/`](quadratic_cyclic_diophantine/)
 
 **Problem:** Determine all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
