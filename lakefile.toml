@@ -25,6 +25,11 @@ name = "DiophantineY3xyX4"
 srcDir = "diophantine-y3xy-x4"
 roots = ["NonExistenceProof"]
 
+[[lean_lib]]
+name = "QuadraticCyclicDiophantine"
+srcDir = "quadratic_cyclic_diophantine"
+roots = ["InfinitelyManySolutions"]
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
