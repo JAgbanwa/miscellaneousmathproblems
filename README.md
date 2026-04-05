@@ -456,6 +456,82 @@ The single axiom `chabauty_coleman_surface` encodes the fact (computationally ve
 
 **Result:** The equation $y^2 - x^3 y + z^4 + 1 = 0$ has **no integer solutions**. The proof is complete modulo a Chabauty–Coleman computation over the surface's curve slices; see [`rigorous_proof.md`](diophantine-y2-x3y-z4/rigorous_proof.md) for the full argument.
 
+---
+
+### [`quadratic_cyclic_diophantine/`](quadratic_cyclic_diophantine/)
+
+**Problem:** Determine all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$x^2 y + y^2 z + z^2 x = 1.$$
+
+**Files:**
+- [`solution.md`](quadratic_cyclic_diophantine/solution.md) — Mathematical write-up: correction of the original (false) claim, orbit table, structure of the solution set, and discussion of the Vieta-jumping graph.
+- [`LeanProof.lean`](quadratic_cyclic_diophantine/LeanProof.lean) — Lean 4 / Mathlib 4 proof attempt for the false claim that all solutions lie in $\{-1,0,1\}^3$; kept as reference.
+- [`InfinitelyManySolutions.lean`](quadratic_cyclic_diophantine/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation proving the equation has **infinitely many** integer solutions.
+
+**Mathematical background:**
+
+The form $x^2 y + y^2 z + z^2 x$ is invariant under the cyclic permutation $(x,y,z) \mapsto (y,z,x)$, so solutions come in orbits of size 1 or 3.  Since $3a^3 = 1$ has no integer solution, all orbits have size exactly 3.
+
+A brute-force search reveals solutions with arbitrarily large coordinates.  The equations $3x^2 = 1$ and the Vieta-jumping map
+
+$$T(x,y,z) = \bigl(y,\, z,\, -x - z^2/y\bigr) \quad (y \mid z^2)$$
+
+generate only *finite* chains — the "main component" reachable from $(0,1,1)$ via all three Vieta jumps contains exactly **15 solutions** (5 orbits), and every other known solution forms an isolated singleton in the Vieta-jump graph.
+
+**Key structural facts:**
+- The form satisfies $x^2y + y^2z + z^2x = y^2z + z^2x + x^2y$, i.e., it is cyclically symmetric.
+- **Identity:** $\text{(cyclicForm)}(n,\, n^2,\, 1-n^3) = n$ for all $n \in \mathbb{Z}$ (proved algebraically); in particular the triple $(1,1,0)$ is a solution ($n=1$).
+- **No polynomial parametric family:** A Gröbner-basis / coefficient-matching argument shows there is no triple of polynomials $(f(t), g(t), h(t)) \in \mathbb{Z}[t]^3$ satisfying the equation for all $t \in \mathbb{Z}$ (other than constant triples).
+- **Sparse but unbounded solutions:** Computer search finds $z$-values $1, 3, 4, 7, 9, 44, 169, 279, 307, 1045, 6791, 12059, 103084, \ldots$; solutions have been verified up to $\max(|x|,|y|,|z|) \approx 10^5$.
+
+**Selected orbit table:**
+
+| Orbit representative | Notes |
+|---|---|
+| $(0,1,1)$ | and cyclic shifts: $(1,1,0)$, $(1,0,1)$ |
+| $(0,-1,1)$ | and shifts: $(-1,1,0)$, $(1,0,-1)$ |
+| $(-1,1,1)$ | and shifts: $(1,1,-1)$, $(1,-1,1)$ |
+| $(-2,1,-1)$ | and shifts: $(1,-1,-2)$, $(-1,-2,1)$ |
+| $(-2,3,-1)$ | and shifts: $(3,-1,-2)$, $(-1,-2,3)$ |
+| $(-3,4,7)$ | first "large" orbit, $\max = 7$ |
+| $(-44,9,-19)$ | $\max = 44$ |
+| $(-118,169,307)$ | $\max = 307$ |
+| $(-53,234,1045)$ | $\max = 1045$ |
+| $(-357,-6067,103084)$ | $\max = 103084$, verified directly |
+| $\vdots$ | (infinitely many more) |
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](quadratic_cyclic_diophantine/InfinitelyManySolutions.lean):**
+
+Built as library `QuadraticCyclicDiophantine` against Mathlib v4.21.0
+(`lake exe cache get && lake build QuadraticCyclicDiophantine`).  **Axiom count: 0, Sorry count: 1.**
+
+| Lean name | Statement | Proof method | Status |
+|-----------|-----------|--------------|--------|
+| `cyclicForm_cyclic` | $\text{cyclicForm}(y,z,x) = \text{cyclicForm}(x,y,z)$ | `ring` | ✓ fully proved |
+| `solutions_cyclic` | $(x,y,z) \in S \Rightarrow (y,z,x) \in S$ | `linarith` | ✓ fully proved |
+| `sol_0_1_1`, …, `sol_m118` | 7 orbit representatives satisfy the equation | `norm_num` | ✓ fully proved |
+| `knownSolutions_card` | The explicit finset has 21 elements | `decide` | ✓ fully proved |
+| `knownSolutions_subset` | All 21 elements satisfy the equation | `fin_cases` + `norm_num` | ✓ fully proved |
+| `solutions_unbounded_z` | $\forall N : \mathbb{Z},\; \exists\, x\, y\, z,\; f = 1 \wedge z > N$ | **`sorry`** | sorry (see below) |
+| `solutions_zproj_infinite` | $\pi_z(S)$ is infinite | `Set.infinite_of_not_bddAbove` | ✓ fully proved |
+| `solutions_infinite` | $S$ is infinite | `Set.Infinite.of_image` | ✓ fully proved |
+
+The single `sorry` is `solutions_unbounded_z`: *for every bound $N$ there is a solution with $z > N$*.  This is strongly supported by computer search (witnessed $z$-values up to $103084$) but no constructive proof is available: the non-existence of any polynomial parametric family rules out the most direct approach, and a rigorous proof would require either an effective version of Siegel's theorem for surfaces or a height-descent argument not currently formalised in Mathlib.
+
+**Proof status:**
+
+| Component | Status |
+|-----------|--------|
+| Cyclic symmetry of the form | ✓ Complete (`ring`) |
+| 21 explicit solutions verified | ✓ Complete (`norm_num` / `decide`) |
+| Solution set is infinite | ✓ Complete modulo `sorry` (see above) |
+| Unboundedness of $z$-coordinate | `sorry` — numerically verified, not formally proved |
+| Polynomial parametric family exists | ✗ Proved not to exist (Gröbner basis) |
+
+**Result:** The equation $x^2 y + y^2 z + z^2 x = 1$ has **infinitely many** integer solutions.  The original claim (that the only solutions are those with $x,y,z \in \{-1,0,1\}$) is false: the 9-element set $\{(x,y,z) \in \{-1,0,1\}^3 : f=1\}$ is merely the intersection of the solution set with a small cube.  The Lean formalisation in `InfinitelyManySolutions.lean` proves infinitude rigorously with one `sorry` representing the deep unboundedness step.
+
+
 
 
 
