@@ -66,7 +66,6 @@ def natMap (n : ℕ) : ℤ × ℤ × ℤ := ((n : ℤ) ^ 4, (n : ℤ) ^ 5, (n : 
 /-- Every element of the parametric family is a solution. -/
 theorem natMap_mem (n : ℕ) : natMap n ∈ solutions := by
   simp only [solutions, Set.mem_setOf_eq, isolution, natMap]
-  push_cast
   ring
 
 /-- The map `n ↦ n^4` is strictly monotone on `ℕ`. -/
@@ -84,6 +83,6 @@ theorem natMap_injective : Function.Injective natMap := by
 
 /-- The solution set of `x^5 + y^4 = 2*z^2` is infinite. -/
 theorem solutions_infinite : solutions.Infinite := by
-  apply Set.Infinite.mono (Set.infinite_range_of_injective natMap_injective)
+  apply (Set.infinite_range_of_injective natMap_injective).mono
   rintro _ ⟨n, rfl⟩
   exact natMap_mem n
