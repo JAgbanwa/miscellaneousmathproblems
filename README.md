@@ -668,6 +668,47 @@ The single `sorry` is now precisely isolated in `solutions_unbounded_z_large` (t
 
 **Result:** The equation $x^2 y + y^2 z + z^2 x = 1$ has **infinitely many** integer solutions.  The original claim (that the only solutions are those with $x,y,z \in \{-1,0,1\}$) is false: the 9-element set $\{(x,y,z) \in \{-1,0,1\}^3 : f=1\}$ is merely the intersection of the solution set with a small cube.  The Lean formalisation in `InfinitelyManySolutions.lean` proves infinitude rigorously; the single remaining `sorry` (the large-$N$ unboundedness case) is tightly scoped with a detailed explanation of why it is hard to eliminate.
 
+---
+
+### [`diophantine-x5y4plus3z2-zero/`](diophantine-x5y4plus3z2-zero/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$x^5 + y^4 + 3z^2 = 0$$
+
+**Files:**
+- [`brute_force_search.py`](diophantine-x5y4plus3z2-zero/brute_force_search.py) — Pure Python exhaustive search over $|x|, |y| \leq 200$; verifies all three parametric families and finds 77 solutions (21 primitive seeds).
+- [`analysis_notes.md`](diophantine-x5y4plus3z2-zero/analysis_notes.md) — Full mathematical write-up: sign constraint, derivation of three parametric families, explicit solution tables, proof of infinitude, modular analysis.
+- [`InfinitelyManySolutions.lean`](diophantine-x5y4plus3z2-zero/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation. **Sorry count: 0. Axiom count: 0.**
+- [`solution.tex`](diophantine-x5y4plus3z2-zero/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Sign constraint.** Since $y^4 \geq 0$ and $3z^2 \geq 0$, the equation forces $x \leq 0$. Writing $x = -a$ ($a \geq 0$) converts it to $y^4 + 3z^2 = a^5$.
+- **Family 1** (complete for $z=0$): $x = -n^4$, $y = \pm n^5$, $z = 0$ for all $n \in \mathbb{Z}$. Proof: $(-n^4)^5 + (n^5)^4 = -n^{20} + n^{20} = 0$.
+- **Family 2** (complete for $y=0$): $x = -3k^2$, $y = 0$, $z = \pm 9k^5$ for all $k \in \mathbb{Z}$. Derived by writing $x = -3k^2$ so $x^5 = -3(9k^5)^2$. Proof: $(-3k^2)^5 + 3(9k^5)^2 = -243k^{10} + 243k^{10} = 0$.
+- **Family 3** (weighted homogeneity seed): $x = -4t^4$, $y = \pm 4t^5$, $z = \pm 16t^{10}$ for all $t \in \mathbb{Z}$, from seed $(-4, 4, 16)$. Proof: $-1024t^{20} + 256t^{20} + 768t^{20} = 0$.
+- **Infinitude.** The map $n \mapsto (-n^4, n^5, 0)$ is injective on $\mathbb{N}$ (strict monotonicity of $n^4$).
+
+**Key structural facts:**
+- Equation is weighted-homogeneous of degree 20 (weights $\mathrm{wt}(x)=4$, $\mathrm{wt}(y)=5$, $\mathrm{wt}(z)=10$).
+- Brute-force search finds 21 primitive seeds within $|x| \leq 200$; the three families above are the simplest.
+- Mod 3: either $3 \mid x$ and $3 \mid y$, or $x \equiv 2 \pmod{3}$ and $3 \nmid y$. No modular obstruction.
+
+**Result:** The equation $x^5 + y^4 + 3z^2 = 0$ has **infinitely many** integer solutions. Three explicit infinite parametric families are $(-n^4, \pm n^5, 0)$, $(-3k^2, 0, \pm 9k^5)$, and $(-4t^4, \pm 4t^5, \pm 16t^{10})$. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-x5y4plus3z2-zero/InfinitelyManySolutions.lean).
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](diophantine-x5y4plus3z2-zero/InfinitelyManySolutions.lean):**
+
+Built as library `DiophantineX5Y43Z2Zero` against Mathlib v4.21.0
+(`lake exe cache get && lake build DiophantineX5Y43Z2Zero`). **Axiom count: 0, Sorry count: 0.**
+
+| Lean name | Statement | Proof method |
+|-----------|-----------|--------------|
+| `family1 n` | $(-n^4)^5 + (n^5)^4 + 3\cdot 0^2 = 0$ | `ring` |
+| `family2 k` | $(-3k^2)^5 + 0 + 3(9k^5)^2 = 0$ | `ring` |
+| `family3 t` | $(-4t^4)^5 + (4t^5)^4 + 3(16t^{10})^2 = 0$ | `ring` |
+| `natMap_injective` | $n \mapsto (-n^4, n^5, 0)$ injective | `neg_inj.mp` + `pow4_strictMono` |
+| `solutions_infinite` | Solution set infinite | `Set.infinite_range_of_injective` |
+
 
 
 
