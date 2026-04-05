@@ -1,0 +1,361 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+
+\geometry{margin=2.5cm}
+\setlength{\headheight}{13.60001pt}
+\addtolength{\topmargin}{-1.60001pt}
+
+% ── Theorem environments ─────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% ── Code listings ────────────────────────────────────────────────────────────
+\definecolor{codegray}{rgb}{0.96,0.96,0.96}
+\definecolor{codeblue}{rgb}{0.1,0.2,0.6}
+\definecolor{codegreencomment}{rgb}{0.13,0.55,0.13}
+
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegreencomment}\itshape,
+  breaklines=true,
+  frame=single,
+  framerule=0pt,
+  rulecolor=\color{gray!30},
+  xleftmargin=6pt, xrightmargin=6pt,
+}
+
+\lstdefinelanguage{Lean4}{
+  keywords={theorem,lemma,def,axiom,by,have,obtain,exact,intro,rw,push_cast,
+            ring,decide,linarith,nlinarith,rcases,calc,simp,fin_cases,revert,
+            import,where,fun,if,then,else,let,in,match,with,show,apply,refine,
+            constructor,left,right,norm_num,norm_cast,exact_mod_cast,
+            unfold,push_neg,omega,Set,Finset,open,use,private,rintro,mul_left_cancel₀},
+  sensitive=true,
+  morecomment=[l]{--},
+  morecomment=[s]{/-}{-/},
+  morestring=[b]",
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegreencomment}\itshape,
+}
+
+% ── Macros ───────────────────────────────────────────────────────────────────
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+
+% ── Header / Footer ──────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\thepage}
+\lhead{\small Infinitely Many Solutions to $x^5 + y^4 = 3z^2$}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Title ────────────────────────────────────────────────────────────────────
+\title{%
+  \Large\bfseries Infinitely Many Integer Solutions to\\[6pt]
+  \Huge $x^5 + y^4 = 3z^2$\\[10pt]
+  \large Complete Analysis with Lean~4 Formalisation
+}
+\author{%
+  \normalsize Verified in Lean~4 / Mathlib~4 (v4.21.0)\\[2pt]
+  \normalsize Repository: \href{https://github.com/JAgbanwa/miscellaneousmathproblems}%
+    {\texttt{JAgbanwa/miscellaneousmathproblems}}
+}
+\date{\normalsize April 2026}
+
+% ════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Statement and Main Result}\label{sec:intro}
+
+\subsection{The equation}
+
+We study the Diophantine equation
+\begin{equation}\label{eq:main}
+  x^5 + y^4 = 3z^2, \qquad (x,y,z)\in\Z^3. \tag{$\star$}
+\end{equation}
+
+\subsection{Main theorem}
+
+\begin{theorem}[Main result]\label{thm:main}
+  The equation $x^5 + y^4 = 3z^2$ has \textbf{infinitely many} integer solutions.
+  In particular, the primary parametric family
+  \begin{equation}\label{eq:family1}
+    (x, y, z) = \bigl(3a^2,\; 0,\; 9a^5\bigr), \qquad a \in \Z,
+  \end{equation}
+  provides infinitely many distinct integer solutions.
+\end{theorem}
+
+The proof is elementary: it requires only a \texttt{ring} computation to verify
+the family~\eqref{eq:family1} and a strict-monotonicity argument to establish
+that distinct non-negative~$a$ yield distinct solutions.
+See Section~\ref{sec:proof} for the complete proof and Section~\ref{sec:lean}
+for the Lean~4 formalisation.
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Derivation of the Parametric Families}\label{sec:derivation}
+
+\subsection{Primary family via $y = 0$}\label{sec:primary}
+
+Setting $y = 0$ reduces~\eqref{eq:main} to
+\begin{equation}\label{eq:y0}
+  x^5 = 3z^2.
+\end{equation}
+We seek integer solutions to \eqref{eq:y0}.  Write $x = 3a^2$ for $a \in \Z$:
+\[
+  x^5 = (3a^2)^5 = 3^5 a^{10} = 243 a^{10}.
+\]
+Then $3z^2 = 243a^{10}$ gives $z^2 = 81a^{10} = (9a^5)^2$, so $z = \pm 9a^5$. 
+Choosing $z = 9a^5$ (the sign can always be absorbed into $a$), we obtain
+\[
+  (x, y, z) = (3a^2,\; 0,\; 9a^5), \qquad a \in \Z.
+\]
+
+\begin{lemma}[Primary family verification]\label{lem:primary}
+  For every $a \in \Z$:
+  \[
+    (3a^2)^5 + 0^4 = 3 \cdot (9a^5)^2.
+  \]
+\end{lemma}
+\begin{proof}
+  $(3a^2)^5 = 3^5 a^{10} = 243 a^{10}$ and $3(9a^5)^2 = 3 \cdot 81 a^{10} = 243 a^{10}$. \qed
+\end{proof}
+
+The explicit table of small solutions from this family is:
+
+\begin{center}
+\begin{tabular}{rrrrl}
+  \toprule
+  $a$ & $x = 3a^2$ & $y$ & $z = 9a^5$ & Check\\
+  \midrule
+  $0$  & $0$   & $0$ & $0$       & $0=0$ \\
+  $1$  & $3$   & $0$ & $9$       & $243 = 3\cdot81$ \\
+  $-1$ & $3$   & $0$ & $-9$      & $243 = 3\cdot81$ \\
+  $2$  & $12$  & $0$ & $288$     & $248832 = 3\cdot82944$ \\
+  $-2$ & $12$  & $0$ & $-288$    & same \\
+  $3$  & $27$  & $0$ & $2187$    & $14348907 = 3\cdot4782969$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Secondary family via weighted homogeneity}\label{sec:secondary}
+
+The equation $x^5 + y^4 = 3z^2$ is invariant under the \emph{weighted scaling}
+\[
+  (x, y, z) \;\longmapsto\; (t^4\, x,\; t^5\, y,\; t^{10}\, z), \qquad t \in \Z.
+\]
+This follows from the \emph{weight assignment}
+\[
+  \mathrm{wt}(x) = 4,\quad \mathrm{wt}(y) = 5, \quad \mathrm{wt}(z) = 10,
+\]
+under which every monomial carries the same degree 20:
+\[
+  \mathrm{wt}(x^5) = 20, \quad \mathrm{wt}(y^4) = 20, \quad \mathrm{wt}(3z^2) = 20.
+\]
+Consequently, if $(x_0, y_0, z_0)$ is a solution, so is $(t^4 x_0, t^5 y_0, t^{10} z_0)$ for all $t \in \Z$.
+
+\medskip
+The triple $(2, 2, 4)$ is a seed solution: $2^5 + 2^4 = 32 + 16 = 48 = 3 \cdot 16 = 3 \cdot 4^2$. Applying the scaling gives:
+\begin{equation}\label{eq:family2}
+  (x, y, z) = \bigl(2t^4,\; 2t^5,\; 4t^{10}\bigr), \qquad t \in \Z.
+\end{equation}
+
+\begin{lemma}[Secondary family verification]\label{lem:secondary}
+  For every $t \in \Z$:
+  \[
+    (2t^4)^5 + (2t^5)^4 = 3 \cdot (4t^{10})^2.
+  \]
+\end{lemma}
+\begin{proof}
+  $(2t^4)^5 + (2t^5)^4 = 32t^{20} + 16t^{20} = 48t^{20} = 3 \cdot 16 t^{20} = 3(4t^{10})^2$. \qed
+\end{proof}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Proof of Infinitely Many Solutions}\label{sec:proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+  By Lemma~\ref{lem:primary}, every triple $(3a^2, 0, 9a^5)$ with $a \in \Z$ is a solution to~\eqref{eq:main}.
+
+  It remains to show these are pairwise distinct.  Restricting to $a \in \N$
+  (non-negative integers), the first component $x = 3a^2$ is a strictly
+  increasing function of $a$:
+  \[
+    0 \leq a_1 < a_2 \;\Longrightarrow\; a_1^2 < a_2^2 \;\Longrightarrow\; 3a_1^2 < 3a_2^2.
+  \]
+  Thus for $a_1 \neq a_2$ in $\N$, the triples $(3a_1^2, 0, 9a_1^5)$ and $(3a_2^2, 0, 9a_2^5)$ have different $x$-coordinates and hence are distinct elements of $\Z^3$.
+
+  Since the map $\N \to \Z^3$, $a \mapsto (3a^2, 0, 9a^5)$, is injective and its image lies in the solution set, the solution set is infinite.
+\end{proof}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Modular Analysis}\label{sec:modular}
+
+\subsection{Mod 3}
+
+By Fermat's little theorem, $x^5 \equiv x \pmod{3}$ and $y^4 \equiv y \pmod{3}$
+(for $y \not\equiv 0$) or $y^4 \equiv 0$ (for $3 \mid y$).
+Since $3z^2 \equiv 0 \pmod 3$, the equation mod 3 reduces to
+\[
+  x + y^4\bmod{3} \equiv 0 \pmod{3}.
+\]
+Two compatible cases arise:
+\begin{enumerate}
+  \item $3 \mid x$ and $3 \mid y$ (e.g., the primary family, since $x = 3a^2$), or
+  \item $x \equiv 2 \pmod{3}$ and $3 \nmid y$ (e.g., the secondary family at $t=1$: $x = 2 \equiv 2$, $y = 2 \not\equiv 0$).
+\end{enumerate}
+No mod-3 obstruction to solutions.
+
+\subsection{Parity}
+
+$3z^2$ is odd iff $z$ is odd.  For $x^5 + y^4$: $y^4$ is even iff $y$ is even,
+and $x^5 \equiv x \pmod{2}$.  Both parities are compatible (e.g., $x$ and $z$ both odd,
+$y$ even in the primary family).  No parity obstruction.
+
+\subsection{Summary}
+
+No congruence obstruction prevents integer solutions.  This is consistent with the
+existence of the two infinite parametric families above, and with the fact that the
+equation has $\mathbb{F}_p$-points for every prime $p$ (verified computationally by
+\texttt{brute\_force\_search.py}).
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Geometric Structure}\label{sec:geometry}
+
+The equation $x^5 + y^4 = 3z^2$ defines a \emph{weighted projective hypersurface}
+\[
+  V \;\subset\; \mathbb{P}^2_{(4,5,10)}
+\]
+of weighted degree 20 in weighted projective space with weights $(4, 5, 10)$.  The affine
+piece at $z=1$ is the surface $x^5 + y^4 = 3$.
+
+Two explicit rational curves are embedded in $V$:
+\begin{itemize}
+  \item $C_1 \colon a \mapsto [3a^2 : 0 : 9a^5]$ (the primary family), which is a rational curve.
+  \item $C_2 \colon t \mapsto [2t^4 : 2t^5 : 4t^{10}]$ (the secondary family), which is also rational.
+\end{itemize}
+
+Both curves are explicitly parametrised by $\mathbb{P}^1$, confirming that $V$ contains
+rational curves and in particular has a Zariski-dense set of rational points
+(infinitely many integer points on each curve).
+
+This contrasts with the other Diophantine equations in this repository (for example,
+$y^3 - x^4 = 0$ or $y^3 + xy + x^4 + 4 = 0$), which define algebraic curves of genus
+$\geq 2$ and hence have only \emph{finitely} many rational points by Faltings' theorem.
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Lean~4 Formalisation}\label{sec:lean}
+
+The file \texttt{InfinitelyManySolutions.lean} contains a complete Lean~4 / Mathlib~4
+proof of Theorem~\ref{thm:main} with \textbf{zero \texttt{sorry} and zero additional axioms}.
+
+\subsection{Summary of the formalisation}
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  Lean name & Statement & Method \\
+  \midrule
+  \texttt{parametric\_solution} & $(3a^2)^5 + 0^4 = 3(9a^5)^2$ for all $a:\Z$ & \texttt{ring} \\
+  \texttt{parametric\_solution2} & $(2t^4)^5 + (2t^5)^4 = 3(4t^{10})^2$ for all $t:\Z$ & \texttt{ring} \\
+  \texttt{sol\_3\_0\_9} & $(3, 0, 9)$ is a solution & \texttt{norm\_num} \\
+  \texttt{sol\_2\_2\_4} & $(2, 2, 4)$ is a solution & \texttt{norm\_num} \\
+  \texttt{natMap\_mem} & Every $(3n^2, 0, 9n^5)$, $n:\N$, is a solution & \texttt{ring} \\
+  \texttt{pow2\_strictMono} & $n \mapsto n^2$ is strictly monotone on $\N$ & \texttt{Nat.pow\_lt\_pow\_left} \\
+  \texttt{natMap\_injective} & $n \mapsto (3n^2, 0, 9n^5)$ is injective & \texttt{mul\_left\_cancel\textsubscript{0}} \\
+  \texttt{solutions\_infinite} & The solution set is infinite & \texttt{Set.infinite\_range\_of\_injective} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Key Lean code excerpts}
+
+\begin{lstlisting}[language=Lean4,caption={The equation and primary family verification}]
+def isolution (x y z : Z) : Prop := x ^ 5 + y ^ 4 = 3 * z ^ 2
+
+theorem parametric_solution (a : Z) :
+    isolution (3 * a ^ 2) 0 (9 * a ^ 5) := by
+  unfold isolution; ring
+\end{lstlisting}
+
+\begin{lstlisting}[language=Lean4,caption={Injectivity and infinitude}]
+private theorem pow2_strictMono : StrictMono (fun n : N => n ^ 2) := by
+  intro a b hab; exact Nat.pow_lt_pow_left hab (by norm_num)
+
+theorem natMap_injective : Function.Injective natMap := by
+  intro n1 n2 h
+  simp only [natMap, Prod.mk.injEq] at h
+  have h2 : (n1 : Z) ^ 2 = (n2 : Z) ^ 2 :=
+    mul_left_cancel0 (by norm_num : (3 : Z) = 0) h.1
+  have h3 : n1 ^ 2 = n2 ^ 2 := by exact_mod_cast h2
+  exact pow2_strictMono.injective h3
+
+theorem solutions_infinite : solutions.Infinite := by
+  apply (Set.infinite_range_of_injective natMap_injective).mono
+  rintro _ (n, rfl); exact natMap_mem n
+\end{lstlisting}
+
+\subsection{Build instructions}
+
+The file is part of the Lake package in the repository root.  To verify:
+\begin{lstlisting}[language=bash]
+lake exe cache get
+lake build
+\end{lstlisting}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Summary and Proof Status}\label{sec:summary}
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  Component & Status & Method \\
+  \midrule
+  Seed solution $(3, 0, 9)$ & \checkmark\ Complete & Direct substitution \\
+  Primary family $(3a^2, 0, 9a^5)$ verified & \checkmark\ Complete & \texttt{ring} identity \\
+  Secondary family $(2t^4, 2t^5, 4t^{10})$ verified & \checkmark\ Complete & \texttt{ring} identity \\
+  Infinitely many distinct solutions & \checkmark\ Complete & Strict monotonicity of $n^2$ on $\N$ \\
+  Lean~4 formalisation (0 sorry) & \checkmark\ \textbf{Complete} & Mathlib tactics \\
+  Full classification of all solutions & Open & Weighted projective geometry \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{theorem}[Final result]
+  The Diophantine equation $x^5 + y^4 = 3z^2$ has \textbf{infinitely many} integer
+  solutions.  The primary parametric family is
+  \[
+    (x, y, z) = (3a^2,\; 0,\; 9a^5), \qquad a \in \Z.
+  \]
+  A complete, unconditional Lean~4 proof with zero \texttt{sorry} and zero additional
+  axioms is given in \texttt{InfinitelyManySolutions.lean}.
+\end{theorem}
+
+\end{document}

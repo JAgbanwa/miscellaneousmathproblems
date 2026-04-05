@@ -516,6 +516,75 @@ The proof is entirely elementary: equation verification by `ring`, injectivity b
 
 ---
 
+### [`diophantine-x5y4-3z2/`](diophantine-x5y4-3z2/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$x^5 + y^4 = 3z^2$$
+
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-x5y4-3z2/brute_force_search.py) — Pure Python exhaustive search over $|x|, |y| \leq 200$; identifies members of the primary family $(3a^2, 0, 9a^5)$, the secondary family $(2t^4, 2t^5, 4t^{10})$, and further isolated solutions.
+- [`analysis_notes.md`](diophantine-x5y4-3z2/analysis_notes.md) — Full mathematical write-up: derivation of both parametric families, the explicit solution table, infinitude argument, modular analysis, and geometric structure.
+- [`InfinitelyManySolutions.lean`](diophantine-x5y4-3z2/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation of the infinitude theorem. **Sorry count: 0.**
+- [`solution.tex`](diophantine-x5y4-3z2/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Primary family.** Setting $y = 0$ reduces the equation to $x^5 = 3z^2$.  Taking $x = 3a^2$ gives $x^5 = 3^5 a^{10} = 243 a^{10}$, and $3z^2 = 243a^{10}$ yields $z = \pm 9a^5$.  Hence $(3a^2, 0, 9a^5)$ is a solution for all $a \in \mathbb{Z}$.
+- **Secondary family.** The triple $(2, 2, 4)$ is a seed solution: $2^5 + 2^4 = 48 = 3 \cdot 16$.  By weighted homogeneity (weights $\mathrm{wt}(x)=4, \mathrm{wt}(y)=5, \mathrm{wt}(z)=10$, total degree 20), the scaled family $(2t^4, 2t^5, 4t^{10})$ satisfies the equation for all $t \in \mathbb{Z}$: $(2t^4)^5 + (2t^5)^4 = 32t^{20} + 16t^{20} = 48t^{20} = 3(4t^{10})^2$.
+- **Infinitude.** The map $\mathbb{N} \to \mathbb{Z}^3$, $a \mapsto (3a^2, 0, 9a^5)$, is injective (first component $3a^2$ is strictly increasing on $\mathbb{N}$), so the solution set is infinite.
+
+**Key structural facts:**
+- The equation is a **weighted projective hypersurface** in $\mathbb{P}^2_{(4,5,10)}$ of weighted degree 20 — the same structure as $x^5 + y^4 = 2z^2$ in this repository, but with a different coefficient on the right.
+- Unlike the non-existence problems in this repository (which involve curves of genus $\geq 2$), the primary family traces a rational curve $a \mapsto (3a^2, 0, 9a^5)$ on the surface, confirming infinitely many integer points.
+- **Mod 3 constraint:** Either $3 \mid x$ and $3 \mid y$ (primary family), or $x \equiv 2 \pmod{3}$ and $3 \nmid y$ (secondary family). No modular obstruction exists.
+- **Brute-force search** over $|x|, |y| \leq 200$ finds 121 solutions (counting $\pm z$ separately), including the above families plus further sporadic solutions such as $(-4, -8, \pm 32)$, $(11, -11, \pm 242)$, and $(32, -64, \pm 4096)$.
+
+**Selected explicit solutions:**
+
+| $(x, y, z)$ | $x^5 + y^4$ | $3z^2$ | Notes |
+|---|---|---|---|
+| $(0, 0, 0)$ | $0$ | $0$ | trivial |
+| $(3, 0, \pm 9)$ | $243$ | $243$ | primary family $a=1$ |
+| $(2, \pm 2, \pm 4)$ | $48$ | $48$ | secondary family $t=1$ |
+| $(12, 0, \pm 288)$ | $248{,}832$ | $248{,}832$ | primary family $a=2$ |
+| $(27, 0, \pm 2187)$ | $14{,}348{,}907$ | $14{,}348{,}907$ | primary family $a=3$ |
+| $(-1, \pm 1, 0)$ | $0$ | $0$ | trivial $z=0$ family |
+
+**Proof status:**
+
+| Component | Status | Method |
+|-----------|--------|--------|
+| Seed solution $(3, 0, 9)$ | ✓ Complete | Direct substitution |
+| Primary family $(3a^2, 0, 9a^5)$ verified | ✓ Complete | `ring` identity |
+| Secondary family $(2t^4, 2t^5, 4t^{10})$ verified | ✓ Complete | `ring` identity |
+| Infinitely many distinct solutions | ✓ Complete | Strict monotonicity of $n^2$ on $\mathbb{N}$ |
+| Lean 4 formalisation (0 sorry) | ✓ **Complete** | Mathlib tactics |
+| Full classification of all solutions | Open | Weighted projective geometry |
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](diophantine-x5y4-3z2/InfinitelyManySolutions.lean):**
+
+Built as library against Mathlib v4.21.0
+(`lake exe cache get && lake build`). **Axiom count: 0, Sorry count: 0.**
+
+| Lean name | Statement | Proof method |
+|-----------|-----------|--------------|
+| `parametric_solution` | $(3a^2)^5 + 0^4 = 3(9a^5)^2$ for all $a:\mathbb{Z}$ | `ring` |
+| `parametric_solution2` | $(2t^4)^5 + (2t^5)^4 = 3(4t^{10})^2$ for all $t:\mathbb{Z}$ | `ring` |
+| `sol_3_0_9` | $(3, 0, 9)$ is a solution | `norm_num` |
+| `sol_2_2_4` | $(2, 2, 4)$ is a solution | `norm_num` |
+| `natMap_mem` | Every $(3n^2, 0, 9n^5)$, $n:\mathbb{N}$, is a solution | `ring` |
+| `pow2_strictMono` | $n \mapsto n^2$ is strictly monotone on $\mathbb{N}$ | `Nat.pow_lt_pow_left` |
+| `natMap_injective` | $n \mapsto (3n^2, 0, 9n^5)$ is injective | `mul_left_cancel₀` + `pow2_strictMono` |
+| `solutions_infinite` | The solution set is infinite | `Set.infinite_range_of_injective` |
+
+The proof structure mirrors the $x^5 + y^4 = 2z^2$ formalisation in this repository, with the main difference being that the primary family uses $x = 3a^2$ (rather than a pure power-of-$t$ scaling) and injectivity is established by cancelling the factor of 3 via `mul_left_cancel₀`.
+
+**Result:** The equation $x^5 + y^4 = 3z^2$ has **infinitely many** integer solutions. The primary parametric family is $(x, y, z) = (3a^2, 0, 9a^5)$ for $a \in \mathbb{Z}$.  A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-x5y4-3z2/InfinitelyManySolutions.lean).
+
+---
+
 ### [`quadratic_cyclic_diophantine/`](quadratic_cyclic_diophantine/)
 
 **Problem:** Determine all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
