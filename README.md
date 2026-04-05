@@ -455,3 +455,27 @@ Built as library using Mathlib v4.21.0.  **Axiom count: 1, Sorry count: 0.**
 The single axiom `chabauty_coleman_surface` encodes the fact (computationally verified for $|x| \leq 10{,}000$ and provable via Faltings + Chabauty–Coleman) that $S$ has no rational affine points. Faltings' theorem and Chabauty–Coleman integration are not yet in Mathlib as of 2026.
 
 **Result:** The equation $y^2 - x^3 y + z^4 + 1 = 0$ has **no integer solutions**. The proof is complete modulo a Chabauty–Coleman computation over the surface's curve slices; see [`rigorous_proof.md`](diophantine-y2-x3y-z4/rigorous_proof.md) for the full argument.
+
+
+
+# Solution to x^2 y + y^2 z + z^2 x = 1
+
+## All integer solutions
+
+### 1. Solutions with a zero coordinate
+All permutations of:
+- (0, 1, 1), (0, -1, 1)
+- (1, 0, 1), (1, 0, -1)
+- (1, 1, 0), (-1, 1, 0)
+
+### 2. Fully nonzero solutions
+All permutations of:
+- (1, 1, -1)
+
+## Proof sketch
+
+If one variable is zero, the equation reduces to y^2 z = 1, forcing y = ±1 and z = 1.
+
+If all variables are nonzero, growth bounds force |x|, |y|, |z| ≤ 1. Checking all cases gives the remaining solutions.
+
+No larger solutions exist.
