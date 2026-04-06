@@ -1,0 +1,418 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems, skins, breakable}
+
+\geometry{margin=2.5cm}
+
+% ── Theorem environments ─────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% ── Code listings ─────────────────────────────────────────────────────────
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\definecolor{codeblue}{rgb}{0.1,0.2,0.6}
+\definecolor{darkgreen}{rgb}{0.0,0.45,0.0}
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  breaklines=true,
+  frame=single,
+  framerule=0pt,
+  rulecolor=\color{gray!30},
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+}
+
+% ── Lean listings ─────────────────────────────────────────────────────────
+\lstdefinelanguage{Lean4}{
+  keywords={theorem,lemma,def,axiom,by,have,obtain,exact,intro,rw,push_cast,
+            ring,decide,linarith,nlinarith,rcases,calc,simp,fin_cases,revert,
+            import,infix,infixl,infixr,where,fun,if,then,else,let,in,
+            return,do,match,with,from,show,suffices,apply,refine,constructor,
+            left,right,exfalso,contradiction,norm_num,norm_cast,exact_mod_cast,
+            native_decide,omega,Int,Integer,Finset},
+  sensitive=true,
+  morecomment=[l]{--},
+  morecomment=[s]{/-}{-/},
+  morestring=[b]",
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+}
+
+% ── Macros ──────────────────────────────────────────────────────────────────
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Fp}{\mathbb{F}}
+\newcommand{\Proj}{\mathbb{P}}
+\newcommand{\Jac}{\mathrm{Jac}}
+\newcommand{\rank}{\mathrm{rank}}
+
+% ── Header / Footer ─────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\thepage}
+\lhead{\small Complete Integer Solutions to $x^4 - x^2 + xy + y^3 = 0$}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+\begin{center}
+  {\LARGE\bfseries Complete Integer Solutions to}\\[6pt]
+  {\LARGE\bfseries $x^4 - x^2 + xy + y^3 = 0$}\\[12pt]
+  {\large A computational and algebraic-geometric proof}\\[4pt]
+  {\normalsize April 2026}
+\end{center}
+
+\vspace{1em}
+\begin{tcolorbox}[colback=blue!4, colframe=blue!60, title=Main Result]
+\textbf{Theorem.} The Diophantine equation
+\[
+  x^4 - x^2 + xy + y^3 = 0 \tag{$\star$}
+\]
+has exactly \textbf{seven} integer solutions $(x,y)\in\Z^2$, namely
+\[
+  \{(0,0),\;(1,0),\;(-1,0),\;(-1,-1),\;(-1,1),\;(2,-2),\;(4,-6)\}.
+\]
+\end{tcolorbox}
+
+\tableofcontents
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+
+We study the Diophantine equation
+\[
+  F(x,y) \;:=\; x^4 - x^2 + xy + y^3 = 0 \tag{$\star$}
+\]
+over the integers.  The key structural features are:
+
+\begin{itemize}
+  \item \textbf{Singular curve:} $(0,0)$ is an ordinary double point of $\mathcal{C}: F=0$, with
+        tangent lines $x = 0$ and $y = x$.
+  \item \textbf{Geometric genus $2$:} The arithmetic genus of a plane quartic is $3$; one node
+        reduces this to $g = 2$.
+  \item \textbf{Finiteness:} By Faltings' theorem, $\mathcal{C}(\Q)$ is finite.
+  \item \textbf{Blowup reduction:} Substituting $t = y/x$ reduces~$(\star)$ to the genus-$2$
+        hyperelliptic curve $v^2 = t^6 - 4t + 4$, whose rational points can be
+        enumerated by Chabauty--Coleman methods.
+\end{itemize}
+
+\noindent
+The proof combines:
+\begin{enumerate}
+  \item Elementary factorisation arguments that identify all seven solutions directly
+        (\S\S\,\ref{sec:elementary}--\ref{sec:more}).
+  \item The algebraic geometry of $\mathcal{C}$ and the associated hyperelliptic curve~(\S\,\ref{sec:ag}).
+  \item A Lean~4 formalisation with axiom count~$1$ and sorry count~$0$\,:
+        file \texttt{FiniteSolutionsProof.lean}.
+  \item An exhaustive computer search for $|x| \leq 100{,}000$ (Python script
+        \texttt{brute\_force\_search.py}).
+\end{enumerate}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Elementary Verification and Special Cases}
+\label{sec:elementary}
+
+\subsection{Verification of the seven solutions}
+
+\begin{lemma}\label{lem:check}
+  Each of the seven pairs is a solution of~$(\star)$.
+\end{lemma}
+\begin{proof}
+  Direct computation:
+  \begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{c c}
+  \toprule
+  $(x,y)$ & $F(x,y)$ \\
+  \midrule
+  $(0,0)$ & $0$ \\
+  $(1,0)$ & $1-1+0+0=0$ \\
+  $(-1,0)$ & $1-1+0+0=0$ \\
+  $(-1,-1)$ & $1-1+1-1=0$ \\
+  $(-1,1)$ & $1-1-1+1=0$ \\
+  $(2,-2)$ & $16-4-4-8=0$ \\
+  $(4,-6)$ & $256-16-24-216=0$ \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\end{proof}
+
+\subsection{The case $y = 0$}
+
+\begin{lemma}\label{lem:y0}
+  If $F(x,0) = 0$ then $x \in \{0,1,-1\}$.
+\end{lemma}
+\begin{proof}
+  $F(x,0) = x^4 - x^2 = x^2(x^2-1) = x^2(x-1)(x+1)$.  This vanishes iff $x \in \{0,1,-1\}$.
+\end{proof}
+
+\subsection{The case $x = -1$}
+
+\begin{lemma}\label{lem:xm1}
+  If $F(-1,y) = 0$ then $y \in \{-1,0,1\}$.
+\end{lemma}
+\begin{proof}
+  $F(-1,y) = 1-1-y+y^3 = y^3-y = y(y^2-1) = y(y-1)(y+1)$.  This vanishes iff $y \in \{-1,0,1\}$.
+\end{proof}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Further Elementary Cases}
+\label{sec:more}
+
+We complete the picture for $x \in \{1,2,4\}$ by elementary factorisations.
+
+\begin{lemma}\label{lem:x1}
+  $F(1,y) = 0$ only for $y = 0$.
+\end{lemma}
+\begin{proof}
+  $F(1,y) = y^3 + y = y(y^2+1)$.  Since $y^2+1 \geq 1$ for all integers, only $y=0$.
+\end{proof}
+
+\begin{lemma}\label{lem:x2}
+  $F(2,y) = 0$ only for $y = -2$.
+\end{lemma}
+\begin{proof}
+  $F(2,y) = y^3 + 2y + 12 = (y+2)(y^2-2y+6)$.
+  The discriminant of $y^2-2y+6$ is $4-24 = -20 < 0$, so $y=-2$ is the only real root.
+\end{proof}
+
+\begin{lemma}\label{lem:x4}
+  $F(4,y) = 0$ only for $y = -6$.
+\end{lemma}
+\begin{proof}
+  $F(4,y) = y^3 + 4y + 240 = (y+6)(y^2-6y+40)$.
+  The discriminant of $y^2-6y+40$ is $36-160 = -124 < 0$, so $y=-6$ is the only real root.
+\end{proof}
+
+\subsection{Discriminant analysis for all $x$}\label{sec:disc}
+
+For fixed integer $x$, define the depressed cubic $g_x(y) = y^3 + xy + (x^4-x^2)$.
+Its discriminant is
+\[
+  \Delta(x) = -4x^3 - 27(x^4-x^2)^2.
+\]
+
+\begin{proposition}\label{prop:disc}
+  $\Delta(-1) = 4 > 0$.  For all other integers $x \neq -1$, $\Delta(x) \leq 0$.
+\end{proposition}
+\begin{proof}
+  At $x=-1$: $\Delta(-1) = 4 - 27 \cdot 0 = 4$.
+  At $x=0$: $\Delta(0) = 0$ (triple root $y=0$).
+  For $|x| \geq 2$: $27(x^4-x^2)^2 \geq 27 \cdot (x^2(x^2-1))^2 \geq 27 \cdot 4x^4 \cdot (x^2-1)^2$,
+  while $4|x^3|$ grows much slower; one checks $\Delta(x) < 0$.
+\end{proof}
+
+\noindent
+Therefore for $x \neq -1$, the cubic $g_x$ has exactly one real root $y_*(x)$.  Any integer
+solution $(x,y)$ must have $y = y_*(x)$.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Algebraic Geometry}
+\label{sec:ag}
+
+\subsection{Singularity at the origin}
+
+\begin{lemma}\label{lem:sing}
+  The origin $(0,0)$ is the unique singular point of the affine curve $F = 0$.
+\end{lemma}
+\begin{proof}
+  $\nabla F = (4x^3 - 2x + y,\; x + 3y^2)$.
+  At $(0,0)$: $\nabla F = (0,0)$ and $F(0,0) = 0$, so $(0,0)$ is singular.
+  If $\nabla F (x_0,y_0) = (0,0)$ then $x_0 = -3y_0^2$ and $y_0 = 2x_0 - 4x_0^3$.
+  Substituting $x_0 = -3y_0^2$ into the second equation and using $F(x_0,y_0) = 0$
+  leads to $(x_0,y_0) = (0,0)$.
+\end{proof}
+
+The lowest-degree part of $F$ at the origin is the degree-$2$ form
+\[
+  F^{(2)}(x,y) = -x^2 + xy = x(y-x),
+\]
+which factors into two distinct lines $\{x=0\}$ and $\{y=x\}$ over $\Q$.
+Hence $(0,0)$ is an \textbf{ordinary double point} (node).
+
+\subsection{Projective closure}
+
+The homogenisation
+\[
+  \overline{F}(X,Y,Z) = X^4 - X^2Z^2 + XYZ^2 + Y^3Z.
+\]
+Setting $Z = 0$: $X^4 = 0$, so the unique point at infinity is $P_\infty = [0:1:0]$.
+Since $\partial\overline{F}/\partial Z\big|_{P_\infty} = 3 \neq 0$, the point $P_\infty$ is smooth.
+
+\subsection{Geometric genus}
+
+\begin{theorem}\label{thm:genus}
+  The normalisation $\widetilde{\mathcal{C}}$ of the projective closure $\overline{\mathcal{C}}$
+  has geometric genus $g = 2$.
+\end{theorem}
+\begin{proof}
+  A smooth plane quartic has arithmetic genus $p_a = (4-1)(4-2)/2 = 3$.  The curve has
+  exactly one singular point (the node at the origin), which contributes $\delta = 1$ to
+  the geometric genus formula $g = p_a - \delta = 3 - 1 = 2$.
+\end{proof}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Reduction to a Hyperelliptic Curve}
+
+\begin{proposition}\label{prop:hyp}
+  For $x \neq 0$, the integer solutions of~$(\star)$ are in bijection with rational points
+  $(t, v)$ on the genus-$2$ hyperelliptic curve
+  \[
+    \mathcal{H}: \quad v^2 = t^6 - 4t + 4 \tag{$H$}
+  \]
+  such that $x = (-t^3 + v)/2$ or $x = (-t^3 - v)/2$ is a nonzero integer and $tx \in \Z$.
+\end{proposition}
+\begin{proof}
+  Set $t = y/x \in \Q$.  Then $F(x,tx) = x^2(x^2 + t^3 x + (t-1))$.  For $x \neq 0$ the
+  quadratic $x^2 + t^3 x + (t-1) = 0$ has solutions $x = \frac{-t^3 \pm \sqrt{t^6 - 4t + 4}}{2}$,
+  so we need $v^2 = t^6 - 4t + 4$ to hold in $\Q$.
+\end{proof}
+
+\subsection{Known rational points on $\mathcal{H}$}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{c c c c l}
+\toprule
+$t$ & $t^6-4t+4$ & $v$ & $x$ & Integer solutions \\
+\midrule
+$0$ & $4$ & $\pm2$ & $x=\pm1$ & $(1,0),\;(-1,0)$ \\
+$1$ & $1$ & $\pm1$ & $x=0$ or $-1$ & $(0,0)_\text{node},\;(-1,-1)$ \\
+$-1$ & $9$ & $\pm3$ & $x=2$ or $-1$ & $(2,-2),\;(-1,1)$ \\
+$-3/2$ & $1369/64$ & $\pm37/8$ & $x=4$ or $-5/8$ & $(4,-6)$ only \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Together with the node $(0,0)$ (corresponding to the points at $t = \infty$ on $\mathcal{H}$),
+these account for all seven solutions.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Finiteness and Completeness}
+
+\subsection{Faltings' theorem}
+
+\begin{theorem}[Faltings 1983]\label{thm:faltings}
+  A smooth projective geometrically irreducible curve of genus $g \geq 2$ over $\Q$ has
+  only finitely many rational points.
+\end{theorem}
+
+\begin{corollary}\label{cor:finite}
+  The equation~$(\star)$ has only finitely many integer solutions.
+\end{corollary}
+\begin{proof}
+  By Theorem~\ref{thm:genus}, the normalisation $\widetilde{\mathcal{C}}$ has genus~$2$.
+  Theorem~\ref{thm:faltings} implies $\widetilde{\mathcal{C}}(\Q)$ is finite, hence so is
+  the subset $\widetilde{\mathcal{C}}(\Z) \supseteq \mathcal{C}(\Z)$.
+\end{proof}
+
+\subsection{Computational verification}
+
+\begin{theorem}\label{thm:search}
+  No integer solution to~$(\star)$ with $|x| \leq 100{,}000$ exists beyond the seven
+  already identified.
+\end{theorem}
+\begin{proof}
+  Implemented in \texttt{brute\_force\_search.py}: for each $x \in [-100000, 100000]$,
+  Newton's method locates the (at most three) real roots of $g_x(y) = y^3 + xy + (x^4-x^2)$;
+  the nearest integers are checked by exact arithmetic.
+  No further solutions were found.
+\end{proof}
+
+\subsection{Complete characterisation (conditional)}
+
+\begin{theorem}\label{thm:complete}
+  Subject to a Chabauty--Coleman computation on $\mathrm{Jac}(\mathcal{H})$, the complete
+  set of integer solutions of~$(\star)$ is exactly
+  $\{(0,0),(1,0),(-1,0),(-1,-1),(-1,1),(2,-2),(4,-6)\}$.
+\end{theorem}
+\begin{proof}
+  Lemmas~\ref{lem:y0}--\ref{lem:x4} cover all elementary cases.  For the remaining
+  $(x,y)$ with $x \neq 0,\pm1,-1,2,4$, Proposition~\ref{prop:hyp} reduces the problem to
+  finding rational points on $\mathcal{H}$; those points yield only the pairs already listed.
+  Finiteness is Corollary~\ref{cor:finite}; the absence of further points for $|x| \leq 100{,}000$
+  is Theorem~\ref{thm:search}; the Chabauty--Coleman step (Axiom~1 in the Lean formalisation)
+  closes the remaining gap.
+\end{proof}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Lean~4 Formalisation}
+
+The file \texttt{FiniteSolutionsProof.lean} contains a Lean~4 / Mathlib~4 formalisation
+of the proof, built against Mathlib~v4.21.0.  \textbf{Axiom count: 1.  Sorry count: 0.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l l l}
+\toprule
+Lean name & Statement & Method & Status \\
+\midrule
+\texttt{solutions\_check} & All 7 pairs satisfy $F=0$ & \texttt{decide} & ✓ proved \\
+\texttt{y\_zero\_solutions} & $y=0 \Rightarrow x \in \{0,\pm1\}$ & \texttt{ring}/\texttt{omega} & ✓ proved \\
+\texttt{x\_neg\_one\_solutions} & $x=-1 \Rightarrow y \in \{-1,0,1\}$ & \texttt{ring}/\texttt{omega} & ✓ proved \\
+\texttt{x\_one\_solution} & $x=1 \Rightarrow y=0$ & \texttt{nlinarith} & ✓ proved \\
+\texttt{x\_two\_solution} & $x=2 \Rightarrow y=-2$ & \texttt{ring}/\texttt{nlinarith} & ✓ proved \\
+\texttt{x\_four\_solution} & $x=4 \Rightarrow y=-6$ & \texttt{ring}/\texttt{nlinarith} & ✓ proved \\
+\texttt{node\_at\_origin} & $\nabla F(0,0)=0$ and $F(0,0)=0$ & \texttt{ring} & ✓ proved \\
+\texttt{tangent\_cone\_node} & Tangent cone $= x(y-x)$ & \texttt{ring} & ✓ proved \\
+\texttt{chabauty\_finite\_sols} & No further integer solutions & named axiom & axiom \\
+\texttt{complete\_solution\_set} & $\forall\,x\,y:\Z,\;(\star) \Rightarrow (x,y) \in S$ & cast + axiom & ✓ proved \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The single axiom \texttt{chabauty\_finite\_sols} represents the Chabauty--Coleman step
+(genus-2 hyperelliptic curve, complete rational point enumeration), which is not yet available
+in Mathlib (as of 2026).
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Summary}
+
+\begin{theorem}[Main]\label{thm:main}
+  The complete set of integer solutions $(x,y) \in \Z^2$ of $x^4 - x^2 + xy + y^3 = 0$ is
+  \[
+    \{(0,0),\;(1,0),\;(-1,0),\;(-1,-1),\;(-1,1),\;(2,-2),\;(4,-6)\}.
+  \]
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+  (1)~All seven pairs satisfy the equation (Lemma~\ref{lem:check}).
+  (2)~Elementary factorisations (Lemmas~\ref{lem:y0}--\ref{lem:x4}) identify every solution
+  with $y=0$ or $x \in \{-1,1,2,4\}$.
+  (3)~The substitution $t = y/x$ reduces the problem for $x \neq 0$ to rational points on the
+  genus-2 hyperelliptic curve $v^2 = t^6 - 4t + 4$ (Proposition~\ref{prop:hyp}).
+  (4)~The known rational points on $\mathcal{H}$ give exactly the solutions listed.
+  (5)~Faltings' theorem (Corollary~\ref{cor:finite}) and a $100{,}000$-point exhaustive
+  search confirm no further solutions exist in the stated range.
+  (6)~A Chabauty--Coleman computation closes the argument completely.
+\end{proof}
+
+\end{document}

@@ -1010,5 +1010,89 @@ The proof is entirely elementary: all four families verified by `ring`, weighted
 
 **Result:** The equation $2x^4 - y^4 + z^3 = 0$ has **infinitely many** integer solutions, with four explicit infinite parametric families $(0, t^3, t^4)$, $(t^3, t^3, -t^4)$, $(4t^3, 0, -8t^4)$, and $(14t^3, 21t^3, 49t^4)$ for $t \in \mathbb{Z}$.  The fourth family rests on the algebraic identity $2 \cdot 2^4 - 3^4 + 7^2 = 0$, discovered computationally. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-2x4-y4plusz3/InfinitelyManySolutions.lean).
 
+---
+
+### [`diophantine-x4-x2plusxyplusy3/`](diophantine-x4-x2plusxyplusy3/)
+
+**Problem:** Find all integer solutions $(x, y) \in \mathbb{Z}^2$ to the Diophantine equation
+
+$$x^4 - x^2 + xy + y^3 = 0$$
+
+**Files:**
+- [`brute_force_search.py`](diophantine-x4-x2plusxyplusy3/brute_force_search.py) — Pure Python exhaustive search over $|x| \leq 100{,}000$ using Newton's method to locate the unique (or three) real $y$-root(s) for each $x$; exactly seven integer solutions found.
+- [`analysis_notes.md`](diophantine-x4-x2plusxyplusy3/analysis_notes.md) — Full mathematical write-up: special cases, discriminant analysis, singularity at the origin, geometric genus, blowup reduction to the hyperelliptic curve $v^2 = t^6 - 4t + 4$, rational point table, and proof-status summary.
+- [`rigorous_proof.md`](diophantine-x4-x2plusxyplusy3/rigorous_proof.md) — Complete proof document: elementary casework (Parts I–II), algebraic geometry (Part III, singularity and genus), hyperelliptic reduction (Part IV), finiteness and completeness (Part V).
+- [`FiniteSolutionsProof.lean`](diophantine-x4-x2plusxyplusy3/FiniteSolutionsProof.lean) — Lean 4 / Mathlib 4 formalisation: all elementary cases fully proved; main completeness theorem proved from one named axiom for the Chabauty–Coleman step.
+- [`solution.tex`](diophantine-x4-x2plusxyplusy3/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **$y = 0$ case:** $F(x,0) = x^2(x^2-1) = 0$ forces $x \in \{0, 1, -1\}$, giving three solutions.
+- **$x = -1$ case:** $F(-1,y) = y(y^2-1) = 0$ forces $y \in \{-1,0,1\}$, giving three solutions (one overlap with the $y=0$ case).
+- **$x = 1, 2, 4$:** Elementary factorisation in each slice yields (respectively) $y = 0$, $y = -2$, $y = -6$.
+- **Discriminant:** The depressed cubic $y^3 + xy + (x^4-x^2) = 0$ has discriminant $\Delta(x) = -4x^3 - 27(x^4-x^2)^2$. This is positive only at $x = -1$ (three real roots) and zero at $x = 0$ (triple root). For all other integers $|x| \geq 2$, there is exactly one real root.
+- **Singular curve:** The origin $(0,0)$ is an ordinary double point (node) of $F = 0$, with tangent lines $x=0$ and $y=x$ (from the lowest-degree part $x(y-x)$).
+- **Geometric genus:** Arithmetic genus of a plane quartic is $3$; one node reduces this to $g = 2$.
+- **Faltings' theorem:** Since $g=2 \geq 2$, the set of rational (hence integer) points is finite.
+- **Hyperelliptic reduction:** Substituting $t = y/x$ transforms $(\star)$ (for $x \neq 0$) into the quadratic $x^2 + t^3 x + (t-1) = 0$, whose discriminant $t^6 - 4t + 4$ must be a rational perfect square. Setting $v^2 = t^6 - 4t + 4$ gives the genus-2 hyperelliptic curve $\mathcal{H}$. The rational points $t \in \{0,1,-1,-3/2\}$ on $\mathcal{H}$ account for all seven solutions.
+- **Computational search:** Exhaustive search for $|x| \leq 100{,}000$ finds no further solutions.
+
+**The seven integer solutions:**
+
+| $(x, y)$ | Proof method |
+|:---:|:---|
+| $(0, 0)$ | $F(0,0)=0$; node of the curve |
+| $(1, 0)$ | Slice $y=0$: $x^2(x^2-1)=0$ |
+| $(-1, 0)$ | Slice $y=0$: $x^2(x^2-1)=0$ |
+| $(-1, -1)$ | Slice $x=-1$: $y(y^2-1)=0$ |
+| $(-1, 1)$ | Slice $x=-1$: $y(y^2-1)=0$ |
+| $(2, -2)$ | Slice $x=2$: $(y+2)(y^2-2y+6)=0$ |
+| $(4, -6)$ | Slice $x=4$: $(y+6)(y^2-6y+40)=0$ |
+
+**Key structural facts:**
+- The curve $F=0$ is the **unique** genus-2 curve in this repository with a non-empty but finite integer solution set; all other entries have either zero or infinitely many solutions.
+- The node at the origin has two tangent branches: one tangent to $x=0$ (the "vertical" branch carrying the $x=0$ solution $(0,0)$) and one tangent to $y=x$ (carrying $(-1,-1)$).
+- On the hyperelliptic reduction $v^2 = t^6-4t+4$: the four rational $t$-values $\{0,1,-1,-3/2\}$ correspond to slope parameters $y/x$ for the non-origin solutions.
+- The solutions with $|x| > 1$ lie on three lines through the origin: $y=0$ ($x=\pm1$), $y=-x$ ($(2,-2)$ and $(-1,1)$), and $y=-3x/2$ ($(4,-6)$).
+
+**Proof status:**
+
+| Component | Status |
+|:---|:---:|
+| Seven solutions verified | ✓ Complete |
+| $y=0$ case: only $x \in \{0,\pm1\}$ | ✓ Complete (elementary) |
+| $x=-1$ case: only $y \in \{-1,0,1\}$ | ✓ Complete (elementary) |
+| $x=1$, 2, 4 cases | ✓ Complete (elementary factorisation) |
+| Node at $(0,0)$ with tangent lines $x=0$, $y=x$ | ✓ Complete (gradient) |
+| Geometric genus $= 2$ | ✓ Complete (degree–genus minus node) |
+| Finiteness (Faltings' theorem) | ✓ Complete |
+| No further solutions for $\|x\| \leq 100{,}000$ | ✓ Complete (exhaustive search) |
+| Complete solution set $=$ these 7 pairs | Conditional (Chabauty–Coleman on $\mathcal{H}$) |
+| No elementary modular proof | N/A (solutions do exist) |
+
+**Lean 4 formalisation — [`FiniteSolutionsProof.lean`](diophantine-x4-x2plusxyplusy3/FiniteSolutionsProof.lean):**
+
+Built as library `DiophantineX4X2XYY3` against Mathlib v4.21.0
+(`lake exe cache get && lake build DiophantineX4X2XYY3`).  **Axiom count: 1, Sorry count: 0.**
+
+| Lean name | Statement | Proof method | Status |
+|:---|:---|:---|:---:|
+| `solutions_check` | All 7 pairs satisfy $F=0$ | `norm_num` | ✓ proved |
+| `y_zero_solutions` | $y=0 \Rightarrow x \in \{0,1,-1\}$ | `ring` + `omega` | ✓ proved |
+| `x_neg_one_solutions` | $x=-1 \Rightarrow y \in \{-1,0,1\}$ | `ring` + `omega` | ✓ proved |
+| `x_one_solution` | $x=1 \Rightarrow y=0$ | `nlinarith` | ✓ proved |
+| `x_two_solution` | $x=2 \Rightarrow y=-2$ | `ring` + `nlinarith` | ✓ proved |
+| `x_four_solution` | $x=4 \Rightarrow y=-6$ | `ring` + `nlinarith` | ✓ proved |
+| `node_at_origin` | $F(0,0)=0$ and $\nabla F(0,0)=0$ | `ring` | ✓ proved |
+| `tangent_cone_factored` | Tangent cone $= x(y-x)$ | `ring` | ✓ proved |
+| `chabauty_finite_solutions` | No integer solution beyond the 7 | named axiom | axiom |
+| `complete_solution_set` | $(\star) \iff (x,y)\in S$ | cast + axiom | ✓ proved |
+
+The single axiom `chabauty_finite_solutions` encodes the Chabauty–Coleman step (complete enumeration of rational points on the genus-2 hyperelliptic curve $v^2 = t^6-4t+4$). Faltings' theorem and Chabauty–Coleman integration are not yet in Mathlib as of 2026.
+
+**Result:** The Diophantine equation $x^4 - x^2 + xy + y^3 = 0$ has **exactly seven** integer solutions:
+$$(0,0),\;(1,0),\;(-1,0),\;(-1,-1),\;(-1,1),\;(2,-2),\;(4,-6).$$
+This is the **unique problem in this repository** with a non-trivial finite integer solution set.
+The proof is complete modulo a Chabauty–Coleman computation over the genus-2 Jacobian; see
+[`rigorous_proof.md`](diophantine-x4-x2plusxyplusy3/rigorous_proof.md) for the full argument.
 
 
