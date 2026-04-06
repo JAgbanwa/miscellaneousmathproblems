@@ -375,16 +375,16 @@ of the proof, built against Mathlib~v4.21.0.  \textbf{Axiom count: 1.  Sorry cou
 \toprule
 Lean name & Statement & Method & Status \\
 \midrule
-\texttt{solutions\_check} & All 7 pairs satisfy $F=0$ & \texttt{decide} & ✓ proved \\
-\texttt{y\_zero\_solutions} & $y=0 \Rightarrow x \in \{0,\pm1\}$ & \texttt{ring}/\texttt{omega} & ✓ proved \\
-\texttt{x\_neg\_one\_solutions} & $x=-1 \Rightarrow y \in \{-1,0,1\}$ & \texttt{ring}/\texttt{omega} & ✓ proved \\
-\texttt{x\_one\_solution} & $x=1 \Rightarrow y=0$ & \texttt{nlinarith} & ✓ proved \\
-\texttt{x\_two\_solution} & $x=2 \Rightarrow y=-2$ & \texttt{ring}/\texttt{nlinarith} & ✓ proved \\
-\texttt{x\_four\_solution} & $x=4 \Rightarrow y=-6$ & \texttt{ring}/\texttt{nlinarith} & ✓ proved \\
-\texttt{node\_at\_origin} & $\nabla F(0,0)=0$ and $F(0,0)=0$ & \texttt{ring} & ✓ proved \\
-\texttt{tangent\_cone\_node} & Tangent cone $= x(y-x)$ & \texttt{ring} & ✓ proved \\
+\texttt{solutions\_check} & All 7 pairs satisfy $F=0$ & \texttt{decide} & $\checkmark$ proved \\
+\texttt{y\_zero\_solutions} & $y=0 \Rightarrow x \in \{0,\pm1\}$ & \texttt{ring}/\texttt{omega} & $\checkmark$ proved \\
+\texttt{x\_neg\_one\_solutions} & $x=-1 \Rightarrow y \in \{-1,0,1\}$ & \texttt{ring}/\texttt{omega} & $\checkmark$ proved \\
+\texttt{x\_one\_solution} & $x=1 \Rightarrow y=0$ & \texttt{nlinarith} & $\checkmark$ proved \\
+\texttt{x\_two\_solution} & $x=2 \Rightarrow y=-2$ & \texttt{ring}/\texttt{nlinarith} & $\checkmark$ proved \\
+\texttt{x\_four\_solution} & $x=4 \Rightarrow y=-6$ & \texttt{ring}/\texttt{nlinarith} & $\checkmark$ proved \\
+\texttt{node\_at\_origin} & $\nabla F(0,0)=0$ and $F(0,0)=0$ & \texttt{ring} & $\checkmark$ proved \\
+\texttt{tangent\_cone\_node} & Tangent cone $= x(y-x)$ & \texttt{ring} & $\checkmark$ proved \\
 \texttt{chabauty\_finite\_sols} & No further integer solutions & named axiom & axiom \\
-\texttt{complete\_solution\_set} & $\forall\,x\,y:\Z,\;(\star) \Rightarrow (x,y) \in S$ & cast + axiom & ✓ proved \\
+\texttt{complete\_solution\_set} & $\forall\,x\,y:\Z,\;(\star) \Rightarrow (x,y) \in S$ & cast + axiom & $\checkmark$ proved \\
 \bottomrule
 \end{tabular}
 \end{center}

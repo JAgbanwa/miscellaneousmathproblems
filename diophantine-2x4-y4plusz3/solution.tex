@@ -45,6 +45,9 @@
   framerule=0pt,
   rulecolor=\color{gray!30},
   xleftmargin=6pt, xrightmargin=6pt,
+  literate={⟨}{{$\langle$}}{1}
+             {⟩}{{$\rangle$}}{1}
+             {▸}{{$\blacktriangleright$}}{1},
 }
 
 \lstdefinelanguage{Lean4}{
@@ -383,15 +386,15 @@ theorem solutions_infinite : solutions.Infinite :=
 \toprule
 Lean name & Statement & Method & Status \\
 \midrule
-\texttt{weightedHomogeneity} & Scaling $(n^3x, n^3y, n^4z)$ is a solution & \texttt{linear\_combination} & ✓ fully proved \\
-\texttt{family1} & $(0, t^3, t^4)$ is a solution & \texttt{ring} & ✓ fully proved \\
-\texttt{family2} & $(t^3, t^3, -t^4)$ is a solution & \texttt{ring} & ✓ fully proved \\
-\texttt{family3} & $(4t^3, 0, -8t^4)$ is a solution & \texttt{ring} & ✓ fully proved \\
-\texttt{family4} & $(14t^3, 21t^3, 49t^4)$ is a solution & \texttt{ring} & ✓ fully proved \\
-\texttt{sol\_14\_21\_49} & Seed solution $(14, 21, 49)$ & \texttt{norm\_num} & ✓ fully proved \\
-\texttt{pow3\_strictMono} & $n \mapsto n^3$ strictly mono on $\N$ & \texttt{Nat.pow\_lt\_pow\_left} & ✓ fully proved \\
-\texttt{natMap\_injective} & $n \mapsto (0, n^3, n^4)$ is injective & \texttt{pow3\_strictMono} & ✓ fully proved \\
-\texttt{solutions\_infinite} & Solution set is infinite & \texttt{Set.infinite\_range} & ✓ fully proved \\
+\texttt{weightedHomogeneity} & Scaling $(n^3x, n^3y, n^4z)$ is a solution & \texttt{linear\_combination} & $\checkmark$ fully proved \\
+\texttt{family1} & $(0, t^3, t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
+\texttt{family2} & $(t^3, t^3, -t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
+\texttt{family3} & $(4t^3, 0, -8t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
+\texttt{family4} & $(14t^3, 21t^3, 49t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
+\texttt{sol\_14\_21\_49} & Seed solution $(14, 21, 49)$ & \texttt{norm\_num} & $\checkmark$ fully proved \\
+\texttt{pow3\_strictMono} & $n \mapsto n^3$ strictly mono on $\N$ & \texttt{Nat.pow\_lt\_pow\_left} & $\checkmark$ fully proved \\
+\texttt{natMap\_injective} & $n \mapsto (0, n^3, n^4)$ is injective & \texttt{pow3\_strictMono} & $\checkmark$ fully proved \\
+\texttt{solutions\_infinite} & Solution set is infinite & \texttt{Set.infinite\_range} & $\checkmark$ fully proved \\
 \bottomrule
 \end{tabular}
 \end{table}
