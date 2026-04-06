@@ -1,0 +1,313 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+
+\geometry{margin=2.5cm}
+\setlength{\headheight}{13.60001pt}
+\addtolength{\topmargin}{-1.60001pt}
+
+% ── Theorem environments ─────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% ── Code listings ────────────────────────────────────────────────────────────
+\definecolor{codegray}{rgb}{0.96,0.96,0.96}
+\definecolor{codeblue}{rgb}{0.1,0.2,0.6}
+\definecolor{codegreencomment}{rgb}{0.13,0.55,0.13}
+
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegreencomment}\itshape,
+  breaklines=true,
+  frame=single,
+  framerule=0pt,
+  rulecolor=\color{gray!30},
+  xleftmargin=6pt, xrightmargin=6pt,
+}
+
+\lstdefinelanguage{Lean4}{
+  keywords={theorem,lemma,def,axiom,by,have,obtain,exact,intro,rw,push_cast,
+            ring,decide,linarith,nlinarith,rcases,calc,simp,fin_cases,revert,
+            import,where,fun,if,then,else,let,in,match,with,show,apply,refine,
+            constructor,left,right,norm_num,norm_cast,exact_mod_cast,
+            unfold,push_neg,omega,Set,Finset,open,use,private,rintro,neg_inj,
+            linear_combination},
+  sensitive=true,
+  morecomment=[l]{--},
+  morecomment=[s]{/-}{-/},
+  morestring=[b]",
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegreencomment}\itshape,
+}
+
+% ── Macros ───────────────────────────────────────────────────────────────────
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+
+% ── Header / Footer ──────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\thepage}
+\lhead{\small Infinitely Many Solutions to $4x^5 + 4y^5 + 11z^5 = 0$}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Title ────────────────────────────────────────────────────────────────────
+\title{%
+  \Large\bfseries Infinitely Many Integer Solutions to\\[6pt]
+  \Huge $4x^5 + 4y^5 + 11z^5 = 0$\\[10pt]
+  \large Complete Analysis with Lean~4 Formalisation
+}
+\author{%
+  \normalsize Verified in Lean~4 / Mathlib~4 (v4.21.0)\\[2pt]
+  \normalsize Repository: \href{https://github.com/JAgbanwa/miscellaneousmathproblems}%
+    {\texttt{JAgbanwa/miscellaneousmathproblems}}
+}
+\date{\normalsize April 2026}
+
+% ════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Statement and Main Result}\label{sec:intro}
+
+\subsection{The equation}
+
+We study the Diophantine equation
+\begin{equation}\label{eq:main}
+  4x^5 + 4y^5 + 11z^5 = 0, \qquad (x,y,z)\in\Z^3. \tag{$\star$}
+\end{equation}
+
+\subsection{Main theorem}
+
+\begin{theorem}[Main result]\label{thm:main}
+  The equation $4x^5 + 4y^5 + 11z^5 = 0$ has \textbf{infinitely many} integer solutions.
+  In particular, the parametric family
+  \begin{equation}\label{eq:family}
+    (x,\, y,\, z) = (t,\; -t,\; 0), \qquad t \in \Z,
+  \end{equation}
+  provides infinitely many distinct integer solutions.
+\end{theorem}
+
+\begin{proof}
+  Direct verification:
+  $4t^5 + 4(-t)^5 + 11\cdot 0^5 = 4t^5 - 4t^5 + 0 = 0$.
+  The solutions are distinct because distinct $t$ give different triples.
+\end{proof}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Derivation of the Parametric Family}\label{sec:derivation}
+
+\subsection{Step 1: Setting $z = 0$}
+
+With $z = 0$, equation~\eqref{eq:main} reduces to
+\[
+  4x^5 + 4y^5 = 0 \implies x^5 = -y^5.
+\]
+Since the map $t \mapsto t^5$ is strictly monotone on $\Z$ (for $t > s$, factoring
+$t^5 - s^5 = (t-s)(t^4 + t^3s + t^2s^2 + ts^3 + s^4) > 0$), we have
+\[
+  x^5 = -y^5 \iff x^5 = (-y)^5 \iff x = -y.
+\]
+So the complete set of solutions with $z = 0$ is $\{(t, -t, 0) : t \in \Z\}$.
+
+\subsection{Step 2: Degree-5 homogeneity}
+
+The equation $4x^5 + 4y^5 + 11z^5 = 0$ is \emph{homogeneous of degree~5}: every
+monomial has degree exactly 5.  Consequently, if $(a, b, c)$ is any solution, then
+for any $t \in \Z$,
+\begin{align}
+  4(ta)^5 + 4(tb)^5 + 11(tc)^5
+  &= t^5\bigl(4a^5 + 4b^5 + 11c^5\bigr) = t^5 \cdot 0 = 0.
+\end{align}
+
+The seed solution $(1, -1, 0)$ (which is easily verified directly: $4 - 4 + 0 = 0$)
+scales to $(t, -t, 0)$ for all $t \in \Z$, reproducing \eqref{eq:family}.
+
+\begin{remark}
+  This is the simplest possible homogeneity structure in this family of problems:
+  every variable has the same weight~1, so the equation lives on a standard
+  projective variety in $\mathbb{P}^2$.  The rational point
+  $(1 : -1 : 0) \in \mathbb{P}^2(\Q)$ corresponds to our parametric family.
+\end{remark}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Modular Analysis}\label{sec:modular}
+
+\subsection{Modulo 2}
+
+Since $4x^5 \equiv 0 \pmod{2}$ and $4y^5 \equiv 0 \pmod{2}$, we have
+$11z^5 \equiv z^5 \equiv z \equiv 0 \pmod{2}$, so $z$ must be \textbf{even}.  The
+primary family has $z = 0$, which is trivially even. $\checkmark$
+
+\subsection{Modulo 11}
+
+Reducing modulo 11:
+\[
+  4x^5 + 4y^5 \equiv 0 \pmod{11} \implies x^5 + y^5 \equiv 0 \pmod{11}.
+\]
+By Fermat's little theorem, $a^{10} \equiv 1 \pmod{11}$ for $\gcd(a,11)=1$, so
+$a^5 \equiv \pm 1 \pmod{11}$.  The fifth-power residues modulo~11 are
+$\{0, 1, 10\} = \{0, 1, -1\}$.  Thus $x^5 + y^5 \equiv 0 \pmod{11}$ holds when:
+\begin{enumerate}
+  \item $11 \mid x$ and $11 \mid y$; or
+  \item $x^5 \equiv 1$ and $y^5 \equiv -1 \pmod{11}$ (or vice versa).
+\end{enumerate}
+The primary family satisfies Case~2 when $11 \nmid t$ (since $t^5 + (-t)^5 = 0$) and
+Case~1 when $11 \mid t$. $\checkmark$
+
+\subsection{No modular obstruction}
+
+The equation has solutions modulo every prime $p$ (the family $(1,-1,0)$ works for all
+$p$ since $4 - 4 = 0$ independently of the residue).  No modular obstruction exists.
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Solutions with $z \neq 0$}\label{sec:z-nonzero}
+
+The classification of all integer solutions, including those with $z \neq 0$, is
+equivalent to finding rational points on the affine curve
+\[
+  C\colon\quad u^5 + v^5 = -\tfrac{11}{4},
+  \qquad u = x/z,\; v = y/z \in \Q.
+\]
+The smooth projective model of $C$ is a Fermat-type quintic of \textbf{genus 6}.
+By Faltings' theorem~\cite{faltings83}, $C(\Q)$ is finite.  To determine whether
+$C(\Q)$ is empty (i.e., whether no solutions with $z \neq 0$ exist), one would need
+a Chabauty--Coleman computation or a $p$-adic descent argument; this is beyond
+the scope of the present treatment.
+
+\begin{remark}
+  A brute-force search over $|x|, |y| \leq 50$ (with $z$ computed from the
+  divisibility condition $11 \mid 4(x^5 + y^5)$) finds \textbf{no solutions with
+  $z \neq 0$} within the search range.
+\end{remark}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Explicit Solutions}\label{sec:explicit}
+
+The following table lists solutions from the primary family $(\star)$:
+
+\begin{center}
+\begin{tabular}{cccc}
+  \toprule
+  $x$ & $y$ & $z$ & Check \\
+  \midrule
+  $0$ & $0$ & $0$ & $0$ \\
+  $1$ & $-1$ & $0$ & $4 - 4 + 0 = 0$ \\
+  $-1$ & $1$ & $0$ & $-4 + 4 + 0 = 0$ \\
+  $2$ & $-2$ & $0$ & $128 - 128 + 0 = 0$ \\
+  $-2$ & $2$ & $0$ & $-128 + 128 + 0 = 0$ \\
+  $3$ & $-3$ & $0$ & $972 - 972 + 0 = 0$ \\
+  $5$ & $-5$ & $0$ & $12500 - 12500 + 0 = 0$ \\
+  $10$ & $-10$ & $0$ & $400000 - 400000 + 0 = 0$ \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Lean 4 Formalisation}\label{sec:lean}
+
+The file \texttt{InfinitelyManySolutions.lean} contains a complete, unconditional
+Lean~4 / Mathlib~4 formalisation of Theorem~\ref{thm:main}.
+
+\textbf{Sorry count: 0.  Axiom count: 0.}
+
+\subsection{Proof structure}
+
+\begin{lstlisting}[language=Lean4]
+import Mathlib
+
+def isolution (x y z : Z) : Prop := 4 * x ^ 5 + 4 * y ^ 5 + 11 * z ^ 5 = 0
+
+-- Degree-5 homogeneity
+theorem homogeneity (x y z : Z) (h : isolution x y z) (t : Z) :
+    isolution (t * x) (t * y) (t * z) := by
+  unfold isolution at *
+  linear_combination t ^ 5 * h
+
+-- Primary parametric family (t, -t, 0)
+theorem family (t : Z) : isolution t (-t) 0 := by
+  unfold isolution; ring
+
+-- Injectivity of n |-> (n, -n, 0) on N
+theorem natMap_injective : Function.Injective natMap := by
+  intro n1 n2 h
+  simp only [natMap, Prod.mk.injEq] at h
+  exact_mod_cast h.1
+
+-- Infinitude
+theorem solutions_infinite : solutions.Infinite :=
+  (Set.infinite_range_of_injective natMap_injective).mono
+    (fun _ ⟨n, rfl⟩ => natMap_mem n)
+\end{lstlisting}
+
+\subsection{Lean theorem table}
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  Lean name & Statement & Method \\
+  \midrule
+  \texttt{homogeneity} & $\forall\, t,\ (tx,ty,tz)$ is a soln if $(x,y,z)$ is & \texttt{linear\_combination} \\
+  \texttt{family} & $(t,-t,0)$ is a solution for all $t:\Z$ & \texttt{ring} \\
+  \texttt{sol\_1\_neg1\_0} & $(1,-1,0)$ is a solution & \texttt{norm\_num} \\
+  \texttt{natMap\_mem} & $(n,-n,0) \in \mathtt{solutions}$ for all $n:\N$ & \texttt{push\_cast} + \texttt{ring} \\
+  \texttt{natMap\_injective} & $n \mapsto (n,-n,0)$ is injective & \texttt{exact\_mod\_cast} \\
+  \texttt{solutions\_infinite} & solution set is infinite & \texttt{Set.infinite\_range\_of\_injective} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Proof Status Summary}\label{sec:status}
+
+\begin{center}
+\begin{tabular}{ll}
+  \toprule
+  Component & Status \\
+  \midrule
+  Seed solution $(1,-1,0)$ & $\checkmark$ Direct substitution \\
+  Degree-5 homogeneity & $\checkmark$ Ring identity \\
+  Primary family $(t,-t,0)$ verified & $\checkmark$ \texttt{ring} \\
+  Infinitely many distinct solutions & $\checkmark$ Injectivity of $n \mapsto n$ on $\N$ \\
+  No solutions with $z \neq 0$ (search) & $\checkmark$ Exhaustive check, $|x|,|y| \leq 50$ \\
+  No solutions with $z \neq 0$ (proof) & Open --- requires Faltings/Chabauty--Coleman \\
+  Lean~4 formalisation (0 sorry) & $\checkmark$ \textbf{Complete} \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{9}
+\bibitem{faltings83}
+  G.~Faltings,
+  \textit{Endlichkeitss\"atze f\"ur abelsche Variet\"aten \"uber Zahlk\"orpern},
+  Inventiones Mathematicae \textbf{73} (1983), 349--366.
+\end{thebibliography}
+
+\end{document}

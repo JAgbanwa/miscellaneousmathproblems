@@ -779,5 +779,73 @@ Built against Mathlib v4.21.0 (`lake exe cache get && lake build`). **Axiom coun
 
 **Result:** The equation $x^5 + 2y^3 + z^3 = 0$ has **infinitely many** integer solutions. The primary parametric family is $(x, y, z) = (-n^3, n^5, -n^5)$ for $n \in \mathbb{Z}$. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-x5plus2y3plusz3/InfinitelyManySolutions.lean).
 
+---
+
+### [`diophantine-4x5plus4y5plus11z5/`](diophantine-4x5plus4y5plus11z5/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$4x^5 + 4y^5 + 11z^5 = 0$$
+
+**Files:**
+- [`brute_force_search.py`](diophantine-4x5plus4y5plus11z5/brute_force_search.py) — Pure Python exhaustive search over $|x|, |y| \leq 50$ (with $z$ computed); verifies the primary family and confirms no solutions with $z \neq 0$ in this range.
+- [`analysis_notes.md`](diophantine-4x5plus4y5plus11z5/analysis_notes.md) — Full mathematical write-up: degree-5 homogeneity, derivation of the parametric family, modular analysis, and discussion of the $z \neq 0$ case.
+- [`InfinitelyManySolutions.lean`](diophantine-4x5plus4y5plus11z5/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation. **Sorry count: 0. Axiom count: 0.**
+- [`solution.tex`](diophantine-4x5plus4y5plus11z5/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Set $z = 0$.** The equation becomes $4x^5 + 4y^5 = 0$, i.e., $x^5 = -y^5$, which forces $x = -y$ (since $t \mapsto t^5$ is strictly monotone on $\mathbb{Z}$).
+- **Seed solution.** The triple $(1, -1, 0)$ satisfies the equation: $4 \cdot 1 + 4 \cdot (-1) + 0 = 0$. ✓
+- **Degree-5 homogeneity.** The equation is homogeneous of degree 5 with uniform weights $\mathrm{wt}(x) = \mathrm{wt}(y) = \mathrm{wt}(z) = 1$: for any solution $(a,b,c)$ and any $t \in \mathbb{Z}$, the scaled triple $(ta, tb, tc)$ also satisfies the equation, since $4(ta)^5 + 4(tb)^5 + 11(tc)^5 = t^5(4a^5 + 4b^5 + 11c^5) = 0$.
+- **Parametric family.** Scaling the seed gives $(t, -t, 0)$ for all $t \in \mathbb{Z}$. Verification: $4t^5 + 4(-t)^5 + 0 = 4t^5 - 4t^5 = 0$.
+- **Infinitude.** The map $n \mapsto (n, -n, 0)$ on $\mathbb{N}$ is injective (the first component is the identity), so the solution set is infinite.
+
+**Key structural facts:**
+- This is the **simplest homogeneity structure** among all quintic Diophantine equations in this repository: pure degree-5 homogeneity rather than the weighted $(4,5,10)$- or $(3,5,5)$-structure of the other entries.
+- The rational point $(1 : -1 : 0) \in \mathbb{P}^2(\mathbb{Q})$ lies on the projective variety $4X^5 + 4Y^5 + 11Z^5 = 0$, and the corresponding parametric family is just the projective line through this point.
+- **Mod 2:** Any solution must have $z$ even (since $4x^5 + 4y^5 \equiv 0 \pmod{2}$ forces $z \equiv 0 \pmod{2}$).
+- **Mod 11:** $x^5 + y^5 \equiv 0 \pmod{11}$.  The fifth-power residues mod 11 are $\{0, 1, -1\}$, so this holds when: (i) $11 \mid x$ and $11 \mid y$; or (ii) $x^5 \equiv 1, y^5 \equiv -1 \pmod{11}$ (or vice versa).
+- **No modular obstruction:** The equation is everywhere locally solvable — $(1,-1,0)$ is a global integer solution, so no Hasse obstruction can arise.
+- **Solutions with $z \neq 0$:** A search over $|x|, |y| \leq 50$ finds no such solutions.  The projective curve $u^5 + v^5 = -11/4$ has genus 6; by Faltings' theorem its rational point set is finite (and likely empty), but a complete proof would require Chabauty–Coleman methods.
+
+**Selected explicit solutions:**
+
+| $(x, y, z)$ | $4x^5 + 4y^5 + 11z^5$ |
+|---|---|
+| $(0, 0, 0)$ | $0$ |
+| $(1, -1, 0)$ | $4 - 4 + 0 = 0$ |
+| $(-1, 1, 0)$ | $-4 + 4 + 0 = 0$ |
+| $(2, -2, 0)$ | $128 - 128 + 0 = 0$ |
+| $(3, -3, 0)$ | $972 - 972 + 0 = 0$ |
+| $(5, -5, 0)$ | $12500 - 12500 + 0 = 0$ |
+| $(10, -10, 0)$ | $400000 - 400000 + 0 = 0$ |
+
+**Proof status:**
+
+| Component | Status | Method |
+|-----------|--------|--------|
+| Seed solution $(1,-1,0)$ | ✓ Complete | Direct substitution |
+| Degree-5 homogeneity | ✓ Complete | `linear_combination t^5 * h` |
+| Primary family $(t,-t,0)$ verified | ✓ Complete | `ring` identity |
+| Infinitely many distinct solutions | ✓ Complete | Injectivity of $n \mapsto n$ on $\mathbb{N}$ |
+| No solutions with $z \neq 0$ (search) | ✓ Complete | Exhaustive check, $|x|,|y| \leq 50$ |
+| No solutions with $z \neq 0$ (proof) | Open | Faltings/Chabauty–Coleman on genus-6 quintic |
+| Lean 4 formalisation (0 sorry) | ✓ **Complete** | Mathlib tactics |
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](diophantine-4x5plus4y5plus11z5/InfinitelyManySolutions.lean):**
+
+Built against Mathlib v4.21.0 (`lake exe cache get && lake build`). **Axiom count: 0, Sorry count: 0.**
+
+| Lean name | Statement | Proof method |
+|-----------|-----------|--------------|
+| `homogeneity` | $(tx,ty,tz)$ is a solution if $(x,y,z)$ is | `linear_combination t^5 * h` |
+| `family t` | $(t,-t,0)$ is a solution for all $t:\mathbb{Z}$ | `ring` |
+| `sol_1_neg1_0` | $(1,-1,0)$ is a solution | `norm_num` |
+| `natMap_mem n` | $(n,-n,0)$ is a solution for all $n:\mathbb{N}$ | `push_cast` + `ring` |
+| `natMap_injective` | $n \mapsto (n,-n,0)$ is injective | `exact_mod_cast h.1` |
+| `solutions_infinite` | Solution set is infinite | `Set.infinite_range_of_injective` |
+
+**Result:** The equation $4x^5 + 4y^5 + 11z^5 = 0$ has **infinitely many** integer solutions. The parametric family is $(x, y, z) = (t, -t, 0)$ for all $t \in \mathbb{Z}$. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-4x5plus4y5plus11z5/InfinitelyManySolutions.lean).
+
 
 
