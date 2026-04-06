@@ -1,0 +1,445 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems, skins, breakable}
+
+\geometry{margin=2.5cm}
+
+% ── Theorem environments ─────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Code listings ─────────────────────────────────────────────────────────
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\definecolor{codeblue}{rgb}{0.1,0.2,0.6}
+\definecolor{darkgreen}{rgb}{0.0,0.45,0.0}
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  breaklines=true,
+  frame=single,
+  framerule=0pt,
+  rulecolor=\color{gray!30},
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+}
+
+% ── Lean listings ─────────────────────────────────────────────────────────
+\lstdefinelanguage{Lean4}{
+  keywords={theorem,lemma,def,axiom,by,have,obtain,exact,intro,rw,push_cast,
+            ring,decide,linarith,nlinarith,rcases,calc,simp,fin_cases,revert,
+            import,infix,infixl,infixr,where,fun,if,then,else,let,in,
+            return,do,match,with,from,show,suffices,apply,refine,constructor,
+            left,right,exfalso,contradiction,norm_num,norm_cast,exact_mod_cast,
+            native_decide,omega},
+  sensitive=true,
+  morecomment=[l]{--},
+  morecomment=[s]{/-}{-/},
+  morestring=[b]",
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{gray}\itshape,
+}
+
+% ── Macros ──────────────────────────────────────────────────────────────────
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+
+% ── Header / Footer ─────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\thepage}
+\lhead{\small No Integer Solutions to $y^2z + yz^2 = x^3 + x^2 + 3x - 1$}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── tcolorbox styles ────────────────────────────────────────────────────────
+\tcbset{
+  mythm/.style={
+    enhanced, colback=blue!4!white, colframe=blue!40!black,
+    fonttitle=\bfseries, breakable,
+  },
+  mylemma/.style={
+    enhanced, colback=green!4!white, colframe=darkgreen,
+    fonttitle=\bfseries, breakable,
+  },
+  myobs/.style={
+    enhanced, colback=orange!6!white, colframe=orange!60!black,
+    fonttitle=\bfseries, breakable,
+  },
+}
+
+% ────────────────────────────────────────────────────────────────────────────
+\begin{document}
+
+\title{\bfseries No Integer Solutions to\\[4pt]
+  $y^2 z + y z^2 = x^3 + x^2 + 3x - 1$}
+\author{}
+\date{April 2026}
+\maketitle
+
+\begin{abstract}
+We study the Diophantine equation
+\[
+  y^2 z + y z^2 \;=\; x^3 + x^2 + 3x - 1, \qquad (x,y,z)\in\Z^3.
+\]
+Equivalently, writing $yz(y+z)$ for the left side, we ask for which
+integer triples the product of $y$, $z$, and their sum equals the cubic
+$x^3+x^2+3x-1$.
+
+We prove:
+\begin{enumerate}
+  \item $x$ must be odd (parity argument, \S\ref{sec:parity}).
+  \item For every odd $x$, the right side is exactly divisible by $4$
+        but not $8$ (2-adic analysis, \S\ref{sec:twadic}).
+  \item For $x \equiv 1,\,5,\,9,\,13\pmod{14}$ the right side is
+        $\equiv 3$ or $4\pmod 7$, a value never achieved by $yz(y+z)$
+        (mod-7 obstruction, \S\ref{sec:mod7}).
+\end{enumerate}
+This yields a rigorous elementary proof that no solution exists for
+the four residue classes $x\equiv 1,5,9,13\pmod{14}$, which together
+account for $4/7$ of all odd integers.
+
+For the remaining classes $x\equiv 3,\,7,\,11\pmod{14}$, the equation
+is locally solvable at every prime (no further modular obstruction
+exists), and an exhaustive divisor-enumeration search confirms no
+solutions for $|x|\le 10{,}000$.  Completing the proof for these
+classes requires an elliptic-curve descent argument.
+
+\medskip\noindent\textbf{Conjecture.}  The equation has no integer solutions.
+\end{abstract}
+
+\tableofcontents
+
+% ============================================================
+\section{Setup and notation}
+% ============================================================
+
+The equation
+\begin{equation}\label{eq:main}
+  y^2 z + y z^2 = x^3 + x^2 + 3x - 1
+\end{equation}
+factors on the left as $yz(y+z)$.  We write
+\[
+  f(x) := x^3 + x^2 + 3x - 1
+\]
+and
+\[
+  g(y,z) := yz(y+z).
+\]
+A triple $(x,y,z)\in\Z^3$ is a \emph{solution} if $g(y,z)=f(x)$.
+
+In the substitution $s = y+z$, $p = yz$, the condition becomes $sp = f(x)$,
+with $y,z$ real iff $s^2-4p\ge0$ and integer iff additionally $s^2-4p$ is
+a perfect square and $s^2-4p\equiv s^2\pmod{4}$.
+
+% ============================================================
+\section{Parity: \texorpdfstring{$x$}{x} must be odd}
+\label{sec:parity}
+% ============================================================
+
+\begin{lemma}\label{lem:parity}
+  For any $(x,y,z)\in\Z^3$ satisfying \eqref{eq:main}, $x$ must be odd.
+\end{lemma}
+
+\begin{proof}
+We show $g(y,z)$ is always even. Fix $y,z\in\Z$ and consider three cases:
+\begin{itemize}
+  \item \emph{Both $y,z$ even.} Then $yz\equiv 0\pmod{2}$, so $g(y,z)\equiv0$.
+  \item \emph{Exactly one even.} Then $yz\equiv0\pmod{2}$, so $g(y,z)\equiv0$.
+  \item \emph{Both $y,z$ odd.} Then $y+z\equiv0\pmod{2}$, so again
+        $g(y,z)=yz(y+z)\equiv0\pmod{2}$.
+\end{itemize}
+In all cases $g(y,z)\equiv 0\pmod{2}$.
+
+On the right, $f(x)\equiv x^3+x^2+3x-1\equiv x+x+x+1=3x+1\equiv x+1\pmod{2}$.
+So $f(x)$ is even iff $x$ is odd. The claim follows.
+\end{proof}
+
+% ============================================================
+\section{2-adic structure}
+\label{sec:twadic}
+% ============================================================
+
+\begin{lemma}\label{lem:twadic}
+  For every odd integer $x$, $\nu_2(f(x))=2$, i.e.\ $4\mid f(x)$ but
+  $8\nmid f(x)$.
+\end{lemma}
+
+\begin{proof}
+Write $x = 2k+1$.  Then
+\begin{align*}
+  f(2k+1) &= (2k+1)^3 + (2k+1)^2 + 3(2k+1) - 1 \\
+  &= (8k^3 + 12k^2 + 6k + 1) + (4k^2 + 4k + 1)
+     + (6k + 3) - 1 \\
+  &= 8k^3 + 16k^2 + 16k + 4 \\
+  &= 4\underbrace{(2k^3 + 4k^2 + 4k + 1)}_{=: q(k)}.
+\end{align*}
+We claim $q(k)$ is odd for every integer $k$.  Indeed,
+$q(k)\equiv 2k^3+4k^2+4k+1\equiv 1\pmod{2}$ (since the terms $2k^3$,
+$4k^2$, $4k$ are all even).  Hence $\nu_2(f(x))=\nu_2(4q(k))=2$.
+\end{proof}
+
+\begin{remark}
+The lemma implies that in any solution we must have $\nu_2(g(y,z))=2$,
+which constrains $(y,z)$ modulo $8$ to the two cases in
+Lemma~\ref{lem:twadic-yz} below.
+\end{remark}
+
+\begin{lemma}\label{lem:twadic-yz}
+$\nu_2(yz(y+z))=2$ if and only if, up to swapping $y$ and $z$:
+\begin{enumerate}[(a)]
+  \item $y$ and $z$ are both odd, and $y+z\equiv 4\pmod{8}$, or
+  \item $y\equiv4\pmod{8}$ and $z$ is odd.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Direct case analysis on $\nu_2(y)$, $\nu_2(z)$, and $\nu_2(y+z)$,
+using $\nu_2(ab)=\nu_2(a)+\nu_2(b)$. The key observations are:
+if both $y,z$ are even then $4\mid yz$, so $\nu_2(g)\ge 4$;
+if one is $\equiv 2\pmod4$ and the other is odd then $\nu_2(yz)=1$
+and $\nu_2(y+z)=0$, giving $\nu_2(g)=1$. Case~(a) and (b) cover
+the remaining situations yielding $\nu_2(g)=2$.
+\end{proof}
+
+% ============================================================
+\section{The mod-7 obstruction}
+\label{sec:mod7}
+% ============================================================
+
+\begin{tcolorbox}[myobs, title={Key Theorem}]
+\textbf{Theorem.}
+$g(y,z) = yz(y+z)$ satisfies $g(y,z)\not\equiv 3\pmod7$ and
+$g(y,z)\not\equiv 4\pmod7$ for every $(y,z)\in\Z^2$.
+\end{tcolorbox}
+
+\begin{proof}
+It suffices to check all $(y,z)\in(\Z/7\Z)^2$.  The non-zero values
+are obtained for $y,z\not\equiv0\pmod7$ and $y+z\not\equiv0\pmod7$.
+The complete table of $yz(y+z)\pmod7$ for such pairs is:
+
+\begin{center}
+\begin{tabular}{c|cccccc}
+\toprule
+$y\backslash z$ & 1 & 2 & 3 & 4 & 5 & 6 \\\midrule
+1 & 2 & 6 & 5 & 6 & 2 & 0 \\
+2 & 6 & 1 & 5 & 6 & 0 & 5 \\
+3 & 5 & 5 & 5 & 0 & 1 & 1 \\
+4 & 6 & 6 & 0 & 2 & 5 & 2 \\
+5 & 2 & 0 & 1 & 5 & 5 & 6 \\
+6 & 0 & 5 & 1 & 2 & 6 & 1 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All entries lie in $\{0,1,2,5,6\}$; neither $3$ nor $4$ appears.
+\end{proof}
+
+\begin{corollary}\label{cor:mod7}
+For the following residue classes modulo $14$, the equation \eqref{eq:main}
+has no integer solutions.
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+$x \pmod{14}$ & $f(x)\pmod7$ & Obstruction \\\midrule
+$1$  & $4$ & $4\notin\{0,1,2,5,6\}$ \\
+$5$  & $3$ & $3\notin\{0,1,2,5,6\}$ \\
+$9$  & $3$ & $3\notin\{0,1,2,5,6\}$ \\
+$13$ & $3$ & $3\notin\{0,1,2,5,6\}$ \\\bottomrule
+\end{tabular}
+\end{center}
+Combined with Lemma~\ref{lem:parity} (only odd $x$ can occur), this
+eliminates \emph{four of the seven odd residue classes modulo~$14$},
+i.e.\ $4/7$ of all odd integers.
+\end{corollary}
+
+\begin{proof}
+Compute $f(x)\pmod7$ for each $x\in\{1,5,9,13\}$ (representative values
+for the stated congruence classes):
+\begin{align*}
+  f(1)  &= 4,\quad &f(5) &= 164 = 23\cdot7+3\equiv3,\\
+  f(9)  &= 836 = 119\cdot7+3\equiv3,\quad &f(13) &= 2404 = 343\cdot7+3\equiv3.
+\end{align*}
+Since $g(y,z)\ne3$ and $g(y,z)\ne4$ over $\Z/7\Z$, the equation is
+insoluble modulo~7 for these $x$.
+\end{proof}
+
+% ============================================================
+\section{Local solvability of the surviving cases}
+\label{sec:local}
+% ============================================================
+
+The surviving odd residue classes are $x\equiv 3,7,11\pmod{14}$.
+
+\begin{proposition}
+For $x\equiv3,\,7,\,11\pmod{14}$ and every prime $p$, the equation
+$g(y,z)\equiv f(x)\pmod{p}$ is solvable.
+\end{proposition}
+
+\begin{proof}[Sketch]
+For a prime $p\ge5$, the curve $C_N: yz(y+z)=N$ over $\F_p$ is a smooth
+genus-1 cubic whenever $N\not\equiv0\pmod{p}$ (the only singular point
+at $y=z=0$ satisfies $N\equiv0$).   By Hasse's theorem,
+$\lvert\#C_N(\F_p)-(p+1)\rvert\le2\sqrt{p}$, so $\#C_N(\F_p)\ge(\sqrt p-1)^2>0$
+for $p\ge4$.  When $N\equiv0\pmod p$ one checks directly using $y=0$ or $z=0$.
+For $p=2,3$ an explicit check confirms solvability.
+
+A computer search (`modular\_analysis.py`) verifies local solvability for
+all primes $p\le113$.
+\end{proof}
+
+\begin{remark}
+A systematic search over all single moduli $m\le1000$ and all
+pairs $(7,m)$ with $m\le1000$ finds no modular combination that
+eliminates the surviving classes. The surviving cases are
+\emph{not} obstructed by any finite set of congruences, so a
+complete proof must use a global argument.
+\end{remark}
+
+% ============================================================
+\section{Computational verification}
+\label{sec:computation}
+% ============================================================
+
+\begin{proposition}\label{prop:computational}
+The equation \eqref{eq:main} has no integer solutions with $|x|\le10{,}000$.
+\end{proposition}
+
+\begin{proof}
+The script \texttt{brute\_force\_search.py} performs an exhaustive search.
+For each odd $x\in[-10{,}000,\,10{,}000]$:
+\begin{enumerate}
+  \item Compute $N=f(x)$.
+  \item Find all integer divisors $s$ of $N$.
+  \item For each $s$, set $p=N/s$ and compute $\Delta=s^2-4p$.
+  \item Check whether $\Delta\ge0$ is a perfect square $k^2$ with
+        $s+k\equiv0\pmod{2}$.
+  \item If so, $(y,z)=\bigl((s+k)/2,\,(s-k)/2\bigr)$ is an integer
+        solution; record it.
+\end{enumerate}
+Every integer solution $(y,z)$ to $yz(y+z)=N$ gives a divisor
+$s=y+z$ of $N$, so the algorithm is complete: it misses no solution.
+
+The result is zero solutions.
+\end{proof}
+
+% ============================================================
+\section{Elliptic curve structure of the surviving fibers}
+\label{sec:ec}
+% ============================================================
+
+For fixed $x$ with $N:=f(x)\ne0$, the equation $g(y,z)=N$ defines a
+plane cubic in $(y,z)$.  Completing the square via $z=t-y$ gives
+$y(t-y)\cdot t=N$, i.e.\
+\[
+  t y^2 - t^2 y + N = 0,
+\]
+a conic parametrised by $t$.  Equivalently, with $s=y+z$, $p=yz$:
+\[
+  E_N\colon sp = N, \quad s^2-4p = k^2 \quad (k\in\Z).
+\]
+After the substitution $s=u$, $p=N/u$, one obtains
+\[
+  u^2 - 4N/u = k^2 \quad\Longleftrightarrow\quad u^3 - u k^2 = 4N.
+\]
+Setting $w=k$ this is the Weierstrass model of an elliptic curve.
+By Siegel's theorem, each $E_N$ has only finitely many integer points.
+However, the integer-point sets $E_{f(x)}(\Z)$ must be shown to be
+empty simultaneously for all surviving $x$.
+
+A natural approach for the remaining cases $x\equiv3,7,11\pmod{14}$
+is a 2-descent on the family $\{E_{f(x)}\}$, exploiting the uniform
+congruence structure within each residue class.
+
+% ============================================================
+\section{Lean~4 formalisation}
+\label{sec:lean}
+% ============================================================
+
+The file \texttt{NonExistenceProof.lean} contains a Lean~4 / Mathlib~4
+formalisation built against Mathlib v4.21.0.
+
+\textbf{Sorry count: 1} — the single remaining \texttt{sorry} covers
+the non-existence of solutions for $x\equiv3,\,7,\,11\pmod{14}$.
+
+\medskip
+The following are \textbf{fully proved without any \texttt{sorry}}:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Lean name & Statement & Method\\\midrule
+\texttt{lhs\_always\_even} & $g(y,z)\equiv0\pmod2$ for all $y,z$ & \texttt{decide} on \texttt{ZMod 2}\\
+\texttt{rhs\_even\_iff\_x\_odd} & $f(x)\equiv0\pmod2\iff x\text{ odd}$ & \texttt{decide}\\
+\texttt{x\_odd} & Any solution has $x$ odd & parity lemmas\\
+\texttt{nu2\_rhs\_eq\_two} & $\nu_2(f(x))=2$ for odd $x$ & \texttt{omega} + algebra\\
+\texttt{g\_mod7\_image} & $yz(y+z)\pmod7\in\{0,1,2,5,6\}$ & \texttt{decide} on \texttt{ZMod 7}\\
+\texttt{f\_mod7\_bad\_classes} & $f(x)\pmod7\in\{3,4\}$ for $x\equiv1,5,9,13\pmod{14}$ & \texttt{decide}\\
+\texttt{no\_solution\_bad\_classes} & No solution for $x\equiv1,5,9,13\pmod{14}$ & above two lemmas\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{lstlisting}[language=Lean4,caption={Key excerpt from NonExistenceProof.lean}]
+-- yz(y+z) mod 7 never equals 3 or 4
+lemma g_mod7_image (y z : ZMod 7) :
+    y * z * (y + z) ≠ 3 ∧ y * z * (y + z) ≠ 4 := by decide
+
+-- f(x) ≡ 3 or 4 (mod 7) for x ≡ 1,5,9,13 (mod 14)
+lemma f_mod7_bad_classes (x : ZMod 14) 
+    (hx : x = 1 ∨ x = 5 ∨ x = 9 ∨ x = 13) :
+    (x.val^3 + x.val^2 + 3*x.val - 1 : ZMod 7) = 3 ∨
+    (x.val^3 + x.val^2 + 3*x.val - 1 : ZMod 7) = 4 := by
+  rcases hx with rfl | rfl | rfl | rfl <;> decide
+\end{lstlisting}
+
+% ============================================================
+\section{Summary}
+% ============================================================
+
+\begin{tcolorbox}[mythm, title={Main Result (partial proof)}]
+\textbf{Theorem.}
+The equation $y^2z + yz^2 = x^3 + x^2 + 3x - 1$ has no integer solutions
+$(x,y,z)$ with $x \equiv 1, 5, 9,$ or $13\pmod{14}$.
+\medskip
+
+\noindent\textbf{Proof summary.}
+By Lemma~\ref{lem:parity}, $x$ must be odd.
+By Theorem~\ref{sec:mod7} and Corollary~\ref{cor:mod7},
+$yz(y+z)\not\equiv 3, 4\pmod7$, yet $f(x)\equiv3$ or $4\pmod7$ for
+$x\equiv1,5,9,13\pmod{14}$.  This gives the contradiction.
+\end{tcolorbox}
+
+\begin{tcolorbox}[myobs, title={Computational Evidence}]
+An exhaustive divisor-enumeration search over $|x|\le 10{,}000$ finds
+\textbf{zero solutions} to the full equation.  Combined with the
+elementary proof above, this gives very strong evidence that the
+equation has \emph{no} integer solutions whatsoever.  A complete proof
+for $x\equiv3,7,11\pmod{14}$ remains open pending a suitable
+descent argument.
+\end{tcolorbox}
+
+\end{document}

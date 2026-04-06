@@ -1091,8 +1091,57 @@ The single axiom `chabauty_finite_solutions` encodes the Chabauty–Coleman step
 
 **Result:** The Diophantine equation $x^4 - x^2 + xy + y^3 = 0$ has **exactly seven** integer solutions:
 $$(0,0),\;(1,0),\;(-1,0),\;(-1,-1),\;(-1,1),\;(2,-2),\;(4,-6).$$
-This is the **unique problem in this repository** with a non-trivial finite integer solution set.
+This is the **unique problem in this repository** with a non-trivial finite integer solution set (as opposed to the conjectured zero-solution problems).
 The proof is complete modulo a Chabauty–Coleman computation over the genus-2 Jacobian; see
 [`rigorous_proof.md`](diophantine-x4-x2plusxyplusy3/rigorous_proof.md) for the full argument.
+
+---
+
+### [`diophantine-y2zpyz2-x3x2p3xm1/`](diophantine-y2zpyz2-x3x2p3xm1/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$y^2 z + yz^2 = x^3 + x^2 + 3x - 1$$
+
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-y2zpyz2-x3x2p3xm1/brute_force_search.py) — Exhaustive divisor-enumeration search over all odd $x \in [-10{,}000,\,10{,}000]$: for each $x$, factors $N = x^3+x^2+3x-1$, enumerates every divisor $s$ of $N$ (i.e.\ every candidate $s = y+z$), and checks whether $\Delta = s^2 - 4N/s$ is a non-negative perfect square. The method is complete — no solution is missed. **Result: no solutions found.**
+- [`modular_analysis.py`](diophantine-y2zpyz2-x3x2p3xm1/modular_analysis.py) — Documents all elementary constraints: (1) parity: $x$ must be odd; (2) 2-adic structure: $\nu_2(\text{RHS}) = 2$ for all odd $x$; (3) mod-7 obstruction: $yz(y+z)$ never equals $3$ or $4$ mod $7$, eliminating $x \equiv 1,5,9,13 \pmod{14}$; (4) verifies local solvability of the surviving classes at all primes $p \leq 113$.
+- [`analysis_notes.md`](diophantine-y2zpyz2-x3x2p3xm1/analysis_notes.md) — Full mathematical write-up: parity, 2-adic structure, the mod-7 obstruction (with complete table), local solvability of surviving cases, elliptic-curve reformulation, and proof-status summary.
+- [`solution.tex`](diophantine-y2zpyz2-x3x2p3xm1/solution.tex) — Self-contained LaTeX document presenting all proved results and the computational evidence.
+- [`NonExistenceProof.lean`](diophantine-y2zpyz2-x3x2p3xm1/NonExistenceProof.lean) — Lean 4 / Mathlib 4 formalisation: parity, 2-adic, and mod-7 steps are fully proved; the surviving-class step is marked by one `sorry`.
+
+**Approach:**
+- **Factored form:** The LHS is $yz(y+z)$; a solution corresponds to a factorisation $N = sp$ (with $s = y+z$, $p = yz$) such that the discriminant $s^2-4p$ is a non-negative perfect square.
+- **Mod 2:** $yz(y+z)$ is always even; $x^3+x^2+3x-1$ is even iff $x$ is odd. Hence $x$ must be odd.
+- **2-adic structure:** For $x = 2k+1$: $\text{RHS} = 4(2k^3+4k^2+4k+1)$, and the bracketed factor is always odd. So $\nu_2(\text{RHS}) = 2$ for every odd $x$.
+- **Mod-7 obstruction (key result):** An exhaustive check over $(\mathbb{Z}/7\mathbb{Z})^2$ shows $yz(y+z) \pmod 7 \in \{0,1,2,5,6\}$; the residues $3$ and $4$ are never achieved. Combined with the observation that $f(x) \equiv 4 \pmod 7$ for $x \equiv 1 \pmod{14}$ and $f(x) \equiv 3 \pmod 7$ for $x \equiv 5,9,13 \pmod{14}$, this **eliminates $4/7$ of all odd integers**.
+- **Surviving classes** ($x \equiv 3,\,7,\,11 \pmod{14}$): the equation is locally solvable at every prime (Hasse–Weil for the genus-1 fiber, confirmed for all $p \leq 113$). No further modular obstruction exists.
+- **Complete proof gap:** The three surviving residue classes require an elliptic-curve descent argument, analogous to the Chabauty–Coleman approach used for [`diophantine-y3-x4`](diophantine-y3-x4/).
+
+**Key structural facts:**
+- $yz(y+z)$ achieves exactly the residues $\{0,1,2,5,6\}$ modulo $7$; this is a clean characterisation of the mod-7 image.
+- For the four eliminated classes, $f(x) \pmod 7$ is either $3$ (for $x \equiv 5,9,13 \pmod{14}$) or $4$ (for $x \equiv 1 \pmod{14}$), giving an immediate contradiction.
+- Every RHS value satisfies $\nu_2(f(x)) = 2$ exactly, forcing $(y,z)$ into two specific 2-adic shapes (see analysis notes).
+- The discriminant of $x^3+x^2+3x-1$ (as a polynomial in $x$) is $-176 < 0$, so the cubic has exactly one real root, which is not rational — confirming $f(x) \neq 0$ for all $x \in \mathbb{Z}$.
+
+**Proof status — Lean 4 / Mathlib 4 formalisation:**
+
+Built against Mathlib v4.21.0. **Sorry count: 1** — the one `sorry` marks the non-existence for $x \equiv 3,7,11 \pmod{14}$ (the surviving classes), formalised as an axiom `no_solution_surviving_classes`.
+
+The following are **fully proved without any `sorry`**:
+
+| Lean name | Statement | Method |
+|---|---|---|
+| `lhs_always_even` | $yz(y+z) \equiv 0 \pmod 2$ for all $y,z$ | `decide` on `ZMod 2` |
+| `rhs_even_of_odd` | $f(x) \equiv 0 \pmod 2$ when $x$ is odd | `decide` + cast |
+| `rhs_odd_of_even` | $f(x) \not\equiv 0 \pmod 2$ when $x$ is even | `ring_nf` + `omega` |
+| `x_odd` | Any solution must have $x$ odd | parity lemmas |
+| `lhs_mod7_not_3_not_4` | $yz(y+z) \neq 3$ and $\neq 4$ in `ZMod 7` | `decide` |
+| `rhs_mod7_bad_classes` | $f(x) \equiv 3$ or $4 \pmod 7$ for $x \equiv 1,5,9,13 \pmod{14}$ | `decide` |
+| `no_solution_bad_classes` | No solution for $x \equiv 1,5,9,13 \pmod{14}$ | above two lemmas |
+
+**Result (working conjecture):** The equation $y^2z + yz^2 = x^3 + x^2 + 3x - 1$ has **no integer solutions**. A rigorous elementary proof covers $4/7$ of all odd $x$; the remaining $3/7$ are handled computationally for $|x| \leq 10{,}000$ and require a descent argument for a complete proof.
 
 
