@@ -45,6 +45,11 @@ name = "Diophantine2X4Y4Z3"
 srcDir = "diophantine-2x4-y4plusz3"
 roots = ["InfinitelyManySolutions"]
 
+[[lean_lib]]
+name = "DiophantineX4plus4Y3plusZ3"
+srcDir = "diophantine-x4plus4y3plusz3"
+roots = ["InfinitelyManySolutions"]
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"

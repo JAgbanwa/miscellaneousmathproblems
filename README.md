@@ -849,6 +849,89 @@ Built against Mathlib v4.21.0 (`lake exe cache get && lake build`). **Axiom coun
 
 ---
 
+### [`diophantine-x4plus4y3plusz3/`](diophantine-x4plus4y3plusz3/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$x^4 + 4y^3 + z^3 = 0$$
+
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-x4plus4y3plusz3/brute_force_search.py) — Pure Python exhaustive search over $|x|, |y|, |z| \leq 50$; verifies all seven parametric families and classifies all 19 solutions in the search range.
+- [`analysis_notes.md`](diophantine-x4plus4y3plusz3/analysis_notes.md) — Full mathematical write-up: weighted-homogeneity structure (weights $3,4,4$, degree 12), derivation of all seven parametric families, explicit solution tables, proof of infinitude, and modular analysis.
+- [`InfinitelyManySolutions.lean`](diophantine-x4plus4y3plusz3/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation. **Sorry count: 0. Axiom count: 0.**
+- [`solution.tex`](diophantine-x4plus4y3plusz3/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Weighted homogeneity.** Assign weights $\mathrm{wt}(x) = 3$, $\mathrm{wt}(y) = 4$, $\mathrm{wt}(z) = 4$. Every term has weighted degree 12: $x^4$ (degree $4\times3=12$), $4y^3$ (degree $3\times4=12$), $z^3$ (degree $3\times4=12$). Hence if $(a,b,c)$ is any seed solution, the scaling $(t^3 a, t^4 b, t^4 c)$ is a solution for all $t \in \mathbb{Z}$.
+- **The core identity.** The equation $s^4 = r^3$ is solved by $s = t^3$, $r = t^4$ for any $t \in \mathbb{Z}$. All four primary families reduce to this identity.
+- **Family 1** (setting $y = 0$): $x^4 + z^3 = 0$, solved by $x = t^3$, $z = -t^4$. Family: $(t^3, 0, -t^4)$. Seed: $(1, 0, -1)$.
+- **Family 2** (setting $z = -y$): $x^4 + 3y^3 = 0$, solved by $x = 3t^3$, $y = -3t^4$. Family: $(3t^3, -3t^4, 3t^4)$. Seed: $(3, -3, 3)$.
+- **Family 3** (setting $z = 0$): $x^4 + 4y^3 = 0$, solved by $x = -4t^3$, $y = -4t^4$. Family: $(-4t^3, -4t^4, 0)$. Seed: $(-4, -4, 0)$.
+- **Family 4** (setting $y = z$): $x^4 + 5y^3 = 0$, solved by $x = -5t^3$, $y = -5t^4$. Family: $(-5t^3, -5t^4, -5t^4)$. Seed: $(-5, -5, -5)$.
+- **Families 5–7** (discovered computationally): Setting $y=-x$, $z=2x$ gives seed $(-4,4,-8)$ and Family 5 $(4t^3, 4t^4, -8t^4)$; setting $z=2y$ gives Family 6 $(12t^3, -12t^4, -24t^4)$; setting $y=2x$, $z=-3x$ gives seed $(-5,-10,15)$ and Family 7 $(-5t^3, -10t^4, 15t^4)$.
+- **Infinitude.** The map $n \mapsto (n^3, 0, -n^4)$ on $\mathbb{N}$ is injective by strict monotonicity of $n \mapsto n^3$.
+
+**Key structural facts:**
+- The weight assignment $(\mathrm{wt}(x), \mathrm{wt}(y), \mathrm{wt}(z)) = (3, 4, 4)$ with degree 12 is distinct from the $(3,5,5)$-weight of $x^5 + 2y^3 + z^3 = 0$ in this repository.
+- The even exponent of $x$ means that $x$ and $-x$ contribute equally ($x^4 = (-x)^4$), so each family has both a "$+t$" and "$-t$" member with the same $|x|$.
+- All seven families arise from the single structural identity $s^4 = r^3 \Leftrightarrow s = t^3, r = t^4$, demonstrating the power of the weighted-homogeneity approach.
+- The brute-force search over $|x|,|y|,|z| \leq 50$ finds **exactly 19 solutions**, all accounted for by the seven families above.
+- No modular obstruction: the equation is everywhere locally solvable (explicit global solutions exist).
+
+**Selected explicit solutions:**
+
+| $(x, y, z)$ | $x^4 + 4y^3 + z^3$ | Family |
+|---|---|---|
+| $(0, 0, 0)$ | $0$ | trivial |
+| $(1, 0, -1)$ | $1+0-1=0$ | Family 1, $t=1$ |
+| $(-1, 0, -1)$ | $1+0-1=0$ | Family 1, $t=-1$ |
+| $(3, -3, 3)$ | $81-108+27=0$ | Family 2, $t=1$ |
+| $(-3, -3, 3)$ | $81-108+27=0$ | Family 2, $t=-1$ |
+| $(-4, -4, 0)$ | $256-256+0=0$ | Family 3, $t=1$ |
+| $(4, -4, 0)$ | $256-256+0=0$ | Family 3, $t=-1$ |
+| $(-5, -5, -5)$ | $625-500-125=0$ | Family 4, $t=1$ |
+| $(5, -5, -5)$ | $625-500-125=0$ | Family 4, $t=-1$ |
+| $(4, 4, -8)$ | $256+256-512=0$ | Family 5, $t=1$ |
+| $(-4, 4, -8)$ | $256+256-512=0$ | Family 5, $t=-1$ |
+| $(12, -12, -24)$ | $20736-6912-13824=0$ | Family 6, $t=1$ |
+| $(-12, -12, -24)$ | $20736-6912-13824=0$ | Family 6, $t=-1$ |
+| $(5, -10, 15)$ | $625-4000+3375=0$ | Family 7, $t=-1$ |
+| $(-5, -10, 15)$ | $625-4000+3375=0$ | Family 7, $t=1$ |
+| $(8, 0, -16)$ | $4096+0-4096=0$ | Family 1, $t=2$ |
+
+**Proof status:**
+
+| Component | Status | Method |
+|-----------|--------|--------|
+| Families 1–7 verified | ✓ Complete | `ring` identity × 7 |
+| Explicit witnesses (17) | ✓ Complete | `norm_num` × 17 |
+| Infinitely many distinct solutions | ✓ Complete | Strict monotonicity of $n^3$ on $\mathbb{N}$ |
+| Lean 4 formalisation (0 sorry) | ✓ **Complete** | Mathlib tactics |
+| Full classification of all solutions | Open | Requires algebraic geometry |
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](diophantine-x4plus4y3plusz3/InfinitelyManySolutions.lean):**
+
+Built against Mathlib v4.21.0 (`lake exe cache get && lake build`). **Axiom count: 0, Sorry count: 0.**
+
+| Lean name | Statement | Proof method |
+|-----------|-----------|--------------|
+| `family1 t` | $(t^3)^4 + 4\cdot 0^3 + (-t^4)^3 = 0$ | `ring` |
+| `family2 t` | $(3t^3)^4 + 4(-3t^4)^3 + (3t^4)^3 = 0$ | `ring` |
+| `family3 t` | $(-4t^3)^4 + 4(-4t^4)^3 + 0^3 = 0$ | `ring` |
+| `family4 t` | $(-5t^3)^4 + 4(-5t^4)^3 + (-5t^4)^3 = 0$ | `ring` |
+| `family5 t` | $(4t^3)^4 + 4(4t^4)^3 + (-8t^4)^3 = 0$ | `ring` |
+| `family6 t` | $(12t^3)^4 + 4(-12t^4)^3 + (-24t^4)^3 = 0$ | `ring` |
+| `family7 t` | $(-5t^3)^4 + 4(-10t^4)^3 + (15t^4)^3 = 0$ | `ring` |
+| Explicit witnesses (17) | 17 small solutions verified | `norm_num` |
+| `natMap_injective` | $n \mapsto (n^3, 0, -n^4)$ injective | `pow3_strictMono` |
+| `solutions_infinite` | Solution set infinite | `Set.infinite_range_of_injective` |
+
+**Result:** The equation $x^4 + 4y^3 + z^3 = 0$ has **infinitely many** integer solutions. Seven explicit infinite parametric families are $(t^3, 0, -t^4)$, $(3t^3, -3t^4, 3t^4)$, $(-4t^3, -4t^4, 0)$, $(-5t^3, -5t^4, -5t^4)$, $(4t^3, 4t^4, -8t^4)$, $(12t^3, -12t^4, -24t^4)$, and $(-5t^3, -10t^4, 15t^4)$ for $t \in \mathbb{Z}$. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-x4plus4y3plusz3/InfinitelyManySolutions.lean).
+
+---
+
 ### [`diophantine-2x4-y4plusz3/`](diophantine-2x4-y4plusz3/)
 
 **Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
