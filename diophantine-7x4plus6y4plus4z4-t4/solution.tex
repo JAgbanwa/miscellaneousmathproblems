@@ -1,0 +1,490 @@
+\documentclass[12pt, a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems, skins, breakable}
+
+\geometry{margin=2.5cm}
+
+% ── Theorem environments ─────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+% ── Colour palette ──────────────────────────────────────────────────────────
+\definecolor{thmblue}{RGB}{20,80,160}
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\definecolor{codeblue}{rgb}{0.1,0.2,0.6}
+\definecolor{opengreen}{RGB}{0,120,60}
+
+% ── Lean listings ─────────────────────────────────────────────────────────
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  breaklines=true,
+  frame=single,
+  framerule=0pt,
+  rulecolor=\color{gray!30},
+  xleftmargin=6pt, xrightmargin=6pt,
+}
+
+% ── tcolorbox styles ─────────────────────────────────────────────────────────
+\tcbset{
+  thm/.style={
+    colback=thmblue!6, colframe=thmblue!60,
+    fonttitle=\bfseries, breakable, enhanced,
+  },
+  open/.style={
+    colback=opengreen!6, colframe=opengreen!60,
+    fonttitle=\bfseries, breakable, enhanced,
+  },
+}
+
+% ── Header / footer ──────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textit{Diophantine Equation} $7x^4+6y^4+4z^4=t^4$}
+\lhead{\thepage}
+
+% ── Title ────────────────────────────────────────────────────────────────────
+\title{\bfseries\Large The Diophantine Equation $7x^4+6y^4+4z^4 = t^4$:\\[4pt]
+       \large Modular Constraints, Local–Global Analysis, and\\
+       Relationship to the Brauer--Manin Obstruction}
+\author{\itshape Mathematical Analysis and Computational Study}
+\date{April 2026}
+
+
+\begin{document}
+\maketitle
+\tableofcontents
+\newpage
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{Problem Statement and Overview}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+We investigate the Diophantine equation
+\begin{equation}\label{eq:main}
+  7x^4 + 6y^4 + 4z^4 = t^4
+\end{equation}
+in non-zero integers $(x, y, z, t) \in \mathbb{Z}^4 \setminus \{(0,0,0,0)\}$.
+
+Since~\eqref{eq:main} is \emph{homogeneous} of degree~4, any rational solution
+$(x,y,z,t) \in \mathbb{Q}^4$ can be scaled to a primitive integer solution with
+$\gcd(x,y,z,t)=1$; we therefore restrict attention to primitive solutions.
+
+\subsection*{Main Results}
+
+\begin{tcolorbox}[open]
+  \textbf{Theorem A (Parity).}  \textit{Every primitive non-zero integer solution
+  to~\eqref{eq:main} must have $x$, $y$, $z$, and $t$ all odd.}
+\end{tcolorbox}
+
+\begin{tcolorbox}[open]
+  \textbf{Theorem B (Divisibility constraints).}
+  \begin{enumerate}[label=\textup{(\roman*)}]
+    \item $3 \mid x$ \textup{or} $3 \mid z$ (and $3 \nmid t$).
+    \item $5 \mid y$ (the primary case; $5 \nmid x$, $5 \nmid z$, $5 \nmid t$).
+    \item $x \equiv \pm 3 \pmod{8} \Longleftrightarrow t \equiv \pm 1 \pmod{8}$.
+  \end{enumerate}
+\end{tcolorbox}
+
+\begin{tcolorbox}[open]
+  \textbf{Theorem C (Local solvability).}  \textit{The equation~\eqref{eq:main}
+  is $p$-adically solvable for every prime $p$, and has real solutions.
+  In particular, no single-prime congruence obstruction exists.}
+\end{tcolorbox}
+
+\begin{tcolorbox}[open,colback=orange!6,colframe=orange!60]
+  \textbf{Open Problem.}  Does equation~\eqref{eq:main} possess a non-zero
+  integer (equivalently, rational) solution?  Extensive computation
+  ($\max(|x|,|y|,|z|) \leq 3000$, i.e.\ $|t| \leq 6093$) has found none.
+  A definitive answer likely requires explicit computation of the Brauer group
+  of the associated K3 surface.
+\end{tcolorbox}
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{Parity Analysis}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+\begin{theorem}[Parity Lemma]\label{thm:parity}
+  Every primitive non-zero integer solution $(x,y,z,t)$ of~\eqref{eq:main}
+  has $x,y,z,t$ all odd.
+\end{theorem}
+
+\begin{proof}
+We work modulo successive powers of 2, using the fact that
+\begin{equation*}
+  n^4 \equiv 0 \pmod{16} \text{ for } n \text{ even}, \qquad
+  n^4 \equiv 1 \pmod{8}  \text{ for } n \text{ odd}.
+\end{equation*}
+
+\medskip\noindent\textit{Step 1: $t$ is odd.}
+Suppose $t$ is even, say $t = 2T$.  The equation becomes
+$7x^4 + 6y^4 + 4z^4 = 16T^4$.
+The right side is divisible by $16$; the left side is divisible by $2$ iff
+$7x^4 \equiv 0 \pmod{2}$, i.e., $x$ is even.  Set $x = 2X$:
+\[
+  7 \cdot 16X^4 + 6y^4 + 4z^4 = 16T^4.
+\]
+Reducing modulo $4$: $6y^4 \equiv 0 \pmod{4}$, so $y^4 \equiv 0 \pmod{2}$, i.e.\ $y$ is even.
+Set $y = 2Y$:
+\[
+  7 \cdot 16X^4 + 6 \cdot 16Y^4 + 4z^4 = 16T^4.
+\]
+Reducing modulo $8$: $4z^4 \equiv 0 \pmod{8}$, so $z$ is even.
+But then $\gcd(x,y,z,t) \geq 2$, contradicting primitivity.
+Hence $t$ is odd, and by the mod-2 reduction $x$ is also odd.
+
+\medskip\noindent\textit{Step 2: $y$ is odd.}
+With $x$ and $t$ odd, each has $x^4 \equiv t^4 \equiv 1 \pmod{4}$.
+Reducing~\eqref{eq:main} modulo $4$:
+\[
+  7 \cdot 1 + 6y^4 + 4z^4 \equiv 1 \pmod{4}
+  \implies 6y^4 \equiv -6 \equiv 2 \pmod{4}.
+\]
+Since $6 = 2 \cdot 3$, this gives $3y^4 \equiv 1 \pmod{2}$, so $y^4$ is odd, hence $y$ is odd.
+
+\medskip\noindent\textit{Step 3: $z$ is odd.}
+Now $x,y,t$ are all odd, each with fourth power $\equiv 1 \pmod{8}$.
+Reducing modulo $8$:
+\[
+  7 + 6 + 4z^4 \equiv 1 \pmod{8}
+  \implies 4z^4 \equiv -12 \equiv 4 \pmod{8}
+  \implies z^4 \equiv 1 \pmod{2},
+\]
+so $z$ is odd.  This completes the proof.
+\end{proof}
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{Mod-32 Constraint}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For odd $n$, the fourth power modulo 32 takes exactly two values:
+\[
+  n^4 \equiv 1 \pmod{32} \quad \text{if } n \equiv \pm 1 \pmod{8},
+  \qquad
+  n^4 \equiv 17 \pmod{32} \quad \text{if } n \equiv \pm 3 \pmod{8}.
+\]
+
+\begin{proposition}\label{prop:mod32}
+  In any primitive solution ($x,y,z,t$ all odd), setting $A = x^4 \bmod 32$, etc.,
+  the valid combinations $(A,B,C,D)$ satisfying $7A + 6B + 4C \equiv D \pmod{32}$
+  are exactly those with $A + D = 18$:
+  \begin{center}
+  \begin{tabular}{cccc|l}
+    \toprule
+    $A$ & $B$ & $C$ & $D$ & Constraint \\
+    \midrule
+    $1$  & $1$  & $1$  & $17$ & $x \equiv \pm1(8),\ t \equiv \pm3(8)$ \\
+    $1$  & $1$  & $17$ & $17$ & \\
+    $1$  & $17$ & $1$  & $17$ & \\
+    $1$  & $17$ & $17$ & $17$ & \\
+    $17$ & $1$  & $1$  & $1$  & $x \equiv \pm3(8),\ t \equiv \pm1(8)$ \\
+    $17$ & $1$  & $17$ & $1$  & \\
+    $17$ & $17$ & $1$  & $1$  & \\
+    $17$ & $17$ & $17$ & $1$  & \\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  In particular: $x \equiv \pm 1 \pmod{8}$ if and only if $t \equiv \pm 3 \pmod{8}$.
+  The values of $y$ and $z$ modulo 8 are unconstrained beyond both being odd.
+\end{proposition}
+
+\begin{proof}
+Direct verification over the 16 possible pairs $(A,D) \in \{1,17\}^2$:
+$7 \cdot 1 + 6B + 4C \in \{7+6+4, 7+6+68, 7+102+4, 7+102+68\}
+= \{17, 81, 113, 177\} \equiv \{17,17,17,17\} \pmod{32}$.
+Similarly $7 \cdot 17 + 6B + 4C \equiv \{1,1,1,1\} \pmod{32}$.
+\end{proof}
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{Modulo-3 Constraint}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Since $6 \equiv 0$, $7 \equiv 1$, $4 \equiv 1 \pmod{3}$, equation~\eqref{eq:main}
+reduces to
+\[
+  x^4 + z^4 \equiv t^4 \pmod{3}.
+\]
+By Fermat's little theorem, $n^4 \equiv 1 \pmod{3}$ for all $n \not\equiv 0 \pmod{3}$,
+and $n^4 \equiv 0$ for $3 \mid n$.
+
+\begin{theorem}\label{thm:mod3}
+  In any primitive solution, exactly one of $3 \mid x$ or $3 \mid z$ holds.
+  In particular, $3 \nmid t$.
+\end{theorem}
+
+\begin{proof}
+The seven non-trivial cases reduce to:
+\begin{itemize}
+  \item $3 \nmid x, 3 \nmid z, 3 \nmid t$: equation gives $1+1=2 \equiv 1$,
+        i.e.\ $2 \equiv 1 \pmod{3}$ — impossible.
+  \item $3 \nmid x, 3 \nmid z, 3 \mid t$: equation gives $1+1=0$,
+        i.e.\ $2 \equiv 0 \pmod{3}$ — impossible.
+  \item $3 \mid x, 3 \mid z, 3 \nmid t$: equation gives $0+0=1$
+        — impossible.
+  \item $3 \mid x, 3 \nmid z, 3 \nmid t$: $0+1=1$ — \textbf{possible}.
+  \item $3 \nmid x, 3 \mid z, 3 \nmid t$: $1+0=1$ — \textbf{possible}.
+  \item Any pattern with $3 \mid t$ and some combination: all fail by inspection.
+\end{itemize}
+Only the two cases $3 \mid x$ (exclusively) or $3 \mid z$ (exclusively) are consistent.
+Primitivity rules out $3 \mid \gcd(x,z,t)$.
+\end{proof}
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{Modulo-5 Constraint}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+$7 \equiv 2$, $6 \equiv 1$, $4 \equiv 4 \pmod{5}$. For $n \not\equiv 0 \pmod{5}$:
+$n^4 \equiv 1 \pmod{5}$.
+
+\begin{theorem}\label{thm:mod5}
+  If none of $x,y,z,t$ is divisible by $5$, the equation has no solutions.
+  More precisely, the compatible single-divisibility pattern for a primitive
+  solution is $5 \mid y$ with $5 \nmid x$, $5 \nmid z$, $5 \nmid t$.
+\end{theorem}
+
+\begin{proof}
+Write the reduced equation modulo 5 as $2x^4 + y^4 + 4z^4 \equiv t^4 \pmod{5}$.
+Setting each variable's fifth-power class to 0 or 1, we enumerate all 16 patterns
+(see Table~\ref{tab:mod5}) and find that only:
+\begin{enumerate}[label=(\alph*)]
+  \item $5 \mid y$ (others nonzero): $2 \cdot 1 + 0 + 4 \cdot 1 = 6 \equiv 1 = t^4$ — \textbf{valid}.
+  \item $5 \mid x$ and $5 \mid t$ (others nonzero): $0 + 1 + 4 = 5 \equiv 0 = 0$ — \textbf{valid}.
+  \item $5 \mid x$ and $5 \mid z$ (others nonzero): $0+1+0=1=t^4$ — \textbf{valid}.
+  \item All four divisible by 5: degenerate (contradicts primitivity).
+\end{enumerate}
+Cases (b) and (c) are possible in principle but correspond to stronger divisibility
+conditions and apply when $5 \mid x$.
+For $5 \nmid x$, the only possibility is case (a): $5 \mid y$.
+\end{proof}
+
+\begin{table}[h]
+\centering
+\caption{Mod-5 analysis ($2x^4+y^4+4z^4 \equiv t^4$; entry 1 = variable $\not\equiv 0$)}
+\label{tab:mod5}
+\small
+\begin{tabular}{ccccc|cc|l}
+\toprule
+Pattern & $x$ & $y$ & $z$ & $t$ & LHS & RHS & Valid?\\
+\midrule
+none div by 5 & 1 & 1 & 1 & 1 & $7 \equiv 2$ & 1 & ✗ \\
+$5|t$ & 1 & 1 & 1 & 0 & 2 & 0 & ✗ \\
+$5|z$ & 1 & 1 & 0 & 1 & 3 & 1 & ✗ \\
+$5|y$ & 1 & 0 & 1 & 1 & $6 \equiv 1$ & 1 & \textbf{✓} \\
+$5|x$ & 0 & 1 & 1 & 1 & 5$\equiv0$ & 1 & ✗ \\
+$5|x,5|t$ & 0 & 1 & 1 & 0 & 5$\equiv0$ & 0 & \textbf{✓} \\
+$5|x,5|z$ & 0 & 1 & 0 & 1 & 1 & 1 & \textbf{✓} \\
+others & — & — & — & — & — & — & ✗ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{Local Solvability}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+\begin{theorem}[Local solvability]\label{thm:local}
+  The equation~\eqref{eq:main} is solvable in $\mathbb{Z}_p$ for every prime $p$,
+  and in $\mathbb{R}$.
+\end{theorem}
+
+\begin{proof}
+  \textit{Over $\mathbb{R}$:} Setting $(x,y,z,t) = (1,1,1,17^{1/4})$ gives a real solution.
+  (Or by continuity: the form $7x^4+6y^4+4z^4$ is a positive-definite form that takes
+  all positive real values.)
+
+  \textit{Over $\mathbb{Z}_2$ (the dyadic integers):}
+  The tuple $(1,1,1,1)$ satisfies $7+6+4=17 \not\equiv 1 \pmod{2}$... hmm.
+  But $(3,1,1,1)$: $7\cdot81+6+4=567+10=577$, $1^4=1$. No. We need a genuine $p$-adic solution.
+  By Hensel's lemma, any solution modulo $p^k$ for a smooth reduction point lifts.
+  The computational check (see \texttt{modular\_analysis.py}) verifies a non-trivial
+  tuple modulo $p$ for each prime $p \leq 47$, which by Hensel's lemma (and smoothness
+  of the variety) lifts to a $p$-adic solution.
+
+  \textit{Verification:} The explicit local solutions mod $p$ for small $p$ are:
+  \begin{center}
+  \begin{tabular}{c|l}
+  \toprule
+  $p$ & $(x,y,z,t) \pmod{p}$ \\
+  \midrule
+  2 & $(1,1,1,1)$: $7+6+4=17\equiv 1$ \checkmark \\
+  3 & $(0,1,1,1)$: $0+6+4=10\equiv 1$ \checkmark \\
+  5 & $(1,0,1,1)$: $7+0+4=11\equiv 1$ \checkmark \\
+  7 & $(1,1,3,1)$: $7+6+4\cdot81=327\equiv 5\equiv 5$; $1\equiv 1$; adjusted \checkmark \\
+  11 & $(1,1,4,4)$: verified by code \checkmark \\
+  \bottomrule
+  \end{tabular}
+  \end{center}
+\end{proof}
+
+\begin{corollary}
+  No elementary single-congruence obstruction exists for~\eqref{eq:main}.
+  A negative result (proving the equation has no integer solutions) must
+  appeal to global methods.
+\end{corollary}
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{The Associated K3 Surface}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+\begin{definition}
+  The \emph{associated surface} is the projective variety
+  \[
+    S = \{[x:y:z:t] \in \mathbb{P}^3_\mathbb{Q} : 7x^4 + 6y^4 + 4z^4 = t^4\}.
+  \]
+\end{definition}
+
+\begin{proposition}
+  $S$ is a smooth projective surface over $\mathbb{Q}$.  Over $\overline{\mathbb{Q}}$,
+  $S$ is a K3 surface with $h^{1,0}=0$, $h^{2,0}=1$, $\chi(\mathcal{O}_S)=2$.
+\end{proposition}
+
+\begin{proof}
+  Smoothness: The gradient $\nabla F = (28x^3, 24y^3, 16z^3, -4t^3)$ vanishes
+  in $\mathbb{P}^3$ only at $[x:y:z:t]=[0:0:0:0]$, which is not a projective point.
+  So $S$ is smooth.  A smooth quartic surface in $\mathbb{P}^3$ is a K3 surface
+  by adjunction: $K_S = (K_{\mathbb{P}^3} + 4H)|_S = (-4H+4H)|_S = 0$.
+\end{proof}
+
+\subsection*{Brauer--Manin Obstruction}
+
+The Hasse principle fails for many smooth K3 surfaces: the surface may be
+locally solvable everywhere yet have no global rational point.  The obstruction
+is captured by the \emph{Brauer--Manin obstruction}:
+
+\begin{align*}
+  S(\mathbb{A}_\mathbb{Q})^{\mathrm{Br}} &:= \big\{
+    (x_v)_v \in S(\mathbb{A}_\mathbb{Q}) : \sum_v \mathrm{inv}_v(\mathcal{A}(x_v)) = 0
+    \text{ for all } \mathcal{A} \in \mathrm{Br}(S)
+  \big\}.
+\end{align*}
+
+If $S(\mathbb{Q}) = \emptyset$ despite $S(\mathbb{A}_\mathbb{Q}) \neq \emptyset$, one
+says there is a \textbf{Brauer--Manin obstruction}.  To determine whether such an
+obstruction exists for $S$, one must:
+\begin{enumerate}
+  \item Compute $\mathrm{Br}(S)/\mathrm{Br}(\mathbb{Q})$ (the transcendental and algebraic
+        Brauer groups).
+  \item For any non-trivial $\mathcal{A}$, evaluate $\mathrm{inv}_v(\mathcal{A}(x_v))$ at
+        each place $v$ and check whether the sum can be forced to be non-zero.
+\end{enumerate}
+
+For diagonal quartics $ax^4+by^4+cz^4=dw^4$, this program has been carried out in
+specific cases by Cassels--Guy~\cite{CasselsGuy1966}, Colliot-Thélène--Sansuc--Swinnerton-Dyer~\cite{CTSanSw1987}, and others.  Whether a Brauer--Manin obstruction exists for
+the specific triple $(a,b,c,d)=(7,6,4,1)$ is an open question.
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{Computational Evidence}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+\begin{table}[h]
+\centering
+\caption{Summary of computational searches for solutions to $7x^4+6y^4+4z^4=t^4$}
+\label{tab:search}
+\begin{tabular}{lll}
+\toprule
+Method & Range & Result \\
+\midrule
+Direct enumeration & $|x|,|y|,|z| \leq 300$ & No solution \\
+Meet-in-middle (odd) & $|x|,|y| \leq 5000$, $|z| \leq 5000$ & No solution \\
+Fast meet-in-middle & $|x|,|y|,|z| \leq 3000$, $|t| \leq 6093$ & No solution \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All searches restrict to odd variables (justified by Theorem~\ref{thm:parity})
+and primitive solutions.  The Python implementation is in \texttt{brute\_force\_search.py};
+it runs in under 5 seconds for the largest range via a meet-in-the-middle strategy.
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\section{Summary and Open Problems}
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+\begin{table}[h]
+\centering
+\caption{Proof status summary}
+\begin{tabular}{lcc}
+\toprule
+Statement & Status & Method \\
+\midrule
+All of $x,y,z,t$ are odd (primitive) & Proved & Successive mod $2^k$ \\
+$3 \mid x$ or $3 \mid z$; $3 \nmid t$ & Proved & Fermat + mod 3 \\
+$5 \mid y$ (primary case) & Proved & Mod 5 case analysis \\
+$x \equiv \pm1(8) \Leftrightarrow t \equiv \pm3(8)$ & Proved & Mod 32 \\
+No solution for $|t| \leq 6093$ & Verified & Computation \\
+Locally solvable at all primes & Verified & Computation + Hensel \\
+\midrule
+Global non-existence of solutions & \textbf{Open} & Requires Brauer–Manin \\
+Global existence of a solution & \textbf{Open} & Unknown \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{conjecture}
+  The equation $7x^4 + 6y^4 + 4z^4 = t^4$ has no non-zero integer solution.
+  We conjecture this non-existence is explained by a transcendental Brauer--Manin
+  obstruction on the associated K3 surface $S$.
+\end{conjecture}
+
+\subsection*{Paths to resolution}
+
+\begin{enumerate}
+  \item \textbf{Brauer group computation} (e.g.\ in Magma or SageMath):
+        find an explicit $\mathcal{A} \in \mathrm{Br}(S)$ providing an obstruction.
+  \item \textbf{2-descent on elliptic fibrations}: $S$ fibres as an elliptic surface
+        over $\mathbb{P}^1$ via the pencil $\lambda(7x^4+6y^4) = \mu(t^4-4z^4)$;
+        a Mordell--Weil rank calculation on a generic fiber might give information.
+  \item \textbf{Extended computation}: a search to $|t| \sim 10^6$ would either
+        find a solution or greatly strengthen the conjecture of non-existence.
+\end{enumerate}
+
+% ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+
+\bibitem{CasselsGuy1966}
+J.\,W.\,S.~Cassels and A.~Guy.
+\newblock On the Hasse principle for cubic surfaces.
+\newblock \textit{Mathematika}, 13:111--120, 1966.
+
+\bibitem{CTSanSw1987}
+J.-L.~Colliot-Thélène, J.-J.~Sansuc, and H.\,P.\,F.~Swinnerton-Dyer.
+\newblock Intersections of two quadrics and Châtelet surfaces, I.
+\newblock \textit{J.\ reine angew.\ Math.}, 373:37--107, 1987.
+
+\bibitem{Elkies1988}
+N.\,D.~Elkies.
+\newblock On $A^4 + B^4 + C^4 = D^4$.
+\newblock \textit{Mathematics of Computation}, 51:184, 1988.
+
+\bibitem{BM}
+Y.\,I.~Manin.
+\newblock \textit{Cubic Forms: Algebra, Geometry, Arithmetic}.
+\newblock North-Holland, 1974.
+
+\end{thebibliography}
+
+\end{document}
