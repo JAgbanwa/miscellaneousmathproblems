@@ -709,8 +709,75 @@ Built as library `DiophantineX5Y43Z2Zero` against Mathlib v4.21.0
 | `natMap_injective` | $n \mapsto (-n^4, n^5, 0)$ injective | `neg_inj.mp` + `pow4_strictMono` |
 | `solutions_infinite` | Solution set infinite | `Set.infinite_range_of_injective` |
 
+---
 
+### [`diophantine-x5plus2y3plusz3/`](diophantine-x5plus2y3plusz3/)
 
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$x^5 + 2y^3 + z^3 = 0$$
+
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-x5plus2y3plusz3/brute_force_search.py) — Pure Python exhaustive search over $|x|, |y| \leq 50$; verifies the two primary families, finds all 15 solutions in the search range, and identifies three additional seed solutions $(-4,8,0)$, $(-9,27,27)$, $(-5,-5,15)$ not covered by the primary families.
+- [`analysis_notes.md`](diophantine-x5plus2y3plusz3/analysis_notes.md) — Full mathematical write-up: weighted-homogeneity structure, derivation of the two primary families, explicit solution tables, proof of infinitude, additional seeds, and summary.
+- [`InfinitelyManySolutions.lean`](diophantine-x5plus2y3plusz3/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation. **Sorry count: 0. Axiom count: 0.**
+- [`solution.tex`](diophantine-x5plus2y3plusz3/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Weighted homogeneity.** Assign weights $\mathrm{wt}(x) = 3$, $\mathrm{wt}(y) = 5$, $\mathrm{wt}(z) = 5$. Every term has weighted degree 15: $x^5$ (degree $5\times3=15$), $2y^3$ (degree $3\times5=15$), $z^3$ (degree $3\times5=15$). Hence if $(a,b,c)$ is any seed solution, the scaling $(t^3 a, t^5 b, t^5 c)$ is a solution for all $t \in \mathbb{Z}$, since the equation is multiplied by $t^{15}=0 \cdot t^{15}$.
+- **Family 1** (setting $z = -y$): The equation becomes $x^5 + y^3 = 0$, solved by $x = -n^3$, $y = n^5$. Full family: $(x, y, z) = (-n^3, n^5, -n^5)$ for all $n \in \mathbb{Z}$. Seed: $(-1, 1, -1)$. Proof: $-n^{15} + 2n^{15} - n^{15} = 0$.
+- **Family 2** (setting $y = 0$): The equation becomes $x^5 + z^3 = 0$, solved by $x = -n^3$, $z = n^5$. Full family: $(x, y, z) = (-n^3, 0, n^5)$ for all $n \in \mathbb{Z}$. Seed: $(-1, 0, 1)$. Proof: $-n^{15} + n^{15} = 0$.
+- **Family 3**: Seed $(-4, 8, 0)$: $(-4)^5 + 2\cdot8^3 = -1024 + 1024 = 0$. Family: $(-4n^3, 8n^5, 0)$ for all $n\in\mathbb{Z}$. Proof: $-4^5 n^{15} + 2\cdot8^3 n^{15} = 0$.
+- **Infinitude.** The map $n \mapsto (-n^3, n^5, -n^5)$ on $\mathbb{N}$ is injective by strict monotonicity of $n \mapsto n^3$.
+
+**Key structural facts:**
+- Unlike the other "infinitely many solutions" problems in this repository which rely on even-degree terms ($y^4$, $z^2$) for a sign constraint (forcing $x \leq 0$), the equation $x^5 + 2y^3 + z^3 = 0$ has **no sign constraint**: solutions can have $x > 0$ or $x < 0$ (e.g. $(1,-1,1)$ is a solution).
+- The equation is weighted-homogeneous of weighted degree 15 with weights $(3,5,5)$ — in contrast to the $(4,5,10)$-weighted equations in earlier entries.
+- The two primary families share the same $x$-values ($x = -n^3$) but differ in the $(y,z)$ components, giving independent infinite subsets of the solution set.
+- A brute-force search over $|x|,|y|,|z| \leq 50$ finds exactly 15 solutions (all accounted for by the two primary families, Family 3, and two further seeds $(-9,27,27)$ and $(-5,-5,15)$).
+- No modular obstruction: the equation is everywhere locally solvable (it possesses explicit global solutions).
+
+**Selected explicit solutions:**
+
+| $(x, y, z)$ | $x^5 + 2y^3 + z^3$ | Family |
+|---|---|---|
+| $(0, 0, 0)$ | $0$ | trivial |
+| $(-1, 1, -1)$ | $-1+2-1=0$ | Family 1, $n=1$ |
+| $(1, -1, 1)$ | $1-2+1=0$ | Family 1, $n=-1$ |
+| $(-1, 0, 1)$ | $-1+0+1=0$ | Family 2, $n=1$ |
+| $(1, 0, -1)$ | $1+0-1=0$ | Family 2, $n=-1$ |
+| $(-4, 8, 0)$ | $-1024+1024+0=0$ | Family 3, $n=1$ |
+| $(-8, 32, -32)$ | $-32768+65536-32768=0$ | Family 1, $n=2$ |
+| $(-9, 27, 27)$ | $-59049+39366+19683=0$ | extra seed |
+| $(-5, -5, 15)$ | $-3125-250+3375=0$ | extra seed |
+
+**Proof status:**
+
+| Component | Status | Method |
+|-----------|--------|--------|
+| Family 1 $(-n^3, n^5, -n^5)$ verified | ✓ Complete | `ring` identity |
+| Family 2 $(-n^3, 0, n^5)$ verified | ✓ Complete | `ring` identity |
+| Family 3 $(-4n^3, 8n^5, 0)$ verified | ✓ Complete | `ring` identity |
+| Infinitely many distinct solutions | ✓ Complete | Strict monotonicity of $n^3$ on $\mathbb{N}$ |
+| Lean 4 formalisation (0 sorry) | ✓ **Complete** | Mathlib tactics |
+| Full classification of all solutions | Open | Requires algebraic geometry |
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](diophantine-x5plus2y3plusz3/InfinitelyManySolutions.lean):**
+
+Built against Mathlib v4.21.0 (`lake exe cache get && lake build`). **Axiom count: 0, Sorry count: 0.**
+
+| Lean name | Statement | Proof method |
+|-----------|-----------|--------------|
+| `family1 n` | $(-n^3)^5 + 2(n^5)^3 + (-n^5)^3 = 0$ | `ring` |
+| `family2 n` | $(-n^3)^5 + 2\cdot 0^3 + (n^5)^3 = 0$ | `ring` |
+| `family3 n` | $(-4n^3)^5 + 2(8n^5)^3 + 0^3 = 0$ | `ring` |
+| Explicit witnesses (11) | 11 small solutions verified | `norm_num` |
+| `natMap_injective` | $n \mapsto (-n^3, n^5, -n^5)$ injective | `neg_inj.mp` + `pow3_strictMono` |
+| `solutions_infinite` | Solution set infinite | `Set.infinite_range_of_injective` |
+
+**Result:** The equation $x^5 + 2y^3 + z^3 = 0$ has **infinitely many** integer solutions. The primary parametric family is $(x, y, z) = (-n^3, n^5, -n^5)$ for $n \in \mathbb{Z}$. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-x5plus2y3plusz3/InfinitelyManySolutions.lean).
 
 
 
