@@ -14,7 +14,7 @@ integer solutions.
    Consequently, if `(x, y, z)` is a solution then so is `(n^3*x, n^3*y, n^4*z)`
    for any `n : ℤ`, since the equation is multiplied by `n^12`.
 
-2. **Four parametric families.**  Four infinite (and independent) families of
+2. **Six parametric families.**  Six infinite (and independent) families of
    integer solutions are exhibited:
    - **Family 1.** Setting `x = 0` gives `z^3 = y^4`, solved by `(0, t^3, t^4)`.
    - **Family 2.** Setting `y = x` gives `x^4 + z^3 = 0`, solved by `(t^3, t^3, -t^4)`.
@@ -23,6 +23,12 @@ integer solutions.
    - **Family 4.** Setting `x = 14*t^3, y = 21*t^3, z = 49*t^4` rests on the
      algebraic identity `2*(14)^4 - (21)^4 + (49)^3 = 0`, equivalently
      `2*2^4 - 3^4 + 7^2 = 32 - 81 + 49 = 0`.
+   - **Family 5.** Setting `x = 196*t^3, y = 392*t^3, z = 2744*t^4` rests on the
+     identity `2*4^4 - 8^4 + 8^3*7 = 512 - 4096 + 3584 = 0`.
+     Seed: `(196, 392, 2744) = (4*7^2, 8*7^2, 8*7^3)`.
+   - **Family 6.** Setting `x = 1922*t^3, y = 961*t^3, z = -29791*t^4` rests on
+     the identity `2*2^4 - 1^4 - 31 = 32 - 1 - 31 = 0`.
+     Seed: `(1922, 961, -29791) = (2*31^2, 31^2, -31^3)`.
 
 3. **Injectivity.**  The map `n ↦ ((0 : ℤ), (n : ℤ)^3, (n : ℤ)^4) : ℕ → ℤ × ℤ × ℤ`
    is injective, because `n ↦ n^3` is strictly monotone on `ℕ`
@@ -92,7 +98,27 @@ theorem family4 (t : ℤ) : isolution (14 * t ^ 3) (21 * t ^ 3) (49 * t ^ 4) := 
   unfold isolution
   ring
 
-/-! ## Small explicit witnesses -/
+/-! ## Family 5: (196*t³, 392*t³, 2744*t⁴) -/
+
+/-- For any `t : ℤ`, the triple `(196*t^3, 392*t^3, 2744*t^4)` is a solution.
+Seed: `(196, 392, 2744) = (4*7^2, 8*7^2, 8*7^3)`.
+Key identity: `2*4^4 - 8^4 + 8^3*7 = 512 - 4096 + 3584 = 0`.
+Derivation: setting `y = 2*x` gives `(2 - 16)*x^4 + z^3 = 0`, i.e. `z^3 = 14*x^4`;
+taking `x = 4*7^2*t^3` forces `z^3 = 14*(4*7^2)^4*t^12 = 8^9*7^9*t^12 / ... = (8*7^3*t^4)^3`. -/
+theorem family5 (t : ℤ) : isolution (196 * t ^ 3) (392 * t ^ 3) (2744 * t ^ 4) := by
+  unfold isolution
+  ring
+
+/-! ## Family 6: (1922*t³, 961*t³, -29791*t⁴) -/
+
+/-- For any `t : ℤ`, the triple `(1922*t^3, 961*t^3, -29791*t^4)` is a solution.
+Seed: `(1922, 961, -29791) = (2*31^2, 31^2, -31^3)`.
+Key identity: `2*2^4 - 1^4 - 31 = 32 - 1 - 31 = 0`.
+Verification: `2*(2*31^2)^4 - (31^2)^4 + (-31^3)^3 = 31^8*(2*2^4 - 1 - 31) = 31^8*0 = 0`. -/
+theorem family6 (t : ℤ) : isolution (1922 * t ^ 3) (961 * t ^ 3) (-(29791 * t ^ 4)) := by
+  unfold isolution
+  ring
+
 
 theorem sol_0_0_0 : isolution 0 0 0 := by norm_num [isolution]
 theorem sol_0_1_1 : isolution 0 1 1 := by norm_num [isolution]
@@ -106,6 +132,10 @@ theorem sol_14_21_49 : isolution 14 21 49 := by norm_num [isolution]
 theorem sol_neg14_neg21_49 : isolution (-14 : ℤ) (-21 : ℤ) 49 := by norm_num [isolution]
 theorem sol_0_8_16 : isolution 0 8 16 := by norm_num [isolution]
 theorem sol_8_8_neg16 : isolution 8 8 (-16 : ℤ) := by norm_num [isolution]
+theorem sol_196_392_2744 : isolution 196 392 2744 := by norm_num [isolution]
+theorem sol_neg196_neg392_2744 : isolution (-196 : ℤ) (-392 : ℤ) 2744 := by norm_num [isolution]
+theorem sol_1922_961_neg29791 : isolution 1922 961 (-29791 : ℤ) := by norm_num [isolution]
+theorem sol_neg1922_961_neg29791 : isolution (-1922 : ℤ) 961 (-29791 : ℤ) := by norm_num [isolution]
 
 /-! ## Infinitely many solutions -/
 

@@ -82,7 +82,7 @@
 \title{%
   \Large\bfseries Infinitely Many Integer Solutions to\\[6pt]
   \Huge $2x^4 - y^4 + z^3 = 0$\\[10pt]
-  \large Four Parametric Families with Lean~4 Formalisation
+  \large Six Parametric Families with Lean~4 Formalisation
 }
 \author{%
   \normalsize Verified in Lean~4 / Mathlib~4 (v4.21.0)\\[2pt]
@@ -112,13 +112,15 @@ We study the Diophantine equation
 
 \begin{theorem}[Main result]\label{thm:main}
   The equation~\eqref{eq:main} has \textbf{infinitely many} integer solutions.
-  In particular, each of the following four parametric families provides infinitely many
+  In particular, each of the following six parametric families provides infinitely many
   distinct integer solutions:
   \begin{align}
     \text{Family 1:} &\quad (x,y,z) = (0,\; t^3,\; t^4), && t \in \Z,\label{eq:fam1}\\
     \text{Family 2:} &\quad (x,y,z) = (t^3,\; t^3,\; -t^4), && t \in \Z,\label{eq:fam2}\\
     \text{Family 3:} &\quad (x,y,z) = (4t^3,\; 0,\; -8t^4), && t \in \Z,\label{eq:fam3}\\
-    \text{Family 4:} &\quad (x,y,z) = (14t^3,\; 21t^3,\; 49t^4), && t \in \Z.\label{eq:fam4}
+    \text{Family 4:} &\quad (x,y,z) = (14t^3,\; 21t^3,\; 49t^4), && t \in \Z,\label{eq:fam4}\\
+    \text{Family 5:} &\quad (x,y,z) = (196t^3,\; 392t^3,\; 2744t^4), && t \in \Z,\label{eq:fam5}\\
+    \text{Family 6:} &\quad (x,y,z) = (1922t^3,\; 961t^3,\; -29791t^4), && t \in \Z.\label{eq:fam6}
   \end{align}
 \end{theorem}
 
@@ -133,8 +135,9 @@ We study the Diophantine equation
   are also symmetries of the equation.
   These generate additional families from each seed above (e.g.\ $(t^3,-t^3,-t^4)$,
   $(-4t^3, 0, -8t^4)$, $(14t^3,-21t^3,49t^4)$, etc.).
-  Up to these sign symmetries, the four families are the only ones found by exhaustive
-  search for $|x|, |y| \le 200$ (45 solutions total, all accounted for).
+  Up to these sign symmetries, the six families are the only ones found by exhaustive
+  search for $|x|, |y| \le 2500$ (Families~1--5 appear within $|x|,|y|\le 500$;
+  Family~6 appears at $|x|,|y|\le 2500$; no additional primitive seed is found).
 \end{remark}
 
 % ════════════════════════════════════════════════════════════════════════════
@@ -166,9 +169,10 @@ Every monomial has the same weighted degree:
 
 \begin{remark}
   Proposition~\ref{prop:scaling} means that finding one non-trivial solution
-  immediately gives infinitely many.  The four primitive seeds
-  $(0,1,1)$, $(1,1,-1)$, $(4,0,-8)$, and $(14,21,49)$ each generate a distinct
-  infinite parametric family under this scaling.
+  immediately gives infinitely many.  The six primitive seeds
+  $(0,1,1)$, $(1,1,-1)$, $(4,0,-8)$, $(14,21,49)$, $(196,392,2744)$, and
+  $(1922,961,-29791)$ each generate a distinct infinite parametric family under
+  this scaling.
 \end{remark}
 
 % ════════════════════════════════════════════════════════════════════════════
@@ -255,6 +259,71 @@ yielding $z = 49t^4$, $x = 2 \cdot 7t^3 = 14t^3$, $y = 3 \cdot 7t^3 = 21t^3$.
 
 \noindent Substituting: $2(14t^3)^4 - (21t^3)^4 + (49t^4)^3 = t^{12}(2\cdot 14^4 - 21^4 + 49^3) = 0$. $\checkmark$
 
+\subsection{Family 5: \texorpdfstring{$(196t^3,\, 392t^3,\, 2744t^4)$}{(196t³,392t³,2744t⁴)}}
+
+Set $y = 2x$.  Equation~\eqref{eq:main} becomes
+\[
+  2x^4 - (2x)^4 + z^3 = 2x^4 - 16x^4 + z^3 = -14x^4 + z^3 = 0,
+\]
+so $z^3 = 14x^4 = 2\cdot 7\cdot x^4$.  Writing $x = 2^a\cdot 7^b\cdot m^3$, the
+right-hand side is $2^{4a+1}\cdot 7^{4b+1}\cdot m^{12}$.  For this to be a perfect
+cube we need $4a+1\equiv 0\pmod 3$ and $4b+1\equiv 0\pmod 3$, giving $a\equiv b\equiv 2\pmod 3$.
+The minimal positive solution is $a=b=2$, $m=t$, yielding:
+\[
+  x = 4\cdot 49\cdot t^3 = 196t^3,\quad
+  y = 392t^3,\quad
+  z = 2^3 \cdot 7^3 \cdot t^4 = 2744t^4.
+\]
+
+\begin{remark}[Key identity for Family~5]
+  \[
+    2\cdot 4^4 - 8^4 + 8^3\cdot 7 = 512 - 4096 + 3584 = 0.
+  \]
+  Multiplying by $7^8$:
+  \[
+    2(4\cdot 7^2)^4 - (8\cdot 7^2)^4 + (8\cdot 7^3)^3
+    = 7^8(512 - 4096 + 3584) = 0,
+  \]
+  i.e.\ $2\cdot 196^4 - 392^4 + 2744^3 = 0$.
+\end{remark}
+
+\noindent Substituting: $2(196t^3)^4 - (392t^3)^4 + (2744t^4)^3 = t^{12}(2\cdot 196^4 - 392^4 + 2744^3) = 0$. $\checkmark$
+
+\subsection{Family 6: \texorpdfstring{$(1922t^3,\, 961t^3,\, -29791t^4)$}{(1922t³,961t³,-29791t⁴)}}
+
+Set $x = 2p^2$, $y = p^2$, $z = -p^3$ for an integer $p$.  Substituting:
+\[
+  2(2p^2)^4 - (p^2)^4 + (-p^3)^3
+  = 2\cdot 16p^8 - p^8 - p^9
+  = p^8(32 - 1 - p)
+  = p^8(31 - p).
+\]
+This equals zero if and only if $p = 0$ or $p = 31$.  Taking $p = 31$:
+\[
+  x = 2\cdot 31^2 = 1922,\quad y = 31^2 = 961,\quad z = -31^3 = -29791.
+\]
+
+\begin{remark}[Key identity for Family~6]
+  \[
+    2\cdot 2^4 - 1^4 - 31 = 32 - 1 - 31 = 0.
+  \]
+  Multiplying by $31^8$:
+  \[
+    2(2\cdot 31^2)^4 - (31^2)^4 + (-31^3)^3
+    = 31^8(32 - 1 - 31) = 0,
+  \]
+  i.e.\ $2\cdot 1922^4 - 961^4 + (-29791)^3 = 0$.
+\end{remark}
+
+\begin{remark}
+  The factor $(31 - p)$ vanishes only at $p = 31$, so this seed does not arise
+  from a two-parameter algebraic substitution.  The infinite parametric family
+  $(1922t^3, 961t^3, -29791t^4)$ is produced by weighted scaling of the primitive
+  seed $(1922, 961, -29791)$.
+\end{remark}
+
+\noindent Substituting: $2(1922t^3)^4 - (961t^3)^4 + (-29791t^4)^3 = t^{12}(2\cdot 1922^4 - 961^4 - 29791^3) = 0$. $\checkmark$
+
 % ════════════════════════════════════════════════════════════════════════════
 \section{Proof of Infinitude}\label{sec:infinite}
 
@@ -330,14 +399,16 @@ $(14, 21, 49)$ & $76832$ & $-194481$ & $117649$ & $0$ \\
 $(0, 8, 16)$ & $0$ & $-4096$ & $4096$ & $0$ \\
 $(8, 8, -16)$ & $8192$ & $-4096$ & $-4096$ & $0$ \\
 $(32, 0, -128)$ & $2097152$ & $0$ & $-2097152$ & $0$ \\
-$(112, 168, 784)$ & $314703872$ & $-796793856$ & $481890304$ [sic] & [...]\\
+$(196, 392, 2744)$ & $2\cdot196^4$ & $-392^4$ & $2744^3$ & $0$ \\
+$(-196, -392, 2744)$ & $2\cdot196^4$ & $-392^4$ & $2744^3$ & $0$ \\
+$(1922, 961, {-}29791)$ & $2\cdot1922^4$ & $-961^4$ & $(-29791)^3$ & $0$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \noindent
-(The last row: $2 \cdot 112^4 - 168^4 + 784^3 = 0$ is the Family~4 member with $t=2$,
-obtained by scaling $(14, 21, 49)$ by $(2^3, 2^3, 2^4) = (8, 8, 16)$.)
+(Family~5 at $t=1$: $2\cdot 196^4 - 392^4 + 2744^3 = 7^8(512-4096+3584)=0$.
+ Family~6 at $t=1$: $2\cdot 1922^4 - 961^4 + (-29791)^3 = 31^8(32-1-31)=0$.)
 
 % ════════════════════════════════════════════════════════════════════════════
 \section{Lean~4 Formalisation}\label{sec:lean}
@@ -370,6 +441,16 @@ theorem family3 (t : Int) : isolution (4 * t ^ 3) 0 (-(8 * t ^ 4)) := by
 theorem family4 (t : Int) : isolution (14 * t ^ 3) (21 * t ^ 3) (49 * t ^ 4) := by
   unfold isolution; ring
 
+-- Family 5: (196*t^3, 392*t^3, 2744*t^4)
+-- Core identity: 2*4^4 - 8^4 + 8^3*7 = 512 - 4096 + 3584 = 0
+theorem family5 (t : Int) : isolution (196 * t ^ 3) (392 * t ^ 3) (2744 * t ^ 4) := by
+  unfold isolution; ring
+
+-- Family 6: (1922*t^3, 961*t^3, -29791*t^4)
+-- Core identity: 2*2^4 - 1^4 - 31 = 32 - 1 - 31 = 0
+theorem family6 (t : Int) : isolution (1922 * t ^ 3) (961 * t ^ 3) (-(29791 * t ^ 4)) := by
+  unfold isolution; ring
+
 -- Injectivity via strict monotonicity of n |-> n^3 on N
 private theorem pow3_strictMono : StrictMono (fun n : Nat => n ^ 3) := fun a b hab =>
   Nat.pow_lt_pow_left hab (by norm_num)
@@ -391,7 +472,11 @@ Lean name & Statement & Method & Status \\
 \texttt{family2} & $(t^3, t^3, -t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
 \texttt{family3} & $(4t^3, 0, -8t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
 \texttt{family4} & $(14t^3, 21t^3, 49t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
+\texttt{family5} & $(196t^3, 392t^3, 2744t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
+\texttt{family6} & $(1922t^3, 961t^3, -29791t^4)$ is a solution & \texttt{ring} & $\checkmark$ fully proved \\
 \texttt{sol\_14\_21\_49} & Seed solution $(14, 21, 49)$ & \texttt{norm\_num} & $\checkmark$ fully proved \\
+\texttt{sol\_196\_392\_2744} & Seed solution $(196, 392, 2744)$ & \texttt{norm\_num} & $\checkmark$ fully proved \\
+\texttt{sol\_1922\_961\_neg29791} & Seed solution $(1922, 961, -29791)$ & \texttt{norm\_num} & $\checkmark$ fully proved \\
 \texttt{pow3\_strictMono} & $n \mapsto n^3$ strictly mono on $\N$ & \texttt{Nat.pow\_lt\_pow\_left} & $\checkmark$ fully proved \\
 \texttt{natMap\_injective} & $n \mapsto (0, n^3, n^4)$ is injective & \texttt{pow3\_strictMono} & $\checkmark$ fully proved \\
 \texttt{solutions\_infinite} & Solution set is infinite & \texttt{Set.infinite\_range} & $\checkmark$ fully proved \\
@@ -410,18 +495,19 @@ and infinitude by the standard Mathlib utility
 \section{Open Questions}\label{sec:open}
 
 \begin{enumerate}
-  \item \textbf{Complete classification.}  Are the four families (and their sign variants)
+  \item \textbf{Complete classification.}  Are the six families (and their sign variants)
     the only integer solutions?  The weighted projective surface
     $S \subset \mathbb{P}(3,3,4)$ defined by $2X^4 - Y^4 + Z^3 = 0$ is a \emph{surface},
     not a curve; Faltings' theorem does not apply.  A full classification would require
-    a descent argument or an effective height bound on the four rational curves
-    $\mathcal{C}_1, \ldots, \mathcal{C}_4$ tracing the four families.
-  \item \textbf{Are there other primitive seeds?}  Exhaustive search for
-    $|x|, |y| \le 500$ (an extension of the present computation) would clarify whether
-    $(14, 21, 49)$ is the only ``exotic'' primitive seed or whether further families exist.
-  \item \textbf{The minimal-prime identity.}  Family~4 rests on $2\cdot 2^4 - 3^4 + 7^2 = 0$.
-    Are there other triples $(a, b, c)$ of integers with $2a^4 - b^4 + c^3 = 0$ and
-    $\gcd(a,b,c)$ ``small'' relative to the magnitude of the solution?
+    a descent argument or an effective height bound on the six rational curves
+    $\mathcal{C}_1, \ldots, \mathcal{C}_6$ tracing the six families.
+  \item \textbf{Are there further primitive seeds?}  Exhaustive search finds no sporadic
+    solution within $|x|, |y| \le 2500$.  Whether another primitive seed exists at
+    larger bounds is an open computational and number-theoretic question.
+  \item \textbf{The minimal-prime identity.}  Family~4 rests on $2\cdot 2^4 - 3^4 + 7^2 = 0$,
+    and Family~6 rests on $2\cdot 2^4 - 1 - 31 = 0$ (unique since $2\cdot 2^4 - 1 - p = 0$
+    has the sole solution $p = 31$).  Are there other integer triples $(a, b, c)$ giving
+    $2a^4 - b^4 + c^3 = 0$ with $\gcd(a,b,c)$ ``small'' relative to the magnitude?
 \end{enumerate}
 
 % ════════════════════════════════════════════════════════════════════════════

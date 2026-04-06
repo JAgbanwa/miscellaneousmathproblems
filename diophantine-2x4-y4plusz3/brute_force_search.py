@@ -7,10 +7,11 @@ The equation is weighted-homogeneous of degree 12 with weights
 If (x0, y0, z0) is a solution, then (t^3*x0, t^3*y0, t^4*z0) is also
 a solution for any integer t.
 
-Four explicit infinite parametric families are discovered below.
+Six explicit infinite parametric families are discovered below.
 
-Search result: all solutions for |x|, |y| <= 500 belong to one of the
-four families; no sporadic solutions exist in this range.
+Search result (|x|, |y| <= 500): all solutions belong to one of Families 1–5.
+Family 6 seed (1922, 961, -29791) appears only for |x|, |y| <= 2500.
+No sporadic solutions are found within |x|, |y| <= 2500.
 """
 import math
 
@@ -59,8 +60,26 @@ def family4(t: int):
     return (14 * t ** 3, 21 * t ** 3, 49 * t ** 4)
 
 
+def family5(t: int):
+    """Family 5:  (196*t^3, 392*t^3, 2744*t^4)  --  computationally discovered.
+    Seed (196, 392, 2744) = (4*7^2, 8*7^2, 8*7^3).
+    Core identity: 2*4^4 - 8^4 + 8^3*7 = 512 - 4096 + 3584 = 0.
+    Derivation: setting y=2x gives (2-16)*x^4 + z^3 = 0, i.e. z^3 = 14*x^4;
+    taking x = 4*7^2*t^3 yields z = 8*7^3*t^4 = 2744*t^4."""
+    return (196 * t ** 3, 392 * t ** 3, 2744 * t ** 4)
+
+
+def family6(t: int):
+    """Family 6:  (1922*t^3, 961*t^3, -29791*t^4)  --  computationally discovered.
+    Seed (1922, 961, -29791) = (2*31^2, 31^2, -31^3).
+    Core identity: 2*2^4 - 1^4 - 31 = 32 - 1 - 31 = 0.
+    Verification: 2*(2*31^2)^4 - (31^2)^4 + (-31^3)^3 = 31^8*(32 - 1 - 31) = 0.
+    This seed is found only for |x|, |y| <= 2500 (lies outside the N=500 range)."""
+    return (1922 * t ** 3, 961 * t ** 3, -(29791 * t ** 4))
+
+
 def in_family(x: int, y: int, z: int) -> str:
-    """Return a string label if (x, y, z) belongs to one of the four families."""
+    """Return a string label if (x, y, z) belongs to one of the six families."""
     for t in range(-200, 201):
         if (x, y, z) == family1(t):
             return f"Family 1 (t={t})"
@@ -85,6 +104,22 @@ def in_family(x: int, y: int, z: int) -> str:
         # Family 4 with x,y -> -x,-y:  (-14*t^3, -21*t^3, 49*t^4)
         if (x, y, z) == (-(14 * t ** 3), -(21 * t ** 3), 49 * t ** 4):
             return f"Family 4d (t={t})"
+        if (x, y, z) == family5(t):
+            return f"Family 5 (t={t})"
+        # Family 5 with x -> -x:  (-196*t^3, 392*t^3, 2744*t^4)
+        if (x, y, z) == (-(196 * t ** 3), 392 * t ** 3, 2744 * t ** 4):
+            return f"Family 5b (t={t})"
+        # Family 5 with y -> -y:  (196*t^3, -392*t^3, 2744*t^4)
+        if (x, y, z) == (196 * t ** 3, -(392 * t ** 3), 2744 * t ** 4):
+            return f"Family 5c (t={t})"
+        # Family 5 with x,y -> -x,-y:  (-196*t^3, -392*t^3, 2744*t^4)
+        if (x, y, z) == (-(196 * t ** 3), -(392 * t ** 3), 2744 * t ** 4):
+            return f"Family 5d (t={t})"
+        if (x, y, z) == family6(t):
+            return f"Family 6 (t={t})"
+        # Family 6 with x -> -x:  (-1922*t^3, 961*t^3, -29791*t^4)
+        if (x, y, z) == (-(1922 * t ** 3), 961 * t ** 3, -(29791 * t ** 4)):
+            return f"Family 6b (t={t})"
     return "SPORADIC"
 
 
@@ -161,6 +196,8 @@ if __name__ == "__main__":
     verify_family("Family 2 (t^3, t^3, -t^4)", [(t, family2(t)) for t in range(-10, 11)])
     verify_family("Family 3 (4t^3, 0, -8t^4)", [(t, family3(t)) for t in range(-10, 11)])
     verify_family("Family 4 (14t^3, 21t^3, 49t^4)", [(t, family4(t)) for t in range(-10, 11)])
+    verify_family("Family 5 (196t^3, 392t^3, 2744t^4)", [(t, family5(t)) for t in range(-10, 11)])
+    verify_family("Family 6 (1922t^3, 961t^3, -29791t^4)", [(t, family6(t)) for t in range(-10, 11)])
 
     print()
 
@@ -177,3 +214,13 @@ if __name__ == "__main__":
     print(f"  2*(14)^4 - (21)^4 + (49)^3 = {2*14**4 - 21**4 + 49**3}")
     print(f"  = 7^4 * (2*2^4 - 3^4) + 7^6 = 7^4 * (32 - 81 + 49) = 0")
     print(f"  Identity check: 2*2^4 - 3^4 + 7^2 = {2*2**4 - 3**4 + 7**2}")
+    print()
+    print("Key algebraic identity for Family 5:")
+    print(f"  2*(196)^4 - (392)^4 + (2744)^3 = {2*196**4 - 392**4 + 2744**3}")
+    print(f"  = 7^8 * (2*4^4 - 8^4 + 8^3*7) = 7^8 * (512 - 4096 + 3584) = 0")
+    print(f"  Identity check: 2*4^4 - 8^4 + 8^3*7 = {2*4**4 - 8**4 + 8**3*7}")
+    print()
+    print("Key algebraic identity for Family 6:")
+    print(f"  2*(1922)^4 - (961)^4 + (-29791)^3 = {2*1922**4 - 961**4 + (-29791)**3}")
+    print(f"  = 31^8 * (2*2^4 - 1^4 - 31) = 31^8 * (32 - 1 - 31) = 0")
+    print(f"  Identity check: 2*2^4 - 1 - 31 = {2*2**4 - 1 - 31}")
