@@ -847,5 +847,85 @@ Built against Mathlib v4.21.0 (`lake exe cache get && lake build`). **Axiom coun
 
 **Result:** The equation $4x^5 + 4y^5 + 11z^5 = 0$ has **infinitely many** integer solutions. The parametric family is $(x, y, z) = (t, -t, 0)$ for all $t \in \mathbb{Z}$. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-4x5plus4y5plus11z5/InfinitelyManySolutions.lean).
 
+---
+
+### [`diophantine-2x4-y4plusz3/`](diophantine-2x4-y4plusz3/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$2x^4 - y^4 + z^3 = 0$$
+
+**Files:**
+- [`brute_force_search.py`](diophantine-2x4-y4plusz3/brute_force_search.py) — Pure Python exhaustive search over $|x|, |y| \leq 200$; classifies all 45 found solutions into the four parametric families and confirms no sporadic solutions in this range.
+- [`analysis_notes.md`](diophantine-2x4-y4plusz3/analysis_notes.md) — Full mathematical write-up: weighted-homogeneity structure (weights $3,3,4$), derivation of all four parametric families, explicit solution tables, proof of infinitude, and modular analysis.
+- [`InfinitelyManySolutions.lean`](diophantine-2x4-y4plusz3/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation. **Sorry count: 0. Axiom count: 0.**
+- [`solution.tex`](diophantine-2x4-y4plusz3/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Weighted homogeneity.** Assign weights $\mathrm{wt}(x) = \mathrm{wt}(y) = 3$ and $\mathrm{wt}(z) = 4$. Every monomial has the same weighted degree 12. If $(x_0, y_0, z_0)$ is any solution, then $(n^3 x_0,\, n^3 y_0,\, n^4 z_0)$ is also a solution for all $n \in \mathbb{Z}$, since the equation is multiplied by $n^{12}$.
+- **Family 1** (setting $x=0$): The equation reduces to $z^3 = y^4$. By unique factorisation, the solutions are $y = t^3$, $z = t^4$. Full family: $(0,\, t^3,\, t^4)$ for $t \in \mathbb{Z}$. Proof: $0 - t^{12} + t^{12} = 0$.
+- **Family 2** (setting $y=x$): The equation reduces to $x^4 + z^3 = 0$, giving $x = t^3$, $z = -t^4$. Full family: $(t^3,\, t^3,\, -t^4)$ for $t \in \mathbb{Z}$. Proof: $2t^{12} - t^{12} - t^{12} = 0$.
+- **Family 3** (setting $y=0$): The equation reduces to $2x^4 + z^3 = 0$. With $x = 4t^3$: $2(4t^3)^4 = 512t^{12} = (8t^4)^3$, so $z = -8t^4$. Full family: $(4t^3,\, 0,\, -8t^4)$ for $t \in \mathbb{Z}$. Proof: $512t^{12} - 512t^{12} = 0$.
+- **Family 4** (setting $x=2p, y=3p$): The equation becomes $-49p^4 + z^3 = 0$. For $p = 7t^3$: $z^3 = 7^6 t^{12} = (49t^4)^3$. Full family: $(14t^3,\, 21t^3,\, 49t^4)$ for $t \in \mathbb{Z}$. Rests on the numerical coincidence $2 \cdot 2^4 - 3^4 + 7^2 = 32 - 81 + 49 = 0$.
+- **Infinitude.** The map $n \mapsto (0, n^3, n^4)$ is injective on $\mathbb{N}$ (strict monotonicity of $n \mapsto n^3$), giving infinitely many distinct solutions.
+
+**Key structural facts:**
+- The equation is a **weighted projective surface** in $\mathbb{P}(3,3,4)$ of weighted degree 12 — in contrast to the $(4,5,10)$- and $(3,5,5)$-weighted surfaces in earlier entries.
+- **Four distinct primitive seeds** are found: $(0,1,1)$, $(1,1,-1)$, $(4,0,-8)$, and $(14,21,49)$.
+- The sign symmetries $(x,y,z) \mapsto (\pm x, \pm y, z)$ generate additional family variants from each seed (e.g.\ $(t^3, -t^3, -t^4)$ from Family 2; $(-4t^3, 0, -8t^4)$ from Family 3).
+- **Key algebraic identity:** $2 \cdot 14^4 - 21^4 + 49^3 = 76832 - 194481 + 117649 = 0$, which factors as $7^4(2 \cdot 16 - 81) + 7^6 = 7^4(32 - 81 + 49) = 0$.
+- **No modular obstruction:** The solution $(0, 1, 1)$ works over every $\mathbb{F}_p$, so the equation is everywhere locally solvable.
+- A brute-force search over $|x|, |y| \le 200$ finds exactly **45 solutions**, all belonging to the four families above (and their sign variants). No sporadic solution is found.
+
+**Selected explicit solutions:**
+
+| $(x, y, z)$ | $2x^4 - y^4 + z^3$ | Family |
+|---|---|---|
+| $(0, 0, 0)$ | $0$ | trivial |
+| $(0, 1, 1)$ | $0-1+1=0$ | Family 1, $t=1$ |
+| $(0, -1, 1)$ | $0-1+1=0$ | Family 1, $t=-1$ |
+| $(1, 1, -1)$ | $2-1-1=0$ | Family 2, $t=1$ |
+| $(1, -1, -1)$ | $2-1-1=0$ | Family 2b, $t=1$ |
+| $(4, 0, -8)$ | $512-0-512=0$ | Family 3, $t=1$ |
+| $(14, 21, 49)$ | $76832-194481+117649=0$ | Family 4, $t=1$ |
+| $(0, 8, 16)$ | $0-4096+4096=0$ | Family 1, $t=2$ |
+| $(8, 8, -16)$ | $8192-4096-4096=0$ | Family 2, $t=2$ |
+| $(112, 168, 784)$ | $0$ | Family 4, $t=2$ |
+
+**Proof status:**
+
+| Component | Status | Method |
+|-----------|--------|--------|
+| Family 1 $(0, t^3, t^4)$ | ✓ Complete | `ring` identity |
+| Family 2 $(t^3, t^3, -t^4)$ | ✓ Complete | `ring` identity |
+| Family 3 $(4t^3, 0, -8t^4)$ | ✓ Complete | `ring` identity |
+| Family 4 $(14t^3, 21t^3, 49t^4)$ | ✓ Complete | `ring` identity |
+| Weighted homogeneity ($n^{12}$ scaling) | ✓ Complete | `linear_combination n^12 * h` |
+| Infinitely many distinct solutions | ✓ Complete | Strict monotonicity of $n^3$ on $\mathbb{N}$ |
+| No sporadic solutions for $\|x\|,\|y\| \le 200$ | ✓ Complete | Exhaustive search |
+| Lean 4 formalisation (0 sorry) | ✓ **Complete** | Mathlib tactics |
+| Full classification of all integer solutions | Open | Arithmetic geometry of $\mathbb{P}(3,3,4)$ |
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](diophantine-2x4-y4plusz3/InfinitelyManySolutions.lean):**
+
+Built as library `Diophantine2X4Y4Z3` against Mathlib v4.21.0
+(`lake exe cache get && lake build Diophantine2X4Y4Z3`). **Axiom count: 0, Sorry count: 0.**
+
+| Lean name | Statement | Proof method |
+|-----------|-----------|--------------|
+| `weightedHomogeneity` | $(n^3 x,\, n^3 y,\, n^4 z)$ is a solution if $(x,y,z)$ is | `linear_combination n^12 * h` |
+| `family1 t` | $(0,\, t^3,\, t^4)$ is a solution for all $t : \mathbb{Z}$ | `ring` |
+| `family2 t` | $(t^3,\, t^3,\, -t^4)$ is a solution | `ring` |
+| `family3 t` | $(4t^3,\, 0,\, -8t^4)$ is a solution | `ring` |
+| `family4 t` | $(14t^3,\, 21t^3,\, 49t^4)$ is a solution | `ring` |
+| `sol_14_21_49` | $(14, 21, 49)$ is a solution | `norm_num` |
+| `pow3_strictMono` | $n \mapsto n^3$ is strictly monotone on $\mathbb{N}$ | `Nat.pow_lt_pow_left` |
+| `natMap_injective` | $n \mapsto (0, n^3, n^4)$ is injective | `pow3_strictMono.injective` |
+| `solutions_infinite` | The solution set is infinite | `Set.infinite_range_of_injective` |
+
+The proof is entirely elementary: all four families verified by `ring`, weighted homogeneity by `linear_combination`, and infinitude via the same `Nat.pow_lt_pow_left` argument used in the other "infinitely many solutions" entries — no axioms, no sorries.
+
+**Result:** The equation $2x^4 - y^4 + z^3 = 0$ has **infinitely many** integer solutions, with four explicit infinite parametric families $(0, t^3, t^4)$, $(t^3, t^3, -t^4)$, $(4t^3, 0, -8t^4)$, and $(14t^3, 21t^3, 49t^4)$ for $t \in \mathbb{Z}$.  The fourth family rests on the algebraic identity $2 \cdot 2^4 - 3^4 + 7^2 = 0$, discovered computationally. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-2x4-y4plusz3/InfinitelyManySolutions.lean).
+
 
 

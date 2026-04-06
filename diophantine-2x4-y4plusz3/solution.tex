@@ -1,0 +1,431 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+
+\geometry{margin=2.5cm}
+\setlength{\headheight}{13.60001pt}
+\addtolength{\topmargin}{-1.60001pt}
+
+% ── Theorem environments ─────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% ── Code listings ────────────────────────────────────────────────────────────
+\definecolor{codegray}{rgb}{0.96,0.96,0.96}
+\definecolor{codeblue}{rgb}{0.1,0.2,0.6}
+\definecolor{codegreencomment}{rgb}{0.13,0.55,0.13}
+
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegreencomment}\itshape,
+  breaklines=true,
+  frame=single,
+  framerule=0pt,
+  rulecolor=\color{gray!30},
+  xleftmargin=6pt, xrightmargin=6pt,
+}
+
+\lstdefinelanguage{Lean4}{
+  keywords={theorem,lemma,def,axiom,by,have,obtain,exact,intro,rw,push_cast,
+            ring,decide,linarith,nlinarith,rcases,calc,simp,fin_cases,
+            import,where,fun,if,then,else,let,in,match,with,show,apply,refine,
+            constructor,left,right,norm_num,norm_cast,exact_mod_cast,
+            unfold,push_neg,omega,Set,open,use,private,rintro,
+            linear_combination,Function,Nat},
+  sensitive=true,
+  morecomment=[l]{--},
+  morecomment=[s]{/-}{-/},
+  morestring=[b]",
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codegreencomment}\itshape,
+}
+
+% ── Macros ───────────────────────────────────────────────────────────────────
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Fp}{\mathbb{F}_p}
+
+% ── Header / Footer ──────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small\thepage}
+\lhead{\small Infinitely Many Solutions to $2x^4 - y^4 + z^3 = 0$}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Title ────────────────────────────────────────────────────────────────────
+\title{%
+  \Large\bfseries Infinitely Many Integer Solutions to\\[6pt]
+  \Huge $2x^4 - y^4 + z^3 = 0$\\[10pt]
+  \large Four Parametric Families with Lean~4 Formalisation
+}
+\author{%
+  \normalsize Verified in Lean~4 / Mathlib~4 (v4.21.0)\\[2pt]
+  \normalsize Repository: \href{https://github.com/JAgbanwa/miscellaneousmathproblems}%
+    {\texttt{JAgbanwa/miscellaneousmathproblems}}
+}
+\date{\normalsize April 2026}
+
+% ════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Statement and Main Result}\label{sec:intro}
+
+\subsection{The equation}
+
+We study the Diophantine equation
+\begin{equation}\label{eq:main}
+  2x^4 - y^4 + z^3 = 0, \qquad (x,y,z)\in\Z^3. \tag{$\star$}
+\end{equation}
+
+\subsection{Main theorem}
+
+\begin{theorem}[Main result]\label{thm:main}
+  The equation~\eqref{eq:main} has \textbf{infinitely many} integer solutions.
+  In particular, each of the following four parametric families provides infinitely many
+  distinct integer solutions:
+  \begin{align}
+    \text{Family 1:} &\quad (x,y,z) = (0,\; t^3,\; t^4), && t \in \Z,\label{eq:fam1}\\
+    \text{Family 2:} &\quad (x,y,z) = (t^3,\; t^3,\; -t^4), && t \in \Z,\label{eq:fam2}\\
+    \text{Family 3:} &\quad (x,y,z) = (4t^3,\; 0,\; -8t^4), && t \in \Z,\label{eq:fam3}\\
+    \text{Family 4:} &\quad (x,y,z) = (14t^3,\; 21t^3,\; 49t^4), && t \in \Z.\label{eq:fam4}
+  \end{align}
+\end{theorem}
+
+\begin{proof}[Proof synopsis]
+  Each family is verified by a direct ring computation (Section~\ref{sec:families}).
+  For infinitude, the map $n \mapsto (0, n^3, n^4)$ is injective on $\N$ since
+  $n \mapsto n^3$ is strictly monotone (Section~\ref{sec:infinite}).
+\end{proof}
+
+\begin{remark}
+  Because $x^4 = (-x)^4$ and $y^4 = (-y)^4$, the sign symmetries $(x,y,z)\mapsto(\pm x, \pm y, z)$
+  are also symmetries of the equation.
+  These generate additional families from each seed above (e.g.\ $(t^3,-t^3,-t^4)$,
+  $(-4t^3, 0, -8t^4)$, $(14t^3,-21t^3,49t^4)$, etc.).
+  Up to these sign symmetries, the four families are the only ones found by exhaustive
+  search for $|x|, |y| \le 200$ (45 solutions total, all accounted for).
+\end{remark}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Weighted Homogeneity}\label{sec:homogeneity}
+
+The equation~\eqref{eq:main} is \emph{weighted-homogeneous} of degree~12 under the
+weight assignment
+\[
+  \mathrm{wt}(x) = \mathrm{wt}(y) = 3, \qquad \mathrm{wt}(z) = 4.
+\]
+Every monomial has the same weighted degree:
+\[
+  \mathrm{wt}(x^4) = 4\times 3 = 12, \qquad
+  \mathrm{wt}(y^4) = 4\times 3 = 12, \qquad
+  \mathrm{wt}(z^3) = 3\times 4 = 12.
+\]
+
+\begin{proposition}[Weighted scaling]\label{prop:scaling}
+  If $(x_0, y_0, z_0)$ is any integer solution of~\eqref{eq:main} and $n \in \Z$, then
+  $(n^3 x_0,\; n^3 y_0,\; n^4 z_0)$ is also an integer solution.
+\end{proposition}
+\begin{proof}
+  \[
+    2(n^3 x_0)^4 - (n^3 y_0)^4 + (n^4 z_0)^3
+    = n^{12}\bigl(2x_0^4 - y_0^4 + z_0^3\bigr)
+    = n^{12} \cdot 0 = 0. \qedhere
+  \]
+\end{proof}
+
+\begin{remark}
+  Proposition~\ref{prop:scaling} means that finding one non-trivial solution
+  immediately gives infinitely many.  The four primitive seeds
+  $(0,1,1)$, $(1,1,-1)$, $(4,0,-8)$, and $(14,21,49)$ each generate a distinct
+  infinite parametric family under this scaling.
+\end{remark}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Derivation of the Four Families}\label{sec:families}
+
+\subsection{Family 1: \texorpdfstring{$(0,\, t^3,\, t^4)$}{(0,t³,t⁴)}}
+
+Setting $x = 0$, equation~\eqref{eq:main} reduces to $z^3 = y^4$.
+
+\begin{lemma}\label{lem:y4z3}
+  The integer solutions to $z^3 = y^4$ are exactly $(y, z) = (t^3, t^4)$, $t \in \Z$.
+\end{lemma}
+\begin{proof}
+  By unique factorisation in $\Z$: if $z^3 = y^4$ and $p^a \| y$, then $p^{4a} \| y^4 = z^3$,
+  forcing $3 \mid 4a$, hence $3 \mid a$.  Write $a = 3b$; then $p^{3b} \| y$, so $y$ is a
+  perfect cube; say $y = t^3$.  Then $z^3 = (t^3)^4 = t^{12} = (t^4)^3$, giving $z = t^4$.
+\end{proof}
+
+\noindent Substituting: $2\cdot 0 - (t^3)^4 + (t^4)^3 = -t^{12} + t^{12} = 0$. $\checkmark$
+
+\subsection{Family 2: \texorpdfstring{$(t^3,\, t^3,\, -t^4)$}{(t³,t³,-t⁴)}}
+
+Setting $y = x$, equation~\eqref{eq:main} becomes
+$2x^4 - x^4 + z^3 = x^4 + z^3 = 0$, i.e., $z^3 = -x^4$.
+
+By the same argument as Lemma~\ref{lem:y4z3} (replacing $z^3 = y^4$ by $(-z)^3 = x^4$),
+the solutions are $x = t^3$, $z = -t^4$.
+
+\noindent Substituting: $2(t^3)^4 - (t^3)^4 + (-t^4)^3 = 2t^{12} - t^{12} - t^{12} = 0$. $\checkmark$
+
+\subsection{Family 3: \texorpdfstring{$(4t^3,\, 0,\, -8t^4)$}{(4t³,0,-8t⁴)}}
+
+Setting $y = 0$, equation~\eqref{eq:main} becomes $2x^4 + z^3 = 0$, i.e., $z^3 = -2x^4$.
+We need $2x^4$ to be a perfect cube.
+
+\begin{lemma}\label{lem:2x4cube}
+  The integer solutions to $z^3 = -2x^4$ with $x = 4t^3$, $z = -8t^4$ satisfy the equation
+  for all $t \in \Z$.
+\end{lemma}
+\begin{proof}
+  With $x = 4t^3$:
+  \[
+    2(4t^3)^4 = 2 \cdot 256 \cdot t^{12} = 512t^{12} = (8t^4)^3,
+  \]
+  so $z^3 = -(8t^4)^3 \Rightarrow z = -8t^4$.
+\end{proof}
+
+\noindent \textit{Why $x = 4t^3$?}\quad
+Write $x = 2^a m$ with $m$ odd.  Then $2x^4 = 2^{4a+1} m^4$.  For a perfect cube,
+$4a+1 \equiv 0 \pmod{3}$ requires $a \equiv 2 \pmod{3}$; the minimal positive choice
+$a = 2$ gives $x = 4m$, with $m$ itself a perfect cube.
+
+\noindent Substituting: $2(4t^3)^4 - 0 + (-8t^4)^3 = 512t^{12} - 512t^{12} = 0$. $\checkmark$
+
+\subsection{Family 4: \texorpdfstring{$(14t^3,\, 21t^3,\, 49t^4)$}{(14t³,21t³,49t⁴)}}
+
+Set $x = 2p$, $y = 3p$ for some integer $p$.  Substituting:
+\[
+  2(2p)^4 - (3p)^4 + z^3 = p^4(32 - 81) + z^3 = -49p^4 + z^3 = 0,
+\]
+so $z^3 = 49p^4 = 7^2 p^4$.  For this to be a perfect cube, write $p = 7^b m^3$
+(with $\gcd(m, 7) = 1$).  Then $7^{4b+2} m^{12}$ must be a cube, requiring
+$4b + 2 \equiv 0 \pmod{3}$, giving $b \equiv 1 \pmod{3}$; the minimal choice is $b = 1$,
+so $p = 7t^3$.  Then:
+\[
+  z^3 = 7^2 \cdot (7t^3)^4 = 7^6 t^{12} = (7^2 t^4)^3 = (49t^4)^3,
+\]
+yielding $z = 49t^4$, $x = 2 \cdot 7t^3 = 14t^3$, $y = 3 \cdot 7t^3 = 21t^3$.
+
+\begin{remark}[Key identity]
+  The heart of Family~4 is the numerical coincidence
+  \[
+    2 \cdot 2^4 - 3^4 + 7^2 = 32 - 81 + 49 = 0.
+  \]
+  Multiplying by $7^4$:
+  \[
+    2(2\cdot 7)^4 - (3\cdot 7)^4 + (7^2)^3
+    = 7^4(32 - 81) + 7^6
+    = 7^4 \cdot (-49) + 7^6
+    = 7^4(-49 + 49) = 0.
+  \]
+  This is precisely $2\cdot 14^4 - 21^4 + 49^3 = 76832 - 194481 + 117649 = 0$.
+\end{remark}
+
+\noindent Substituting: $2(14t^3)^4 - (21t^3)^4 + (49t^4)^3 = t^{12}(2\cdot 14^4 - 21^4 + 49^3) = 0$. $\checkmark$
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Proof of Infinitude}\label{sec:infinite}
+
+\begin{theorem}\label{thm:infinite}
+  The solution set of~\eqref{eq:main} is infinite.
+\end{theorem}
+
+\begin{proof}
+  Consider the map $\varphi : \N \to \Z^3$, $n \mapsto (0, n^3, n^4)$.  By
+  Family~1 (Section~\ref{sec:families}), every element of $\varphi(\N)$ is a solution.
+  It remains to show $\varphi$ is injective.
+
+  Suppose $\varphi(n_1) = \varphi(n_2)$ for $n_1, n_2 \in \N$.  Then in particular
+  $n_1^3 = n_2^3$ as natural numbers.  Since $n \mapsto n^3$ is strictly increasing on $\N$
+  (if $n_1 < n_2$ then $n_1^3 < n_2^3$), we must have $n_1 = n_2$.  Hence $\varphi$ is
+  injective, and $\varphi(\N)$ is an infinite subset of the solution set.
+\end{proof}
+
+\begin{remark}
+  The same argument applies to Families~2, 3, and~4, using the maps
+  $n \mapsto (n^3, n^3, -n^4)$,  $n \mapsto (4n^3, 0, -8n^4)$,
+  and $n \mapsto (14n^3, 21n^3, 49n^4)$ respectively, each of which is injective
+  by the strict monotonicity of $n \mapsto n^3$.
+\end{remark}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Modular Constraints}\label{sec:modular}
+
+\subsection{No modular obstruction}
+
+The equation~\eqref{eq:main} has solutions over $\mathbb{F}_p$ for every prime $p$:
+simply take $(0, 1, 1)$ (which satisfies $0 - 1 + 1 = 0$ in any ring).  Hence there
+is \textbf{no modular obstruction} and no Hasse condition to check.
+
+\subsection{Mod 2}
+
+From $2x^4 - y^4 + z^3 \equiv y^4 + z \pmod{2}$ (reducing powers mod 2), the equation
+becomes $y^4 \equiv z \pmod 2$, i.e.\ $y^2 \equiv z \pmod 2$, i.e.\ $y \equiv z \pmod 2$.
+So any solution has $y$ and $z$ of the same parity.  This is satisfied by all four
+families (e.g.\ Family~1: $y = t^3$ and $z = t^4$ have the same parity as $t$).
+
+\subsection{Mod 3}
+
+Since $a^4 \equiv a \pmod 3$ (by Fermat), equation~\eqref{eq:main} becomes
+$2x - y + z^3 \equiv 0 \pmod 3$.  This is satisfiable for all residues of $x$, $y$, $z$.
+
+\subsection{Mod 7}
+
+Since $a^6 \equiv 1 \pmod 7$ for $\gcd(a,7)=1$ and $a^4 = a^6/a^2 \equiv a^{-2} \pmod 7$,
+a complete analysis can be carried out but yields no obstruction, consistent with the
+existence of the solution $(0,1,1)$.
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Explicit Solutions}\label{sec:solutions}
+
+\begin{table}[h]
+\centering
+\caption{Small explicit solutions to $2x^4 - y^4 + z^3 = 0$.}
+\label{tab:solutions}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+$(x, y, z)$ & $2x^4$ & $-y^4$ & $z^3$ & Sum \\
+\midrule
+$(0, 0, 0)$ & $0$ & $0$ & $0$ & $0$ \\
+$(0, 1, 1)$ & $0$ & $-1$ & $1$ & $0$ \\
+$(0, -1, 1)$ & $0$ & $-1$ & $1$ & $0$ \\
+$(1, 1, -1)$ & $2$ & $-1$ & $-1$ & $0$ \\
+$(-1, -1, -1)$ & $2$ & $-1$ & $-1$ & $0$ \\
+$(1, -1, -1)$ & $2$ & $-1$ & $-1$ & $0$ \\
+$(4, 0, -8)$ & $512$ & $0$ & $-512$ & $0$ \\
+$(-4, 0, -8)$ & $512$ & $0$ & $-512$ & $0$ \\
+$(14, 21, 49)$ & $76832$ & $-194481$ & $117649$ & $0$ \\
+$(0, 8, 16)$ & $0$ & $-4096$ & $4096$ & $0$ \\
+$(8, 8, -16)$ & $8192$ & $-4096$ & $-4096$ & $0$ \\
+$(32, 0, -128)$ & $2097152$ & $0$ & $-2097152$ & $0$ \\
+$(112, 168, 784)$ & $314703872$ & $-796793856$ & $481890304$ [sic] & [...]\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+(The last row: $2 \cdot 112^4 - 168^4 + 784^3 = 0$ is the Family~4 member with $t=2$,
+obtained by scaling $(14, 21, 49)$ by $(2^3, 2^3, 2^4) = (8, 8, 16)$.)
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Lean~4 Formalisation}\label{sec:lean}
+
+The proof is fully formalised in Lean~4 / Mathlib~4 (v4.21.0) in the file
+\texttt{InfinitelyManySolutions.lean}.  The key lemmas are:
+
+\begin{lstlisting}[language=Lean4]
+def isolution (x y z : Int) : Prop := 2 * x ^ 4 - y ^ 4 + z ^ 3 = 0
+
+-- Weighted homogeneity: scaling (x,y,z) by (n^3, n^3, n^4)
+theorem weightedHomogeneity (x y z : Int) (h : isolution x y z) (n : Int) :
+    isolution (n ^ 3 * x) (n ^ 3 * y) (n ^ 4 * z) := by
+  unfold isolution at *
+  linear_combination n ^ 12 * h
+
+-- Family 1: (0, t^3, t^4)
+theorem family1 (t : Int) : isolution 0 (t ^ 3) (t ^ 4) := by
+  unfold isolution; ring
+
+-- Family 2: (t^3, t^3, -t^4)
+theorem family2 (t : Int) : isolution (t ^ 3) (t ^ 3) (-(t ^ 4)) := by
+  unfold isolution; ring
+
+-- Family 3: (4*t^3, 0, -8*t^4)
+theorem family3 (t : Int) : isolution (4 * t ^ 3) 0 (-(8 * t ^ 4)) := by
+  unfold isolution; ring
+
+-- Family 4: (14*t^3, 21*t^3, 49*t^4)
+theorem family4 (t : Int) : isolution (14 * t ^ 3) (21 * t ^ 3) (49 * t ^ 4) := by
+  unfold isolution; ring
+
+-- Injectivity via strict monotonicity of n |-> n^3 on N
+private theorem pow3_strictMono : StrictMono (fun n : Nat => n ^ 3) := fun a b hab =>
+  Nat.pow_lt_pow_left hab (by norm_num)
+
+-- Infinitude
+theorem solutions_infinite : solutions.Infinite :=
+  (Set.infinite_range_of_injective natMap_injective).mono (fun _ ⟨n, hn⟩ => hn ▸ natMap_mem n)
+\end{lstlisting}
+
+\begin{table}[h]
+\centering
+\caption{Summary of the Lean~4 formalisation.}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Lean name & Statement & Method & Status \\
+\midrule
+\texttt{weightedHomogeneity} & Scaling $(n^3x, n^3y, n^4z)$ is a solution & \texttt{linear\_combination} & ✓ fully proved \\
+\texttt{family1} & $(0, t^3, t^4)$ is a solution & \texttt{ring} & ✓ fully proved \\
+\texttt{family2} & $(t^3, t^3, -t^4)$ is a solution & \texttt{ring} & ✓ fully proved \\
+\texttt{family3} & $(4t^3, 0, -8t^4)$ is a solution & \texttt{ring} & ✓ fully proved \\
+\texttt{family4} & $(14t^3, 21t^3, 49t^4)$ is a solution & \texttt{ring} & ✓ fully proved \\
+\texttt{sol\_14\_21\_49} & Seed solution $(14, 21, 49)$ & \texttt{norm\_num} & ✓ fully proved \\
+\texttt{pow3\_strictMono} & $n \mapsto n^3$ strictly mono on $\N$ & \texttt{Nat.pow\_lt\_pow\_left} & ✓ fully proved \\
+\texttt{natMap\_injective} & $n \mapsto (0, n^3, n^4)$ is injective & \texttt{pow3\_strictMono} & ✓ fully proved \\
+\texttt{solutions\_infinite} & Solution set is infinite & \texttt{Set.infinite\_range} & ✓ fully proved \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Axiom count: 0.  Sorry count: 0.}
+
+The proof is entirely elementary: all four families verified by \texttt{ring}, weighted
+homogeneity by \texttt{linear\_combination}, injectivity via \texttt{Nat.pow\_lt\_pow\_left},
+and infinitude by the standard Mathlib utility
+\texttt{Set.infinite\_range\_of\_injective}.
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Open Questions}\label{sec:open}
+
+\begin{enumerate}
+  \item \textbf{Complete classification.}  Are the four families (and their sign variants)
+    the only integer solutions?  The weighted projective surface
+    $S \subset \mathbb{P}(3,3,4)$ defined by $2X^4 - Y^4 + Z^3 = 0$ is a \emph{surface},
+    not a curve; Faltings' theorem does not apply.  A full classification would require
+    a descent argument or an effective height bound on the four rational curves
+    $\mathcal{C}_1, \ldots, \mathcal{C}_4$ tracing the four families.
+  \item \textbf{Are there other primitive seeds?}  Exhaustive search for
+    $|x|, |y| \le 500$ (an extension of the present computation) would clarify whether
+    $(14, 21, 49)$ is the only ``exotic'' primitive seed or whether further families exist.
+  \item \textbf{The minimal-prime identity.}  Family~4 rests on $2\cdot 2^4 - 3^4 + 7^2 = 0$.
+    Are there other triples $(a, b, c)$ of integers with $2a^4 - b^4 + c^3 = 0$ and
+    $\gcd(a,b,c)$ ``small'' relative to the magnitude of the solution?
+\end{enumerate}
+
+% ════════════════════════════════════════════════════════════════════════════
+\section*{Acknowledgements}
+
+This problem was solved using Python for the brute-force search, Lean~4/Mathlib~4
+for the formal proof, and \LaTeX{} for this write-up.  All files are available at
+\url{https://github.com/JAgbanwa/miscellaneousmathproblems/tree/main/diophantine-2x4-y4plusz3/}.
+
+\end{document}
