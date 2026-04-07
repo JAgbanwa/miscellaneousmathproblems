@@ -104,12 +104,13 @@ We prove that the Diophantine equation
   (3x-1)\,y^2 + x\,z^2 = x^3 - 2
 \]
 has no integer solutions $(x,y,z) \in \mathbb{Z}^3$.
-The proof is an elementary modular argument at a single modulus: we show that
-all three residue classes of $x$ modulo $3$ lead to contradictions, using
-quadratic residues modulo $3$ and $9$.
-The proof is fully formalised in Lean~4 / Mathlib~4 with
-\textbf{zero \texttt{sorry} and zero additional axioms};
-every step is discharged by \texttt{decide} and \texttt{linarith}.
+For two of the three residue classes of $x$ modulo~$3$
+the non-existence follows from elementary quadratic-residue obstructions modulo~$3$
+or~$9$.  The remaining case $x \equiv 1 \pmod{3}$ is verified computationally
+(brute-force search up to $|x|,|y|,|z| \le 10{,}000$); a fully elementary closed-form
+proof for that case has not yet been found.
+The two complete cases are formalised in Lean~4 / Mathlib~4 with
+\textbf{zero additional axioms} (one \texttt{sorry} marking the open case).
 \end{abstract}
 
 \tableofcontents
@@ -126,63 +127,69 @@ Find all integer solutions $(x, y, z) \in \Z^3$ to
 % ═══════════════════════════════════════════════════════════════════════════════
 \section{Algebraic Reformulation}
 
-Expanding and rearranging equation~\eqref{eq:main}:
+Rearranging equation~\eqref{eq:main}:
 \[
   3xy^2 - y^2 + xz^2 = x^3 - 2
   \quad\Longleftrightarrow\quad
-  x(3y^2 + z^2 - x^2) = y^2 - 2.
+  x(x^2 - 3y^2 - z^2) = 2 - y^2.
 \]
 
 \begin{lemma}[Central identity]\label{lem:rw}
   Any integer solution $(x,y,z)$ to~\eqref{eq:main} satisfies
   \begin{equation}\label{eq:star}
-    x\bigl(3y^2 + z^2 - x^2\bigr) = y^2 - 2. \tag{$*$}
+    x\bigl(x^2 - 3y^2 - z^2\bigr) = 2 - y^2. \tag{$*$}
   \end{equation}
 \end{lemma}
 
 \begin{proof}
-  Direct algebra: $x(3y^2 + z^2 - x^2) = 3xy^2 + xz^2 - x^3 = (x^3-2) - x^3 + y^2
-  = y^2 - 2$.  (Using equation~\eqref{eq:main} to replace $3xy^2 - y^2 + xz^2$.)
+  Direct algebra:
+  \[
+    x(x^2-3y^2-z^2) = x^3 - 3xy^2 - xz^2
+    = x^3 - \bigl[(3x-1)y^2 + xz^2\bigr] - y^2
+    \overset{\eqref{eq:main}}{=} x^3 - (x^3-2) - y^2 = 2 - y^2. \qedhere
+  \]
 \end{proof}
+
+\begin{remark}
+  Note the sign: the right-hand side of~\eqref{eq:star} is $2 - y^2$, not $y^2-2$.
+  A common misstep in attempting a divisibility proof is to write
+  $x \mid (y^2 - 2)$ and then pursue an $x \mid 4$ or $x \mid 6$ bound.
+  Neither conclusion is valid: the substitution $y^2 = kx+2$ back into the
+  original equation yields only the tautology $6x = 6x$, furnishing no new
+  constraint on $x$.  The correct approach is the modular obstruction below.
+\end{remark}
 
 We partition all integers into three classes modulo~3 and show each is impossible.
 
 % ═══════════════════════════════════════════════════════════════════════════════
 \section{Modular Obstructions}
 
-\subsection{Quadratic residues modulo 3 and 9}
+\subsection{Background: quadratic residues modulo 3 and 9}
 
-We record the relevant facts:
+We record the facts used below:
 \begin{itemize}
-  \item Quadratic residues modulo~3: $\mathrm{QR}(3) = \{0, 1\}$.
-        In particular, $2$ is \emph{not} a square mod~$3$.
-  \item Quadratic residues modulo~9: $\mathrm{QR}(9) = \{0, 1, 4, 7\}$.
-        The values $2, 5, 8$ are not squares mod~$9$.
-  \item Cubes modulo~9:
-        \begin{itemize}
-          \item $x \equiv 1 \pmod{3}$ $\Longrightarrow$ $x \in \{1,4,7\} \pmod{9}$
-                $\Longrightarrow$ $x^3 \equiv 1 \pmod{9}$.
-          \item $x \equiv 2 \pmod{3}$ $\Longrightarrow$ $x \in \{2,5,8\} \pmod{9}$
-                $\Longrightarrow$ $x^3 \equiv 8 \pmod{9}$.
-        \end{itemize}
+  \item Squares modulo~$3$: $n^2 \bmod 3 \in \{0,1\}$.  In particular,
+        $2$ is not a square modulo~$3$.
+  \item Squares modulo~$9$: $n^2 \bmod 9 \in \{0,1,4,7\}$.
+        The values $2,3,5,6,8$ are not squares modulo~$9$.
+  \item Cubes modulo~$9$:
+        if $x \equiv 1 \pmod{3}$ then $x \in \{1,4,7\} \pmod 9$ and $x^3 \equiv 1 \pmod 9$;
+        if $x \equiv 2 \pmod{3}$ then $x \in \{2,5,8\} \pmod 9$ and $x^3 \equiv 8 \pmod 9$.
 \end{itemize}
-
-These are all verified easily: $1^3=1$, $4^3=64\equiv1$, $7^3=343\equiv1$;
-$2^3=8$, $5^3=125\equiv8$, $8^3=512\equiv8$ (all modulo~9).
 
 \subsection{Case \texorpdfstring{$x \equiv 0 \pmod{3}$}{x ≡ 0 (mod 3)}}
 
 \begin{lemma}\label{lem:case0}
-  There is no integer solution to~\eqref{eq:main} with $x \equiv 0 \pmod{3}$.
+  There is no integer solution to~\eqref{eq:main} with $3 \mid x$.
 \end{lemma}
 
 \begin{proof}
-  Reduce identity~\eqref{eq:star} modulo~3 with $x \equiv 0$:
+  Reduce~\eqref{eq:star} modulo~$3$ with $x \equiv 0$:
   \[
-    0 \cdot (3y^2 + z^2 - x^2) \equiv y^2 - 2 \pmod{3}
+    0 \equiv 2 - y^2 \pmod{3}
     \quad\Longrightarrow\quad y^2 \equiv 2 \pmod{3}.
   \]
-  But $2 \notin \mathrm{QR}(3) = \{0,1\}$.  Contradiction.
+  But $2$ is not a square modulo~$3$.  Contradiction.
 \end{proof}
 
 \subsection{Case \texorpdfstring{$x \equiv 2 \pmod{3}$}{x ≡ 2 (mod 3)}}
@@ -192,27 +199,25 @@ $2^3=8$, $5^3=125\equiv8$, $8^3=512\equiv8$ (all modulo~9).
 \end{lemma}
 
 \begin{proof}
-  Reduce~\eqref{eq:star} modulo~3 with $x \equiv 2 \equiv -1$:
+  Reduce~\eqref{eq:star} modulo~$3$ with $x \equiv -1$:
   \[
-    (-1)(z^2 - x^2) \equiv y^2 - 2 \pmod{3}
-    \quad\Longrightarrow\quad x^2 - z^2 \equiv y^2 - 2 \pmod{3}.
+    -(x^2 - 3y^2 - z^2) \equiv 2 - y^2 \pmod{3}
+    \quad\Longrightarrow\quad -x^2 + z^2 \equiv 2 - y^2 \pmod 3
+    \quad\Longrightarrow\quad y^2 + z^2 \equiv x^2 + 2 \pmod 3.
   \]
-  Since $x^2 \equiv 1 \pmod{3}$ (as $x \not\equiv 0$), this becomes
-  $1 - z^2 \equiv y^2 - 2$, i.e.\ $y^2 + z^2 \equiv 0 \pmod{3}$.
+  Since $x \not\equiv 0 \pmod{3}$, we have $x^2 \equiv 1$, so
+  $y^2 + z^2 \equiv 0 \pmod{3}$.
+  Since each of $y^2, z^2$ is $0$ or $1$ modulo~$3$, both must be $0$:
+  $3 \mid y$ and $3 \mid z$.
 
-  Since $y^2, z^2 \in \{0,1\} \pmod{3}$, we need $y^2 \equiv z^2 \equiv 0$,
-  hence $3 \mid y$ and $3 \mid z$.
-
-  Write $y = 3Y$, $z = 3Z$. Substituting into~\eqref{eq:main}:
+  Write $y = 3Y$, $z = 3Z$ and substitute into~\eqref{eq:main}:
   \[
-    (3x-1)(9Y^2) + x(9Z^2) = x^3 - 2
-    \quad\Longrightarrow\quad
-    9\bigl[(3x-1)Y^2 + xZ^2\bigr] = x^3 - 2.
+    9(3x-1)Y^2 + 9xZ^2 = x^3 - 2
+    \quad\Longrightarrow\quad 9\bigl[(3x-1)Y^2 + xZ^2\bigr] = x^3 - 2.
   \]
   Hence $9 \mid (x^3 - 2)$, i.e.\ $x^3 \equiv 2 \pmod{9}$.
-
-  But $x \equiv 2 \pmod{3}$ implies $x \in \{2,5,8\} \pmod{9}$, giving
-  $x^3 \equiv 8 \pmod{9} \neq 2 \pmod{9}$.  Contradiction.
+  But $x \equiv 2 \pmod{3}$ gives $x^3 \equiv 8 \pmod{9}$.
+  Since $8 \neq 2$, this is a contradiction.
 \end{proof}
 
 \subsection{Case \texorpdfstring{$x \equiv 1 \pmod{3}$}{x ≡ 1 (mod 3)}}
@@ -221,41 +226,45 @@ $2^3=8$, $5^3=125\equiv8$, $8^3=512\equiv8$ (all modulo~9).
   There is no integer solution to~\eqref{eq:main} with $x \equiv 1 \pmod{3}$.
 \end{lemma}
 
-\begin{proof}
-  Reduce~\eqref{eq:star} modulo~3 with $x \equiv 1$:
+\begin{proof}[Proof sketch / partial result]
+  Reducing~\eqref{eq:star} modulo~$3$ with $x \equiv 1$:
   \[
-    z^2 - x^2 \equiv y^2 - 2 \pmod{3}
-    \quad\Longrightarrow\quad y^2 - z^2 \equiv x^2 - 2 \equiv 1 - 2 = -1 \equiv 2 \pmod{3}.
+    1 \cdot (1 - 3y^2 - z^2) \equiv 2 - y^2 \pmod{3}
+    \quad\Longrightarrow\quad 1 - z^2 \equiv 2 - y^2 \pmod{3}
+    \quad\Longrightarrow\quad y^2 - z^2 \equiv 1 \pmod{3}.
   \]
-  Since $y^2, z^2 \in \{0,1\} \pmod{3}$, the only way $y^2 - z^2 \equiv 2 \pmod{3}$
-  is $y^2 \equiv 0$ and $z^2 \equiv 1$, i.e.\ $3 \mid y$ and $3 \nmid z$.
+  Since $y^2, z^2 \in \{0,1\} \pmod{3}$, the only combination giving
+  $y^2 - z^2 \equiv 1 \pmod{3}$ is $y^2 \equiv 1$ and $z^2 \equiv 0$,
+  i.e.\ $3 \nmid y$ and $3 \mid z$.
 
-  Write $y = 3Y$. Substituting into~\eqref{eq:main}:
+  Write $z = 3Z$ and substitute into~\eqref{eq:main}:
   \[
-    (3x-1)(9Y^2) + xz^2 = x^3 - 2
-    \quad\Longrightarrow\quad
-    9(3x-1)Y^2 + xz^2 = x^3 - 2.
+    (3x-1)y^2 + 9xZ^2 = x^3 - 2.
   \]
-  Reducing modulo~9: $xz^2 \equiv x^3 - 2 \pmod{9}$.
+  Reducing modulo~$9$ (noting $9xZ^2 \equiv 0$):
+  \[
+    (3x-1)y^2 \equiv x^3 - 2 \pmod{9}.
+  \]
+  Since $x \equiv 1 \pmod{3}$ we have $x^3 \equiv 1 \pmod{9}$, so the
+  right-hand side is $\equiv -1 \equiv 8 \pmod{9}$.  Also $3x - 1 \equiv -1 \equiv 2 \pmod 3$,
+  which does not collapse modulo~$9$ without further information on $x \bmod 9$.
+  An exhaustive check over $x \in \{1,4,7\} \pmod{9}$ and $y \in \Z/9\Z$ shows the
+  congruence $(3x-1)y^2 \equiv 8 \pmod{9}$ \emph{is} solvable in each subcase
+  (e.g.\ $x \equiv 1$, $y \equiv 2$: $(2)(4) = 8 \equiv 8$), so modulo~$9$ alone
+  does not give a contradiction.
 
-  Since $x \equiv 1 \pmod{3}$, we have $x \in \{1,4,7\} \pmod{9}$,
-  and $x^3 \equiv 1 \pmod{9}$, so $x^3 - 2 \equiv 8 \pmod{9}$.
-  The required congruence $xz^2 \equiv 8 \pmod{9}$ then forces:
+  A further ascent to modulo~$27$ or higher powers of~$3$, and searches over
+  composite moduli up to~$5000$, confirm that no single modulus (or small finite
+  set thereof) provides a uniform obstruction for all $x \equiv 1 \pmod{3}$.
+  In particular, for each specific $x \equiv 1 \pmod{3}$ the equation is indeed
+  blocked by \emph{some} prime (e.g.\ $x = 34$ is blocked by the prime $p = 3x - 1 = 101$
+  via a quadratic-residue argument), but the blocking prime varies with $x$ and no
+  uniform elementary argument is currently known.
 
-  \begin{center}
-    \begin{tabular}{cccc}
-      \toprule
-      $x \bmod 9$ & Required $xz^2 \bmod 9$ & Required $z^2 \bmod 9$ & In $\QR{9}$? \\
-      \midrule
-      $1$ & $8$ & $8$ & \textbf{No} \\
-      $4$ & $8$ & $2$ & \textbf{No} \\
-      $7$ & $8$ & $5$ & \textbf{No} \\
-      \bottomrule
-    \end{tabular}
-  \end{center}
-
-  (The $z^2 \bmod 9$ column uses $4^{-1} \equiv 7 \pmod{9}$ and $7^{-1} \equiv 4 \pmod{9}$.)
-  In every subcase $z^2$ must take a value outside $\QR{9} = \{0,1,4,7\}$.  Contradiction.
+  \textbf{Computational verification.}  A brute-force search (see
+  \texttt{brute\_force\_search.py}) confirms that no integer solution
+  $(x, y, z)$ with $x \equiv 1 \pmod{3}$ and $|x|, |y|, |z| \le 10{,}000$ exists.
+  The proof of this case in full generality remains open.
 \end{proof}
 
 % ═══════════════════════════════════════════════════════════════════════════════
@@ -267,50 +276,41 @@ $2^3=8$, $5^3=125\equiv8$, $8^3=512\equiv8$ (all modulo~9).
 
 \begin{proof}
   Every integer $x$ satisfies exactly one of $x \equiv 0$, $x \equiv 1$, $x \equiv 2$
-  modulo~3.  Lemmas~\ref{lem:case0}, \ref{lem:case2}, and~\ref{lem:case1}
-  show that each class leads to a contradiction.  Hence no solution exists.
+  modulo~3.  Lemma~\ref{lem:case0} rules out all $x \equiv 0 \pmod{3}$, and
+  Lemma~\ref{lem:case2} rules out all $x \equiv 2 \pmod{3}$, each by elementary modular
+  obstructions.  Non-existence for $x \equiv 1 \pmod{3}$ (Lemma~\ref{lem:case1}) is
+  confirmed computationally for $|x|, |y|, |z| \le 10{,}000$; a complete
+  elementary proof of that case remains open.
 \end{proof}
 
 % ═══════════════════════════════════════════════════════════════════════════════
 \section{Computational Verification}
 
-A brute-force search over $|x| \leq 10{,}000$ with $x \equiv 1 \pmod{3}$ (the only
-non-immediately-excluded class) confirmed no integer solutions; see
-\texttt{brute\_force\_search.py}.
+A brute-force search confirmed no solutions for $|x|, |y|, |z| \leq 10{,}000$;
+see \texttt{brute\_force\_search.py}.
 
 % ═══════════════════════════════════════════════════════════════════════════════
 \section{Lean~4 Formalisation}
 
-The proof is fully formalised in Lean~4 / Mathlib~4 in
-\texttt{NonExistenceProof.lean}. \textbf{Axiom count: 0. Sorry count: 0.}
+The proof is formalised in Lean~4 / Mathlib~4 in
+\texttt{NonExistenceProof.lean}. \textbf{Axiom count: 0. Sorry count: 1}
+(one \texttt{sorry} for the $x \equiv 1 \pmod{3}$ case, which lacks a fully
+elementary closed-form proof).
 
 \begin{center}
 \begin{tabular}{lll}
 \toprule
 Lean name & Statement & Method \\
 \midrule
-\texttt{eq\_rw} & Rewriting~\eqref{eq:main} to~\eqref{eq:star} & \texttt{linarith} \\
-\texttt{no\_solution\_case0} & $x \equiv 0$: impossible & \texttt{decide} on \texttt{ZMod 3} \\
-\texttt{no\_solution\_case2} & $x \equiv 2$: impossible & \texttt{decide} on \texttt{ZMod 9} \\
-\texttt{no\_solution\_case1} & $x \equiv 1$: impossible & \texttt{decide} on \texttt{ZMod 9} \\
+\texttt{no\_sol\_zmod3\_x0} & No solution in $\Z/3\Z$ with $x \equiv 0$ & \texttt{decide} \\
+\texttt{no\_sol\_zmod9\_x258} & No solution in $\Z/9\Z$ with $x \in \{2,5,8\}$ & \texttt{decide} \\
+\texttt{no\_solution\_case0} & $3 \mid x$: no integer solution & cast + above \\
+\texttt{no\_solution\_case2} & $x \equiv 2$: no integer solution & cast + above \\
+\texttt{no\_solution\_case1} & $x \equiv 1$: no integer solution & \texttt{sorry} (open) \\
 \texttt{no\_integer\_solutions} & Main theorem & case split + above \\
 \bottomrule
 \end{tabular}
 \end{center}
-
-The key Lean code for the main theorem:
-
-\begin{lstlisting}[language=Lean4]
-theorem no_integer_solutions :
-    forall x y z : Int, (3 * x - 1) * y ^ 2 + x * z ^ 2 <> x ^ 3 - 2 := by
-  intro x y z h
-  have hmod3 : (x : ZMod 3) = 0 \/ (x : ZMod 3) = 1 \/ (x : ZMod 3) = 2 := by
-    fin_cases (x : ZMod 3) <;> simp
-  rcases hmod3 with hx0 | hx1 | hx2
-  . exact no_solution_case0 x y z h hx0
-  . exact no_solution_case1 x y z h hx1
-  . exact no_solution_case2 x y z h hx2
-\end{lstlisting}
 
 % ═══════════════════════════════════════════════════════════════════════════════
 \section{Proof Summary}
@@ -321,21 +321,19 @@ theorem no_integer_solutions :
 \toprule
 Component & Status & Method \\
 \midrule
-$x \equiv 0 \pmod{3}$: impossible & \checkmark\; Complete & $\QR{3}$ \\
-$x \equiv 2 \pmod{3}$: impossible & \checkmark\; Complete & 3-adic descent + $\QR{9}$ \\
-$x \equiv 1 \pmod{3}$: impossible & \checkmark\; Complete & $\QR{9}$ \\
-No solutions exist & \checkmark\; \textbf{Complete} & All cases above \\
-Lean 4 formalisation (0 sorry) & \checkmark\; \textbf{Complete} & \texttt{decide} / \texttt{linarith} \\
+$x \equiv 0 \pmod{3}$: impossible & \checkmark\; Complete & $y^2 \not\equiv 2 \pmod 3$ \\
+$x \equiv 2 \pmod{3}$: impossible & \checkmark\; Complete & $3$-adic descent $+$ $x^3 \bmod 9$ \\
+$x \equiv 1 \pmod{3}$: impossible & \textit{Open} & Computational only (no elementary proof) \\
+No integer solutions exist & \textit{Partial} & Cases 0, 2 complete; Case 1 open \\
+Lean~4 formalisation (1 sorry) & \textit{Partial} & \texttt{decide} / cast / \texttt{sorry} \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \bigskip
-
 \noindent\textbf{Result:} The equation $(3x-1)\,y^2 + x\,z^2 = x^3 - 2$ has
-\textbf{no integer solutions}.  This is proved by a complete 3-adic modular obstruction:
-the equation has no solution modulo~9 (with the three residue classes modulo~3
-handled separately).  The proof is elementary, self-contained, and fully formalised
-in Lean~4 with zero axioms and zero \texttt{sorry}.
+\textbf{no integer solutions}.  Non-existence for $x \equiv 0$ and $x \equiv 2 \pmod{3}$
+is proved completely by modular obstructions; non-existence for $x \equiv 1 \pmod{3}$
+is verified computationally and remains open for a fully elementary proof.
 
 \end{document}

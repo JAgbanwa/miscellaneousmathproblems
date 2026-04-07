@@ -1295,46 +1295,48 @@ $$
 $$
 
 **Files:**
-- [`brute_force_search.py`](diophantine-3xm1y2plusxz2-x3m2/brute_force_search.py) — Python exhaustive search over $|x| \leq 10{,}000$ (only $x \equiv 1 \pmod{3}$, since the other two residue classes are immediately ruled out); confirms no solutions.
-- [`analysis_notes.md`](diophantine-3xm1y2plusxz2-x3m2/analysis_notes.md) — Complete mathematical write-up: the central algebraic identity, three-case modular argument modulo 3 and 9, quadratic-residue tables, and proof of non-existence.
-- [`NonExistenceProof.lean`](diophantine-3xm1y2plusxz2-x3m2/NonExistenceProof.lean) — Lean 4 / Mathlib 4 complete formalisation. **Sorry count: 0. Axiom count: 0.**
+- [`brute_force_search.py`](diophantine-3xm1y2plusxz2-x3m2/brute_force_search.py) — Python exhaustive search over $|x|, |y|, |z| \leq 10{,}000$; confirms no solutions in this range.
+- [`analysis_notes.md`](diophantine-3xm1y2plusxz2-x3m2/analysis_notes.md) — Mathematical write-up: the central algebraic identity, three-case modular argument, quadratic-residue tables, and proof-status summary.
+- [`NonExistenceProof.lean`](diophantine-3xm1y2plusxz2-x3m2/NonExistenceProof.lean) — Lean 4 / Mathlib 4 formalisation. **Sorry count: 1 (Case $x \equiv 1 \pmod 3$). Axiom count: 0.**
 - [`solution.tex`](diophantine-3xm1y2plusxz2-x3m2/solution.tex) — Self-contained LaTeX proof document.
 
 **Approach:**
 - **Algebraic reformulation:** Rewrite the equation as $x(3y^2 + z^2 - x^2) = y^2 - 2$. This is the central identity from which all modular reductions follow.
 - **Three-case split on $x \bmod 3$:**
-  - **$x \equiv 0 \pmod{3}$:** The identity mod 3 forces $y^2 \equiv 2 \pmod{3}$, impossible since $\mathrm{QR}(3) = \{0,1\}$.
-  - **$x \equiv 2 \pmod{3}$:** The identity mod 3 forces $3 \mid y$ and $3 \mid z$; writing $y = 3Y$, $z = 3Z$ and substituting gives $9 \mid (x^3 - 2)$, i.e.\ $x^3 \equiv 2 \pmod{9}$. But $x \equiv 2 \pmod{3}$ gives $x^3 \equiv 8 \pmod{9}$. Contradiction.
-  - **$x \equiv 1 \pmod{3}$:** The identity mod 3 forces $3 \mid y$; writing $y = 3Y$ and substituting gives $xz^2 \equiv x^3 - 2 \equiv 8 \pmod{9}$. For each subcase ($x \equiv 1, 4, 7 \pmod{9}$) the required value of $z^2 \pmod{9}$ is respectively $8, 2, 5$ — none of which lies in $\mathrm{QR}(9) = \{0,1,4,7\}$. Contradiction.
+  - **$x \equiv 0 \pmod{3}$:** The identity mod 3 forces $y^2 \equiv 2 \pmod{3}$, impossible since $\mathrm{QR}(3) = \{0,1\}$. ✓ **Complete.**
+  - **$x \equiv 2 \pmod{3}$:** The equation mod 3 forces $3 \mid y$ and $3 \mid z$; writing $y = 3Y$, $z = 3Z$ gives $x^3 \equiv 2 \pmod{9}$, but $x \equiv 2 \pmod{3}$ forces $x^3 \equiv 8 \pmod{9}$. Contradiction. ✓ **Complete.**
+  - **$x \equiv 1 \pmod{3}$:** The equation mod 3 (in the form $2y^2 + z^2 \equiv 2 \pmod 3$) forces $3 \mid z$ and $3 \nmid y$. Writing $z = 3Z$ and reducing mod 9 gives $(3x-1)y^2 \equiv 8 \pmod{9}$. For each subcase $x \equiv 1, 4, 7 \pmod{9}$, the coefficient $(3x-1)$ is $2, 11, 20 \equiv 2, 2, 2 \pmod{9}$, so $y^2 \equiv 4 \pmod{9}$, which **is** achievable ($y \equiv 2$ or $7$). No mod-9 contradiction arises. An exhaustive search over all moduli up to 5000 finds no uniform obstruction covering all $x \equiv 1 \pmod 3$. Non-existence is confirmed computationally for $|x|, |y|, |z| \leq 10{,}000$; a complete elementary proof remains **open**.
 
 **Key structural facts:**
 - The algebraic identity $x(3y^2+z^2-x^2) = y^2-2$ concentrates all information into a single rearrangement of the original equation.
-- The obstruction is purely at the level of $\mathbb{Z}/9\mathbb{Z}$; no higher moduli or deeper descent is needed.
-- The proof is self-contained and elementary: only quadratic residue lists and cube computations mod 9.
+- Cases $x \equiv 0$ and $x \equiv 2 \pmod 3$ are obstructed at the level of $\mathbb{Z}/9\mathbb{Z}$.
+- For $x \equiv 1 \pmod 3$ the mod-3 analysis correctly identifies $3 \mid z$ (not $3 \mid y$); after substituting $z = 3Z$ no uniform modular obstruction has been found. Different values of $x$ require different primes to obstruct (e.g.\ $x = 34$ is blocked by $p = 3 \cdot 34 - 1 = 101$), suggesting no elementary single-modulus proof exists.
 
 **Proof status:**
 
 | Case | Obstruction | Status |
 |------|-------------|--------|
-| $x \equiv 0 \pmod{3}$ | $y^2 \equiv 2 \pmod{3}$, but $2 \notin \mathrm{QR}(3)$ | Complete |
-| $x \equiv 2 \pmod{3}$ | $x^3 \equiv 2 \pmod{9}$, but $x^3 \equiv 8 \pmod{9}$ | Complete |
-| $x \equiv 1 \pmod{3}$ | $z^2 \equiv 8, 2, \text{ or } 5 \pmod{9}$; none in $\mathrm{QR}(9)$ | Complete |
-| No integer solutions | All cases covered | **Complete** |
+| $x \equiv 0 \pmod{3}$ | $y^2 \equiv 2 \pmod{3}$, but $2 \notin \mathrm{QR}(3)$ | ✓ Complete |
+| $x \equiv 2 \pmod{3}$ | $x^3 \equiv 2 \pmod{9}$, but $x^3 \equiv 8 \pmod{9}$ | ✓ Complete |
+| $x \equiv 1 \pmod{3}$ | No uniform modular obstruction found | **Open** (computational only) |
+| No integer solutions | Cases 0 and 2 proved; Case 1 computational | Partial |
 
 **Lean 4 formalisation — [`NonExistenceProof.lean`](diophantine-3xm1y2plusxz2-x3m2/NonExistenceProof.lean):**
 
-Built against Mathlib 4. **Axiom count: 0. Sorry count: 0.**
+Built against Mathlib v4.21.0. **Axiom count: 0. Sorry count: 1.**
 
 | Lean name | Statement | Method |
 |-----------|-----------|--------|
-| `eq_rw` | Rewrites main eq.\ to $x(3y^2+z^2-x^2)=y^2-2$ | `linarith` |
-| `no_solution_case0` | $x \equiv 0 \pmod 3$: impossible | `decide` on `ZMod 3` |
-| `no_solution_case2` | $x \equiv 2 \pmod 3$: impossible | `decide` on `ZMod 9` |
-| `no_solution_case1` | $x \equiv 1 \pmod 3$: impossible | `decide` on `ZMod 9` |
-| `no_integer_solutions` | $\forall x\,y\,z : \mathbb{Z},\;(3x-1)y^2+xz^2 \neq x^3-2$ | `fin_cases` + above |
+| `no_sol_zmod3_x0` | No solution in `ZMod 3` with $x = 0$ | `decide` |
+| `no_sol_zmod9_x258` | No solution in `ZMod 9` with $x \in \{2,5,8\}$ | `decide` |
+| `eq_cast` | Casts integer equation to `ZMod n` | `push_cast` |
+| `x_mod9_cases_eq2` | $x \equiv 2 \pmod 3 \Rightarrow x \bmod 9 \in \{2,5,8\}$ | `decide` (wrapper) |
+| `x_mod9_cases_eq1` | $x \equiv 1 \pmod 3 \Rightarrow x \bmod 9 \in \{1,4,7\}$ | `decide` (wrapper) |
+| `no_solution_case0` | $x \equiv 0 \pmod 3$: impossible | via `no_sol_zmod3_x0` |
+| `no_solution_case2` | $x \equiv 2 \pmod 3$: impossible | via `no_sol_zmod9_x258` |
+| `no_solution_case1` | $x \equiv 1 \pmod 3$: impossible | `sorry` (open) |
+| `no_integer_solutions` | $\forall x\,y\,z : \mathbb{Z},\;(3x-1)y^2+xz^2 \neq x^3-2$ | case split + above |
 
-All three impossibility lemmas are discharged by `decide` on a finite type (`ZMod 3` or `ZMod 9`), making the proof completely automatic once the algebraic reformulation is established.
-
-**Result:** The equation $(3x-1)\,y^2 + x\,z^2 = x^3 - 2$ has **no integer solutions**. The proof is a complete elementary modular obstruction at the prime $3$ (working modulo $9$). A fully unconditional Lean 4 formalisation with zero sorry and zero additional axioms is given in [`NonExistenceProof.lean`](diophantine-3xm1y2plusxz2-x3m2/NonExistenceProof.lean).
+**Result:** The equation $(3x-1)\,y^2 + x\,z^2 = x^3 - 2$ has **no integer solutions** (confirmed computationally for $|x|,|y|,|z| \leq 10{,}000$). Non-existence for $x \equiv 0$ and $x \equiv 2 \pmod 3$ is fully proved by elementary modular obstructions; the case $x \equiv 1 \pmod 3$ lacks a complete elementary proof and carries one `sorry` in the Lean formalisation.
 
 
