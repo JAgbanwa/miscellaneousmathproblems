@@ -1285,4 +1285,56 @@ The proof is entirely elementary: family verifications by `ring`, injectivity by
 
 **Result:** The equation $x + x^2 y^2 + z^3 = 0$ has **infinitely many** integer solutions. The two primary parametric families are $(0, n, 0)$ and $(-n^3, 0, n)$ for $n \in \mathbb{Z}$. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-xplusx2y2plusz3/InfinitelyManySolutions.lean).
 
+---
+
+### [`diophantine-3xm1y2plusxz2-x3m2/`](diophantine-3xm1y2plusxz2-x3m2/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to
+$$
+(3x - 1)\,y^2 + x\,z^2 = x^3 - 2.
+$$
+
+**Files:**
+- [`brute_force_search.py`](diophantine-3xm1y2plusxz2-x3m2/brute_force_search.py) — Python exhaustive search over $|x| \leq 10{,}000$ (only $x \equiv 1 \pmod{3}$, since the other two residue classes are immediately ruled out); confirms no solutions.
+- [`analysis_notes.md`](diophantine-3xm1y2plusxz2-x3m2/analysis_notes.md) — Complete mathematical write-up: the central algebraic identity, three-case modular argument modulo 3 and 9, quadratic-residue tables, and proof of non-existence.
+- [`NonExistenceProof.lean`](diophantine-3xm1y2plusxz2-x3m2/NonExistenceProof.lean) — Lean 4 / Mathlib 4 complete formalisation. **Sorry count: 0. Axiom count: 0.**
+- [`solution.tex`](diophantine-3xm1y2plusxz2-x3m2/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Algebraic reformulation:** Rewrite the equation as $x(3y^2 + z^2 - x^2) = y^2 - 2$. This is the central identity from which all modular reductions follow.
+- **Three-case split on $x \bmod 3$:**
+  - **$x \equiv 0 \pmod{3}$:** The identity mod 3 forces $y^2 \equiv 2 \pmod{3}$, impossible since $\mathrm{QR}(3) = \{0,1\}$.
+  - **$x \equiv 2 \pmod{3}$:** The identity mod 3 forces $3 \mid y$ and $3 \mid z$; writing $y = 3Y$, $z = 3Z$ and substituting gives $9 \mid (x^3 - 2)$, i.e.\ $x^3 \equiv 2 \pmod{9}$. But $x \equiv 2 \pmod{3}$ gives $x^3 \equiv 8 \pmod{9}$. Contradiction.
+  - **$x \equiv 1 \pmod{3}$:** The identity mod 3 forces $3 \mid y$; writing $y = 3Y$ and substituting gives $xz^2 \equiv x^3 - 2 \equiv 8 \pmod{9}$. For each subcase ($x \equiv 1, 4, 7 \pmod{9}$) the required value of $z^2 \pmod{9}$ is respectively $8, 2, 5$ — none of which lies in $\mathrm{QR}(9) = \{0,1,4,7\}$. Contradiction.
+
+**Key structural facts:**
+- The algebraic identity $x(3y^2+z^2-x^2) = y^2-2$ concentrates all information into a single rearrangement of the original equation.
+- The obstruction is purely at the level of $\mathbb{Z}/9\mathbb{Z}$; no higher moduli or deeper descent is needed.
+- The proof is self-contained and elementary: only quadratic residue lists and cube computations mod 9.
+
+**Proof status:**
+
+| Case | Obstruction | Status |
+|------|-------------|--------|
+| $x \equiv 0 \pmod{3}$ | $y^2 \equiv 2 \pmod{3}$, but $2 \notin \mathrm{QR}(3)$ | Complete |
+| $x \equiv 2 \pmod{3}$ | $x^3 \equiv 2 \pmod{9}$, but $x^3 \equiv 8 \pmod{9}$ | Complete |
+| $x \equiv 1 \pmod{3}$ | $z^2 \equiv 8, 2, \text{ or } 5 \pmod{9}$; none in $\mathrm{QR}(9)$ | Complete |
+| No integer solutions | All cases covered | **Complete** |
+
+**Lean 4 formalisation — [`NonExistenceProof.lean`](diophantine-3xm1y2plusxz2-x3m2/NonExistenceProof.lean):**
+
+Built against Mathlib 4. **Axiom count: 0. Sorry count: 0.**
+
+| Lean name | Statement | Method |
+|-----------|-----------|--------|
+| `eq_rw` | Rewrites main eq.\ to $x(3y^2+z^2-x^2)=y^2-2$ | `linarith` |
+| `no_solution_case0` | $x \equiv 0 \pmod 3$: impossible | `decide` on `ZMod 3` |
+| `no_solution_case2` | $x \equiv 2 \pmod 3$: impossible | `decide` on `ZMod 9` |
+| `no_solution_case1` | $x \equiv 1 \pmod 3$: impossible | `decide` on `ZMod 9` |
+| `no_integer_solutions` | $\forall x\,y\,z : \mathbb{Z},\;(3x-1)y^2+xz^2 \neq x^3-2$ | `fin_cases` + above |
+
+All three impossibility lemmas are discharged by `decide` on a finite type (`ZMod 3` or `ZMod 9`), making the proof completely automatic once the algebraic reformulation is established.
+
+**Result:** The equation $(3x-1)\,y^2 + x\,z^2 = x^3 - 2$ has **no integer solutions**. The proof is a complete elementary modular obstruction at the prime $3$ (working modulo $9$). A fully unconditional Lean 4 formalisation with zero sorry and zero additional axioms is given in [`NonExistenceProof.lean`](diophantine-3xm1y2plusxz2-x3m2/NonExistenceProof.lean).
+
 

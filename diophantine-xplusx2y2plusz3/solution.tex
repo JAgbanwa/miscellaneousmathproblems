@@ -202,11 +202,11 @@ one-parameter families by making special substitutions.
 \section{Small Explicit Solutions}
 
 Table~\ref{tab:solutions} lists the solutions found by exhaustive computer search for
-$|x|, |y|, |z| \leq 50$.
+$|x|, |y|, |z| \leq 10{,}000$.
 
 \begin{table}[h]
 \centering
-\caption{Integer solutions to $x + x^2 y^2 + z^3 = 0$ with $|x|,|y|,|z| \leq 10000$.}
+\caption{Integer solutions to $x + x^2 y^2 + z^3 = 0$ with $|x|,|y|,|z| \leq 10{,}000$.}
 \label{tab:solutions}
 \begin{tabular}{rrrll}
 \toprule
@@ -228,8 +228,9 @@ $-8$ & $\pm 39$ & $-46$ & $0$ & sporadic \\
 
 For $x = -1$, equation~\eqref{eq:main} becomes $-1 + y^2 + z^3 = 0$, i.e., $z^3 = 1 - y^2$.
 This is equivalent to finding integer points on the elliptic curve $Y^2 = 1 - X^3$
-(where $Y = y$ and $X = z$).  A theorem due to Baker (Baker's method for integer points on
-elliptic curves) shows this curve has finitely many integer points; by exhaustive verification,
+(where $Y = y$ and $X = z$).  Siegel's theorem (1929) guarantees finitely many integer points
+on any elliptic curve; Baker's method (1968) makes the bound effective and computable.
+By exhaustive verification,
 the complete list is $(y, z) \in \{(0, 1), (\pm 1, 0), (\pm 3, -2)\}$,
 giving solutions $(-1, 0, 1)$, $(-1, \pm 1, 0)$, $(-1, \pm 3, -2)$.
 
@@ -285,7 +286,7 @@ theorem solutions_infinite : solutions.Infinite :=
 \toprule
 Lean name & Statement & Proof method \\
 \midrule
-\texttt{family1} & $(0)^1 + 0^2 n^2 + 0^3 = 0$ & \texttt{ring} \\
+\texttt{family1} & $0 + 0^2 n^2 + 0^3 = 0$ & \texttt{ring} \\
 \texttt{family2} & $(-n^3) + (-n^3)^2 \cdot 0^2 + n^3 = 0$ & \texttt{ring} \\
 \texttt{sol\_m1\_1\_0} & $(-1,1,0)$ is a solution & \texttt{norm\_num} \\
 \texttt{sol\_m1\_3\_m2} & $(-1,3,-2)$ is a solution & \texttt{norm\_num} \\
