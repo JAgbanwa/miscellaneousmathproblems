@@ -302,14 +302,14 @@ The key Lean code for the main theorem:
 
 \begin{lstlisting}[language=Lean4]
 theorem no_integer_solutions :
-    ∀ x y z : ℤ, (3 * x - 1) * y ^ 2 + x * z ^ 2 ≠ x ^ 3 - 2 := by
+    forall x y z : Int, (3 * x - 1) * y ^ 2 + x * z ^ 2 <> x ^ 3 - 2 := by
   intro x y z h
-  have hmod3 : (x : ZMod 3) = 0 ∨ (x : ZMod 3) = 1 ∨ (x : ZMod 3) = 2 := by
+  have hmod3 : (x : ZMod 3) = 0 \/ (x : ZMod 3) = 1 \/ (x : ZMod 3) = 2 := by
     fin_cases (x : ZMod 3) <;> simp
   rcases hmod3 with hx0 | hx1 | hx2
-  · exact no_solution_case0 x y z h hx0
-  · exact no_solution_case1 x y z h hx1
-  · exact no_solution_case2 x y z h hx2
+  . exact no_solution_case0 x y z h hx0
+  . exact no_solution_case1 x y z h hx1
+  . exact no_solution_case2 x y z h hx2
 \end{lstlisting}
 
 % ═══════════════════════════════════════════════════════════════════════════════
