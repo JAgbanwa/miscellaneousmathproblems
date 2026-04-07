@@ -1215,4 +1215,74 @@ The single `sorry` occurs only in `no_small_mod_obstruction` (completeness of mo
 
 **Result:** No non-zero integer solution to $7x^4 + 6y^4 + 4z^4 = t^4$ is known. The equation is **locally solvable everywhere** (no Hasse obstruction), and no solution was found computationally for $\max(|x|,|y|,|z|) \leq 3000$. The problem is **open**: a complete proof of non-existence (or a solution) requires a Brauer–Manin computation on the associated K3 surface.
 
+---
+
+### [`diophantine-xplusx2y2plusz3/`](diophantine-xplusx2y2plusz3/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+
+$$x + x^2 y^2 + z^3 = 0$$
+
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-xplusx2y2plusz3/brute_force_search.py) — Pure Python exhaustive search over $|x|, |y|, |z| \leq 50$; verifies both parametric families, discovers sporadic solutions (including $(-8, \pm 39, -46)$), and confirms no modular obstruction exists for any prime $p \leq 100$.
+- [`analysis_notes.md`](diophantine-xplusx2y2plusz3/analysis_notes.md) — Full mathematical write-up: algebraic structure, derivation of both parametric families, sporadic solutions (including the $x=-1$ slice as an elliptic curve), infinitude argument, modular analysis, and proof-status summary.
+- [`InfinitelyManySolutions.lean`](diophantine-xplusx2y2plusz3/InfinitelyManySolutions.lean) — Lean 4 / Mathlib 4 formalisation. **Sorry count: 0. Axiom count: 0.**
+- [`solution.tex`](diophantine-xplusx2y2plusz3/solution.tex) — Self-contained LaTeX proof document.
+
+**Approach:**
+- **Rewrite as** $x(1 + xy^2) + z^3 = 0$, i.e.\ $z^3 = -x(1 + xy^2)$. The equation is **not** homogeneous (degrees 1, 4, 3 present), so no single scaling law generates all solutions. Instead, two universal substitutions each produce an infinite family.
+- **Family 1** (setting $x = 0$): The equation reduces to $z^3 = 0$, forcing $z = 0$; $y$ is free. Family: $(0, n, 0)$ for all $n \in \mathbb{Z}$. Proof: $0 + 0^2 \cdot n^2 + 0^3 = 0$.
+- **Family 2** (setting $y = 0$): The equation reduces to $x + z^3 = 0$, i.e.\ $x = -z^3$. Family: $(-n^3, 0, n)$ for all $n \in \mathbb{Z}$. Proof: $-n^3 + (-n^3)^2 \cdot 0^2 + n^3 = 0$.
+- **Infinitude.** The map $\varphi \colon \mathbb{N} \to \mathbb{Z}^3$, $n \mapsto (0, n, 0)$, is injective (the $y$-component uniquely determines $n$), so the solution set is infinite.
+
+**Key structural facts:**
+- The equation has both a trivial one-parameter family ($x = 0$, $y$ free, $z = 0$) and a non-trivial one ($y = 0$, $x = -z^3$). Together these cover all solutions with $xy = 0$.
+- **Sporadic solutions with $xy \neq 0$:** For $x = -1$, the equation becomes $y^2 = 1 - z^3$, which is the elliptic curve $Y^2 = 1 - X^3$. By classical results (Baker's method), all integer points are $(y, z) \in \{(0, 1), (\pm 1, 0), (\pm 3, -2)\}$, giving exactly five solutions: $(-1, 0, 1)$, $(-1, \pm 1, 0)$, $(-1, \pm 3, -2)$.
+- **Notable sporadic solution:** $(-8, \pm 39, -46)$ satisfies the equation: $-8 + 64 \cdot 1521 - 97336 = -8 + 97344 - 97336 = 0$.
+- **No modular obstruction:** For every prime $p \leq 100$, the equation has a non-zero solution modulo $p$ (confirmed by brute-force search). Both parametric families certify local solvability at every prime simultaneously.
+- **Complete classification is open:** For fixed $x \neq 0$, the equation $z^3 = -x(1 + xy^2)$ defines an elliptic curve in $(y, z)$ whose rational points depend on the arithmetic of $x$. Classifying all solutions over all $x$ would require a descent argument on an elliptic surface.
+
+**Selected explicit solutions:**
+
+| $(x, y, z)$ | $x + x^2y^2 + z^3$ | Family |
+|---|---|---|
+| $(0, n, 0)$ | $0$ | Family 1, any $n$ |
+| $(-1, 0, 1)$ | $0$ | Family 2, $n=1$ |
+| $(1, 0, -1)$ | $0$ | Family 2, $n=-1$ |
+| $(-8, 0, 2)$ | $0$ | Family 2, $n=2$ |
+| $(-1, \pm 1, 0)$ | $0$ | sporadic ($x=-1$) |
+| $(-1, \pm 3, -2)$ | $0$ | sporadic ($x=-1$, elliptic curve) |
+| $(-8, \pm 39, -46)$ | $0$ | sporadic |
+
+**Proof status:**
+
+| Component | Status | Method |
+|-----------|--------|--------|
+| Family 1 $(0, n, 0)$ verified | ✓ Complete | `ring` |
+| Family 2 $(-n^3, 0, n)$ verified | ✓ Complete | `ring` |
+| Infinitely many distinct solutions | ✓ Complete | Injectivity of $n \mapsto (0,n,0)$ |
+| Sporadic solution $(-8, \pm 39, -46)$ verified | ✓ Complete | `norm_num` |
+| No modular obstruction for $p \leq 100$ | ✓ Confirmed | Brute-force search |
+| Lean 4 formalisation (0 sorry, 0 axioms) | ✓ **Complete** | Mathlib tactics |
+| Full classification of all solutions | Open | Elliptic surface descent |
+
+**Lean 4 formalisation — [`InfinitelyManySolutions.lean`](diophantine-xplusx2y2plusz3/InfinitelyManySolutions.lean):**
+
+Built against Mathlib v4.21.0 (`lake exe cache get && lake build`). **Axiom count: 0, Sorry count: 0.**
+
+| Lean name | Statement | Proof method |
+|-----------|-----------|--------------|
+| `family1 n` | $0 + 0^2 \cdot n^2 + 0^3 = 0$ for all $n : \mathbb{Z}$ | `ring` |
+| `family2 n` | $(-n^3) + (-n^3)^2 \cdot 0^2 + n^3 = 0$ for all $n : \mathbb{Z}$ | `ring` |
+| Explicit witnesses (12) | 12 small solutions including $(-8, \pm 39, -46)$ | `norm_num` |
+| `natMap_mem n` | $(0, n, 0) \in \text{solutions}$ for all $n : \mathbb{N}$ | `ring` |
+| `natMap_injective` | $n \mapsto (0, n, 0)$ is injective | `exact_mod_cast` |
+| `solutions_infinite` | The solution set is infinite | `Set.infinite_range_of_injective` |
+
+The proof is entirely elementary: family verifications by `ring`, injectivity by a single cast from `ℕ`-equality to `ℤ`-equality, and infinitude by a standard Mathlib utility. No axioms, no sorries.
+
+**Result:** The equation $x + x^2 y^2 + z^3 = 0$ has **infinitely many** integer solutions. The two primary parametric families are $(0, n, 0)$ and $(-n^3, 0, n)$ for $n \in \mathbb{Z}$. A complete, unconditional Lean 4 proof with zero sorry and zero additional axioms is given in [`InfinitelyManySolutions.lean`](diophantine-xplusx2y2plusz3/InfinitelyManySolutions.lean).
+
 
