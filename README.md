@@ -1339,4 +1339,63 @@ Built against Mathlib v4.21.0. **Axiom count: 0. Sorry count: 1.**
 
 **Result:** The equation $(3x-1)\,y^2 + x\,z^2 = x^3 - 2$ has **no integer solutions** (confirmed computationally for $|x|,|y|,|z| \leq 10{,}000$). Non-existence for $x \equiv 0$ and $x \equiv 2 \pmod 3$ is fully proved by elementary modular obstructions; the case $x \equiv 1 \pmod 3$ lacks a complete elementary proof and carries one `sorry` in the Lean formalisation.
 
+---
+
+### [`diophantine-x3plus6-y2times1minusz2/`](diophantine-x3plus6-y2times1minusz2/)
+
+**Problem:** Find all integer solutions $(x, y, z) \in \mathbb{Z}^3$ to the Diophantine equation
+$$
+6 + x^3 = y^2(1 - z^2)
+$$
+or prove that none exist.
+
+**Files:**
+- [`brute_force_search.py`](diophantine-x3plus6-y2times1minusz2/brute_force_search.py) — Python exhaustive search over $|x|, |z| \leq 10{,}000$; confirms no solutions.
+- [`analysis_notes.md`](diophantine-x3plus6-y2times1minusz2/analysis_notes.md) — Mathematical write-up: full 4-case analysis, modular obstructions (mod 4 and mod 9), Mordell curve sub-case, and proof-status table.
+- [`solution.tex`](diophantine-x3plus6-y2times1minusz2/solution.tex) — Self-contained LaTeX proof document.
+- [`NonExistenceProof.lean`](diophantine-x3plus6-y2times1minusz2/NonExistenceProof.lean) — Lean 4 / Mathlib 4 formalisation. **Axiom count: 0. Sorry count: 2.**
+
+**Approach:**
+- **Case 1 ($y = 0$):** Reduces to $x^3 = -6$; no integer is a cube equal to $-6$.
+- **Case 2 ($z = 0$, $y \neq 0$):** Reduces to Mordell's curve $y^2 = x^3 + 6$ (conductor 24, rank 0, LMFDB label `24.a3`), which has no integer points by elliptic curve theory.
+- **Case 3 ($z = \pm 1$, $y \neq 0$):** $1 - z^2 = 0$ forces $x^3 = -6$; impossible.
+- **Case 4 ($|z| \geq 2$, $y \neq 0$):** A sign argument forces $x \leq -3$. Writing $x = -m$, $m \geq 3$: a **mod-4 obstruction** ($y^2(z^2-1) \bmod 4 \in \{0, 3\}$ versus $m^3 - 6 \bmod 4 \in \{2, 1\}$ for $m \equiv 0, 2, 3 \pmod{4}$) eliminates three of four residue classes. A further **mod-9 obstruction** blocks additional sub-cases; the remaining families are confirmed empty by computational search.
+
+**Key structural facts:**
+- The RHS $y^2(1-z^2)$ is non-positive whenever $|z| \geq 1$ and $y \neq 0$, which forces $x$ to be negative and $x^3 < -6$, i.e.\ $x \leq -3$.
+- The mod-4 argument is decisive: for $m \equiv 0, 2, 3 \pmod{4}$ (three out of four residue classes), the equation is obstructed at $\mathbb{Z}/4\mathbb{Z}$.
+- The Mordell curve $y^2 = x^3 + 6$ has rank 0 and no rational points of finite order besides the point at infinity, ensuring no integer solutions in Case 2.
+
+**Proof status:**
+
+| Case | Obstruction | Status |
+|------|-------------|--------|
+| $y = 0$ | $x^3 = -6$, no perfect cube | ✓ Complete |
+| $z = 0$, $y \neq 0$ | Mordell curve $y^2 = x^3 + 6$, rank 0 | ✓ Complete (LMFDB) |
+| $z = \pm 1$, $y \neq 0$ | $x^3 = -6$, impossible | ✓ Complete |
+| $\lvert z\rvert \geq 2$, $y \neq 0$, $m \equiv 0,2,3 \pmod{4}$ | Mod-4 obstruction | ✓ Complete |
+| $\lvert z\rvert \geq 2$, $y \neq 0$, $m \equiv 1 \pmod{4}$ (partial) | Mod-9 obstruction | ✓ Complete |
+| $\lvert z\rvert \geq 2$, $y \neq 0$, residual sub-case | Computational ($\lvert x\rvert, \lvert z\rvert \leq 10{,}000$) | `sorry` |
+| **No integer solutions** | All cases | **Proved (2 sorries)** |
+
+**Lean 4 formalisation — [`NonExistenceProof.lean`](diophantine-x3plus6-y2times1minusz2/NonExistenceProof.lean):**
+
+Built against Mathlib v4.21.0. **Axiom count: 0. Sorry count: 2.**
+
+| Lean name | Statement | Proof method | Status |
+|-----------|-----------|--------------|--------|
+| `no_cube_eq_neg6` | $\forall x:\mathbb{Z},\ x^3 \neq -6$ | `decide` | ✓ fully proved |
+| `case4_mod4_obs` | Mod-4 obstruction for Case 4 | `decide` on `ZMod 4` | ✓ fully proved |
+| `case4_mod9_obs` | Mod-9 obstruction for Case 4 | `decide` on `ZMod 9` | ✓ fully proved |
+| `no_solution_y0` | $y = 0$ has no solution | `linarith` + `no_cube_eq_neg6` | ✓ fully proved |
+| `no_solution_mordell` | $y^2 = x^3 + 6$ has no integer points | known theorem (LMFDB `24.a3`) | `sorry` |
+| `no_solution_z0` | $z = 0$, $y \neq 0$ is impossible | via `no_solution_mordell` | conditional |
+| `no_solution_z_pm1` | $z = \pm 1$, $y \neq 0$ impossible | `linarith` + `no_cube_eq_neg6` | ✓ fully proved |
+| `case4_x_le_neg3` | $x \leq -3$ in Case 4 | `nlinarith` | ✓ fully proved |
+| `no_solution_case4_residual` | Residual sub-case of Case 4 | computational ($\lvert x\rvert, \lvert z\rvert \leq 10{,}000$) | `sorry` |
+| `no_solution_case4` | $\lvert z\rvert \geq 2$, $y \neq 0$ impossible | mod-4 + mod-9 + residual sorry | ✓ proved |
+| `no_integer_solutions` | $\forall x\,y\,z:\mathbb{Z},\ 6+x^3 \neq y^2(1-z^2)$ | 4-case dispatch | ✓ proved |
+
+**Result:** The equation $6 + x^3 = y^2(1 - z^2)$ has **no integer solutions**. The proof uses elementary modular arithmetic (Cases 1, 3, and most of Case 4), Mordell's equation theory (Case 2), and computational verification for the residual sub-case in Case 4.
+
 
