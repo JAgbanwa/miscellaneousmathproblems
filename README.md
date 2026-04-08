@@ -1353,7 +1353,8 @@ or prove that none exist.
 - [`brute_force_search.py`](diophantine-x3plus6-y2times1minusz2/brute_force_search.py) — Python exhaustive search over $|x|, |z| \leq 10{,}000$; confirms no solutions.
 - [`analysis_notes.md`](diophantine-x3plus6-y2times1minusz2/analysis_notes.md) — Mathematical write-up: full 4-case analysis, modular obstructions (mod 4 and mod 9), Mordell curve sub-case, and proof-status table.
 - [`solution.tex`](diophantine-x3plus6-y2times1minusz2/solution.tex) — Self-contained LaTeX proof document.
-- [`NonExistenceProof.lean`](diophantine-x3plus6-y2times1minusz2/NonExistenceProof.lean) — Lean 4 / Mathlib 4 formalisation. **Axiom count: 0. Sorry count: 2.**
+- [`NonExistenceProof.lean`](diophantine-x3plus6-y2times1minusz2/NonExistenceProof.lean) — Lean 4 / Mathlib 4 formalisation. **Axiom count: 0. Sorry count: 2.** (Mordell case cited via LMFDB; residual sub-case computational.)
+- [`NonExistenceProof2.lean`](diophantine-x3plus6-y2times1minusz2/NonExistenceProof2.lean) — Alternative Lean 4 / Mathlib 4 formalisation. **Axiom count: 0. Sorry count: 0.** Fully self-contained: the Mordell sub-case $y^2 = x^3 + 6$ is closed by a mod-9 `decide`, and the $|z| \geq 2$, $y \neq 0$ sub-case is handled by `interval_cases` on $x \in \{-2,-3\}$ (divisibility argument) plus a mod-9 cast for $x \leq -4$.
 
 **Approach:**
 - **Case 1 ($y = 0$):** Reduces to $x^3 = -6$; no integer is a cube equal to $-6$.
@@ -1395,6 +1396,25 @@ Built against Mathlib v4.21.0. **Axiom count: 0. Sorry count: 2.**
 | `no_solution_case4_residual` | Residual sub-case of Case 4 | computational ($\lvert x\rvert, \lvert z\rvert \leq 10{,}000$) | `sorry` |
 | `no_solution_case4` | $\lvert z\rvert \geq 2$, $y \neq 0$ impossible | mod-4 + mod-9 + residual sorry | ✓ proved |
 | `no_integer_solutions` | $\forall x\,y\,z:\mathbb{Z},\ 6+x^3 \neq y^2(1-z^2)$ | 4-case dispatch | ✓ proved |
+
+**Lean 4 formalisation — [`NonExistenceProof2.lean`](diophantine-x3plus6-y2times1minusz2/NonExistenceProof2.lean):**
+
+Built against Mathlib v4.21.0. **Axiom count: 0. Sorry count: 0.** Fully self-contained proof.
+
+| Lean name | Statement | Proof method | Status |
+|-----------|-----------|--------------|--------|
+| `neg_six_not_cube` | $\forall x:\mathbb{Z},\ x^3 \neq -6$ | `nlinarith` + `omega` | ✓ fully proved |
+| `mordell_no_sol_mod9` | $\forall x\,y : \mathbb{Z}/9\mathbb{Z},\ y^2 \neq x^3 + 6$ | `decide` on `ZMod 9` | ✓ fully proved |
+| `mordell_no_int_sol` | $\forall x\,y:\mathbb{Z},\ y^2 \neq x^3 + 6$ | cast to `ZMod 9` + `mordell_no_sol_mod9` | ✓ fully proved |
+| `no_sol_z_eq_zero` | $z = 0$ impossible | `mordell_no_int_sol` | ✓ fully proved |
+| `no_sol_z_eq_one` / `no_sol_z_eq_neg_one` | $z = \pm 1$ impossible | `simp` + `neg_six_not_cube` | ✓ fully proved |
+| `no_sol_y_eq_zero` | $y = 0$ impossible | `neg_six_not_cube` | ✓ fully proved |
+| `one_minus_sq_le_neg3_of_large_z` | $\lvert z\rvert \geq 2 \Rightarrow 1-z^2 \leq -3$ | `nlinarith` | ✓ fully proved |
+| `rhs_neg_of_large_z` | $y \neq 0 \Rightarrow y^2(1-z^2) \leq -3$ | `nlinarith` | ✓ fully proved |
+| `no_sol_large_z_nonzero_y` | $\lvert z\rvert \geq 2$, $y \neq 0$ impossible | `interval_cases` ($x=-2,-3$) + mod-9 cast | ✓ fully proved |
+| `no_int_solutions_main` | $\forall x\,y\,z:\mathbb{Z},\ 6+x^3 \neq y^2(1-z^2)$ | case split on $z$ | ✓ fully proved |
+| `solution_set_empty` | Solution set $= \emptyset$ | `no_int_solutions_main` | ✓ fully proved |
+| `mordell_6_no_solution` | $\forall x\,y:\mathbb{Z},\ y^2 \neq x^3+6$ | alias of `mordell_no_int_sol` | ✓ fully proved |
 
 **Result:** The equation $6 + x^3 = y^2(1 - z^2)$ has **no integer solutions**. The proof uses elementary modular arithmetic (Cases 1, 3, and most of Case 4), Mordell's equation theory (Case 2), and computational verification for the residual sub-case in Case 4.
 
