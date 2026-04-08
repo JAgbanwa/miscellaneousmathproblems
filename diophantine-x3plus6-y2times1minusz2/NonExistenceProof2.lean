@@ -17,7 +17,6 @@
 -/
 
 import Mathlib.Data.ZMod.Basic
-import Mathlib.Data.Int.Order
 import Mathlib.Tactic
 
 -- =========================================================
