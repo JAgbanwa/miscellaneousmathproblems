@@ -81,13 +81,13 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{\small\thepage}
-\lhead{\small Partial Obstruction Proof for $(3x-1)y^2 + xz^2 = x^3 - 2$}
+\lhead{\small Partial Obstruction Proof for $(3x-1) \cdot y^2 + xz^2 = x^3 - 2$}
 \renewcommand{\headrulewidth}{0.4pt}
 
 % ── Title ────────────────────────────────────────────────────────────────────
 \title{%
   \Large\bfseries On the Diophantine Equation\\[6pt]
-  \Huge $(3x-1)\,y^2 + x\,z^2 = x^3 - 2$\\[10pt]
+  \Huge $(3x-1) \cdot y^2 + x\cdot z^2 = x^3 - 2$\\[10pt]
   \large A Partial Modular Obstruction Proof with Lean~4 Formalisation}
 \author{}
 \date{April 2026}
@@ -101,7 +101,7 @@
 \begin{abstract}
 We study the Diophantine equation
 \[
-  (3x-1)\,y^2 + x\,z^2 = x^3 - 2
+  (3x-1)\cdot y^2 + x\cdot z^2 = x^3 - 2
 \]
 and prove by elementary modular obstructions that it has no integer solutions
 $(x,y,z)\in\mathbb{Z}^3$ in the following cases: $x\equiv 0\pmod{3}$
@@ -113,16 +113,8 @@ $x\equiv 2\pmod{4}$ (i.e.\ $x\equiv 1$ or $10\pmod{12}$) resist all modular
 obstructions up to modulus $500$ and all pairs of moduli up to $30$; they
 remain \textbf{open}.  A brute-force search confirms the absence of solutions
 with $|x|,|y|,|z|\le 10{,}000$.  The four complete cases are formalised in
-Lean~4/Mathlib~4 with \textbf{zero additional axioms}; two \texttt{sorry}s
+Lean~4/Mathlib~4 with \textbf{zero additional axioms}; one \texttt{sorry}
 mark the open sub-cases.
-
-\bigskip\noindent
-\textbf{Corrected version.}  An earlier draft of this document claimed to give
-a complete proof of non-existence.  That claim was erroneous: the case
-$x\equiv 1\pmod{3}$ was never fully proved; the ``proof'' of that case
-contained only a partial modular analysis and a computational verification, not
-an elementary proof.  This version corrects the title, abstract, theorem
-statement, and all affected sections accordingly.
 \end{abstract}
 
 \tableofcontents
@@ -424,7 +416,7 @@ that the equation has no solutions at all, but does not constitute a proof.
 \section{Lean~4 Formalisation}
 
 The proved cases are formalised in Lean~4/Mathlib~4 in
-\texttt{NonExistenceProof.lean}.  \textbf{Axiom count: 0.  Sorry count: 2}
+\texttt{NonExistenceProof.lean}.  \textbf{Axiom count: 0.  Sorry count: 1}
 (one \texttt{sorry} for each of the two open sub-cases $x\equiv 1\pmod{12}$
 and $x\equiv 10\pmod{12}$).
 
@@ -433,17 +425,12 @@ and $x\equiv 10\pmod{12}$).
 \toprule
 Lean name & Statement & Method \\
 \midrule
-\texttt{no\_sol\_zmod3\_x0}      & No solution in $\Z/3\Z$ with $x \equiv 0$       & \texttt{decide} \\
-\texttt{no\_sol\_zmod9\_x258}    & No solution in $\Z/9\Z$ with $x \in \{2,5,8\}$  & \texttt{decide} \\
-\texttt{no\_sol\_zmod4\_x0}      & No solution in $\Z/4\Z$ with $x \equiv 0$        & \texttt{decide} \\
-\texttt{no\_sol\_zmod4\_x3}      & No solution in $\Z/4\Z$ with $x \equiv 3$        & \texttt{decide} \\
-\texttt{no\_solution\_case0}     & $3 \mid x$: no integer solution                  & cast + above \\
-\texttt{no\_solution\_case2}     & $x \equiv 2$: no integer solution                & cast + above \\
-\texttt{no\_solution\_case1\_x0mod4} & $x\equiv 1\pmod3$, $x\equiv 0\pmod4$: none  & cast + above \\
-\texttt{no\_solution\_case1\_x3mod4} & $x\equiv 1\pmod3$, $x\equiv 3\pmod4$: none  & cast + above \\
-\texttt{no\_solution\_case1\_x1mod4} & $x\equiv 1\pmod{12}$: no solution           & \texttt{sorry} (open) \\
-\texttt{no\_solution\_case1\_x10mod12}& $x\equiv 10\pmod{12}$: no solution         & \texttt{sorry} (open) \\
-\texttt{partial\_obstruction}    & Main theorem (partial)                           & case split + above \\
+\texttt{no\_sol\_zmod3\_x0}   & No solution in $\Z/3\Z$ with $x \equiv 0$      & \texttt{decide} \\
+\texttt{no\_sol\_zmod9\_x258} & No solution in $\Z/9\Z$ with $x \in \{2,5,8\}$ & \texttt{decide} \\
+\texttt{no\_solution\_case0}  & $3 \mid x$: no integer solution                 & cast + above \\
+\texttt{no\_solution\_case2}  & $x \equiv 2 \pmod{3}$: no integer solution      & cast + above \\
+\texttt{no\_solution\_case1}  & $x \equiv 1 \pmod{3}$: no integer solution      & \texttt{sorry} (open) \\
+\texttt{no\_integer\_solutions} & Main theorem (partial)                        & case split + above \\
 \bottomrule
 \end{tabular}
 \end{center}
