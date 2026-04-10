@@ -55,6 +55,11 @@ name = "DiophantineX4X2XYY3"
 srcDir = "diophantine-x4-x2plusxyplusy3"
 roots = ["FiniteSolutionsProof"]
 
+[[lean_lib]]
+name = "Diophantine3xm1y2xz2x3m2"
+srcDir = "diophantine-3xm1y2plusxz2-x3m2"
+roots = ["NonExistenceProof"]
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"

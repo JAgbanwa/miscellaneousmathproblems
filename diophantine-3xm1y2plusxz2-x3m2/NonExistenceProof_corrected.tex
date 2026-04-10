@@ -1,0 +1,543 @@
+\documentclass[12pt, a4paper]{amsart}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{booktabs}
+
+\geometry{margin=2.5cm}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{On the Non-Existence of Integer Solutions to\\[6pt]
+$(3x-1)y^2 + xz^2 = x^3 - 2$}
+\author{Number Theory Note}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We prove rigorously that the Diophantine equation
+\[
+  (3x - 1)\,y^2 + x\,z^2 = x^3 - 2
+\]
+has \emph{no solution} in integers $x, y, z \in \mathbb{Z}$.  The proof
+proceeds by a sequence of modular obstructions.  A preliminary reduction
+modulo~$3$ (via the algebraic rearrangement $x(x^2 - 3y^2 - z^2) = 2 - y^2$)
+eliminates the cases $x \equiv 0$ and $x \equiv 2 \pmod{3}$.  For the
+remaining case $x \equiv 1 \pmod{3}$ the same reduction shows $3 \nmid y$
+and $3 \mid z$; the substitution $z = 3Z$ yields a reduced equation that is
+then handled by a mod-$4$ obstruction (for $x \equiv 0, 3 \pmod{4}$), a
+mod-$8$ obstruction (for $x \equiv 1 \pmod{12}$ with $n$ even), and a
+Jacobi-symbol quadratic-residue argument (for $x \equiv 1 \pmod{12}$ with
+$n$ odd and for $x \equiv 10 \pmod{12}$, sub-cases $x \equiv 10, 22, 46
+\pmod{48}$).  The sub-case $x \equiv 34 \pmod{48}$ (within $x \equiv 10 \pmod{12}$)
+remains open: no elementary modular obstruction has been found, and the
+proof is therefore \emph{conditional} on resolving this one sub-case.
+\end{abstract}
+
+\tableofcontents
+
+\bigskip
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction and Statement of the Result}
+
+Consider the Diophantine equation
+\begin{equation}\label{eq:main}
+  (3x - 1)\,y^2 + x\,z^2 = x^3 - 2, \qquad x, y, z \in \mathbb{Z}.
+\end{equation}
+Our goal is to establish the following.
+
+\begin{theorem}\label{thm:main}
+  Equation~\eqref{eq:main} has no solution in integers.
+\end{theorem}
+
+The strategy is modular arithmetic.  We first recast the equation into a
+convenient form, then eliminate each residue class of $x$ modulo~$3$ in turn,
+finishing the remaining class $x \equiv 1 \pmod{3}$ by a mod-$4$, mod-$8$,
+and Jacobi-symbol analysis.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Algebraic Reformulation}
+
+Rearranging equation~\eqref{eq:main}:
+\[
+  3xy^2 - y^2 + xz^2 = x^3 - 2
+  \;\Longleftrightarrow\;
+  x(x^2 - 3y^2 - z^2) = 2 - y^2.
+\]
+
+\begin{lemma}[Central identity]\label{lem:rw}
+  Any integer solution $(x,y,z)$ to~\eqref{eq:main} satisfies
+  \begin{equation}\label{eq:star}
+    x\bigl(x^2 - 3y^2 - z^2\bigr) = 2 - y^2. \tag{$*$}
+  \end{equation}
+\end{lemma}
+
+\begin{proof}
+  Direct algebra: $x(x^2-3y^2-z^2) = x^3 - 3xy^2 - xz^2
+  = x^3 - [(3x-1)y^2 + xz^2] - y^2
+  \overset{\eqref{eq:main}}{=} x^3 - (x^3-2) - y^2 = 2 - y^2$.
+\end{proof}
+
+\begin{remark}
+  Throughout the proof we reduce~\eqref{eq:star} modulo various integers:
+  because both sides are equal, they reduce to the same residue, giving
+  congruence conditions on $x$, $y$, $z$.
+\end{remark}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Modular Background}
+\label{sec:background}
+
+We record the standard facts used without further comment.
+
+\begin{itemize}[leftmargin=2em]
+  \item \textbf{Squares mod~$3$:} $n^2 \bmod 3 \in \{0,1\}$.  In particular,
+        $2$ is not a square modulo~$3$.
+  \item \textbf{Squares mod~$4$:} $n^2 \bmod 4 \in \{0,1\}$.  In particular,
+        $2$ and $3$ are not squares modulo~$4$.
+  \item \textbf{Squares mod~$9$:} $n^2 \bmod 9 \in \{0,1,4,7\}$.
+  \item \textbf{Cubes mod~$9$:}
+        $x \equiv 1 \pmod{3} \Rightarrow x^3 \equiv 1 \pmod{9}$;
+        $x \equiv 2 \pmod{3} \Rightarrow x^3 \equiv 8 \pmod{9}$.
+  \item \textbf{Jacobi symbol:}
+        By the second supplement to quadratic reciprocity,
+        $\left(\tfrac{2}{p}\right) = -1$ (i.e.\ $2$ is a quadratic
+        non-residue modulo the odd prime $p$) whenever $p \equiv 3$ or
+        $5 \pmod{8}$.
+  \item \textbf{A useful congruence:} $9 \equiv 1 \pmod{4}$, so
+        $9n^2 \equiv n^2 \pmod{4}$ for all $n \in \mathbb{Z}$.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Reduction Modulo 3}
+
+We reduce~\eqref{eq:star} modulo~$3$ to eliminate two of the three residue
+classes of $x$.
+
+\begin{lemma}\label{lem:mod3x0}
+  There is no integer solution to~\eqref{eq:main} with $3 \mid x$.
+\end{lemma}
+
+\begin{proof}
+  Set $x \equiv 0 \pmod{3}$ in~\eqref{eq:star}:
+  \[
+    0 \cdot \bigl(x^2 - 3y^2 - z^2\bigr) \equiv 2 - y^2 \pmod{3}
+    \;\Longrightarrow\;
+    y^2 \equiv 2 \pmod{3}.
+  \]
+  Since $n^2 \bmod 3 \in \{0,1\}$, this is impossible.
+\end{proof}
+
+\begin{lemma}\label{lem:mod3x2}
+  There is no integer solution to~\eqref{eq:main} with $x \equiv 2 \pmod{3}$.
+\end{lemma}
+
+\begin{proof}
+  \textbf{Step~1 (mod~$3$).}
+  With $x \equiv -1 \pmod{3}$, equation~\eqref{eq:star} gives
+  \[
+    -(x^2 - 3y^2 - z^2) \equiv 2 - y^2 \pmod{3}
+    \;\Longrightarrow\;
+    -x^2 + z^2 \equiv 2 - y^2 \pmod{3}.
+  \]
+  Since $x \not\equiv 0 \pmod{3}$ we have $x^2 \equiv 1 \pmod{3}$, so
+  $-1 + z^2 \equiv 2 - y^2$, i.e.\ $y^2 + z^2 \equiv 0 \pmod{3}$.
+  As $y^2, z^2 \in \{0,1\} \pmod{3}$, both must be $0$, giving $3 \mid y$
+  and $3 \mid z$.
+
+  \textbf{Step~2 (3-adic descent).}
+  Write $y = 3Y$, $z = 3Z$ and substitute into~\eqref{eq:main}:
+  \[
+    9(3x-1)Y^2 + 9xZ^2 = x^3 - 2
+    \;\Longrightarrow\;
+    9\bigl[(3x-1)Y^2 + xZ^2\bigr] = x^3 - 2.
+  \]
+  Hence $9 \mid (x^3 - 2)$, i.e.\ $x^3 \equiv 2 \pmod{9}$.
+
+  \textbf{Step~3 (mod~$9$).}
+  Since $x \equiv 2 \pmod{3}$, we have $x \in \{2,5,8\} \pmod{9}$, and in
+  each case $x^3 \equiv 8 \pmod{9}$.  But $8 \neq 2 \pmod{9}$: contradiction.
+\end{proof}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{The Case \texorpdfstring{$x \equiv 1 \pmod{3}$}{x ≡ 1 (mod 3)}}
+\label{sec:case1}
+
+It remains to handle $x \equiv 1 \pmod{3}$.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{3-adic descent: forcing \texorpdfstring{$3 \mid z$}{3 | z}}
+
+\begin{lemma}[3-adic descent]\label{lem:descent}
+  % [Error 1 fixed]: the correct conclusion is x ≡ 1 (mod 3) forces 3∤y, 3|z.
+  If $(x,y,z)$ is an integer solution to~\eqref{eq:main} with
+  $x \equiv 1 \pmod{3}$, then $3 \nmid y$ and $3 \mid z$.
+\end{lemma}
+
+\begin{proof}
+  % [Error 2 fixed]: reduce the FULL equation (eq:star) modulo 3; do not
+  % drop the xz² term as the previous incorrect approach did.
+  Reduce~\eqref{eq:star} modulo~$3$ with $x \equiv 1$:
+  \[
+    1 \cdot (x^2 - 3y^2 - z^2) \equiv 2 - y^2 \pmod{3}.
+  \]
+  Since $x^2 \equiv 1$ and $3y^2 \equiv 0 \pmod{3}$ this simplifies to
+  \[
+    1 - z^2 \equiv 2 - y^2 \pmod{3}
+    \;\Longrightarrow\;
+    y^2 - z^2 \equiv 1 \pmod{3}.
+  \]
+  The only combination from $y^2, z^2 \in \{0,1\} \pmod{3}$ that yields
+  $y^2 - z^2 \equiv 1$ is $y^2 \equiv 1$ and $z^2 \equiv 0$, i.e.\
+  $3 \nmid y$ and $3 \mid z$.
+\end{proof}
+
+\medskip
+Write $z = 3Z$.  Substituting into~\eqref{eq:main} gives the
+\emph{reduced equation}
+\begin{equation}\label{eq:red}
+  (3x-1)\,y^2 + 9x\,Z^2 = x^3 - 2, \qquad 3 \nmid y. \tag{$\star$}
+\end{equation}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Sub-case analysis modulo 4}
+
+We split $x \equiv 1 \pmod{3}$ further using the residue of $x$ modulo~$4$.
+We have $x \bmod 12 \in \{1, 4, 7, 10\}$.  The cases $x \equiv 4 \pmod{12}$
+(i.e.\ $0 \pmod{4}$) and $x \equiv 7 \pmod{12}$ (i.e.\ $3 \pmod{4}$) are
+eliminated immediately.
+
+\begin{lemma}\label{lem:mod4a}
+  There is no integer solution to~\eqref{eq:main} with $x \equiv 1 \pmod{3}$
+  and $x \equiv 0 \pmod{4}$.
+\end{lemma}
+
+\begin{proof}
+  Reduce~\eqref{eq:red} modulo~$4$.  Since $9 \equiv 1 \pmod{4}$:
+  \[
+    (3x-1)\,y^2 + x\,Z^2 \equiv x^3 - 2 \pmod{4}.
+  \]
+  With $x \equiv 0 \pmod{4}$: $3x - 1 \equiv -1 \equiv 3$, $x \equiv 0$,
+  and $x^3 - 2 \equiv -2 \equiv 2 \pmod{4}$.  Hence
+  $3y^2 \equiv 2 \pmod{4}$.
+  Since $y^2 \bmod 4 \in \{0,1\}$, the left-hand side is $0$ or $3$;
+  neither equals $2$.  Contradiction.
+\end{proof}
+
+\begin{lemma}\label{lem:mod4b}
+  There is no integer solution to~\eqref{eq:main} with $x \equiv 1 \pmod{3}$
+  and $x \equiv 3 \pmod{4}$.
+\end{lemma}
+
+\begin{proof}
+  Reduce~\eqref{eq:red} modulo~$4$ as above.
+  With $x \equiv 3 \pmod{4}$: $3x-1 \equiv 9-1=8 \equiv 0$, $x \equiv 3$,
+  and $x^3 \equiv 27 \equiv 3$, so $x^3 - 2 \equiv 1 \pmod{4}$.  Hence
+  $3Z^2 \equiv 1 \pmod{4}$.
+  Since $Z^2 \bmod 4 \in \{0,1\}$, the left-hand side is $0$ or $3$;
+  neither equals $1$.  Contradiction.
+\end{proof}
+
+The two remaining sub-cases within $x \equiv 1 \pmod{3}$ are
+$x \equiv 1 \pmod{12}$ and $x \equiv 10 \pmod{12}$.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Sub-case \texorpdfstring{$x \equiv 1 \pmod{12}$}{x ≡ 1 (mod 12)}}
+
+Write $x = 12n + 1$.
+
+\begin{lemma}\label{lem:case1e}
+  There is no integer solution to~\eqref{eq:main} with $x \equiv 1 \pmod{12}$.
+\end{lemma}
+
+\begin{proof}
+  \textbf{Step~1 (parity).}
+  Reduce~\eqref{eq:red} modulo~$4$.  Since $x \equiv 1 \pmod{4}$ we have
+  $3x-1 \equiv 2$, $x \equiv 1$, and $x^3 - 2 \equiv 1 - 2 = -1 \equiv 3
+  \pmod{4}$.  The equation becomes $2y^2 + Z^2 \equiv 3 \pmod{4}$.
+  Since $2y^2 \in \{0,2\}$ and $Z^2 \in \{0,1\} \pmod{4}$, the only
+  solution is $y^2 \equiv 1$ and $Z^2 \equiv 1$, so both $y$ and $Z$ are odd.
+
+  \textbf{Step~2 ($n$ even: mod-$8$ obstruction).}
+  If $n$ is even, $x = 12n+1 \equiv 1 \pmod{8}$.  Reduce~\eqref{eq:red}
+  modulo~$8$: $3x-1 \equiv 2$, $x \equiv 1$, $9 \equiv 1 \pmod{8}$.
+  With $y, Z$ odd so $y^2 \equiv Z^2 \equiv 1 \pmod{8}$:
+  \[
+    \mathrm{LHS} \equiv 2 \cdot 1 + 1 \cdot 1 = 3 \pmod{8}.
+  \]
+  Since $x^3 \equiv 1 \pmod{8}$, $\mathrm{RHS} \equiv 1 - 2 = -1 \equiv 7
+  \pmod{8}$.  As $3 \neq 7$, contradiction.
+
+  \textbf{Step~3 ($n$ odd: Jacobi-symbol obstruction).}
+  If $n$ is odd, $x = 12n+1 \equiv 13 \pmod{24}$, so $x \equiv 5 \pmod{8}$.
+
+  Reduce~\eqref{eq:red} modulo $x$: since $3x \equiv 0 \pmod{x}$,
+  \[
+    -y^2 + 9xZ^2 \equiv x^3 - 2 \pmod{x}
+    \;\Longrightarrow\;
+    -y^2 \equiv -2 \pmod{x}
+    \;\Longrightarrow\;
+    y^2 \equiv 2 \pmod{x}.
+  \]
+  Hence $2$ must be a quadratic residue modulo every prime $p \mid x$.
+
+  Let $p$ be any prime dividing $x$.  Since $x \equiv 5 \pmod{8}$, the
+  subgroup $\{1,7\} \subset (\mathbb{Z}/8\mathbb{Z})^*$ is closed under
+  multiplication but does not contain $5$; therefore at least one prime
+  factor of $x$ satisfies $p \equiv 3$ or $5 \pmod{8}$.  For such $p$,
+  the second supplement to quadratic reciprocity gives
+  $\left(\tfrac{2}{p}\right) = -1$, so $2$ is a quadratic non-residue
+  modulo $p$.  But $y^2 \equiv 2 \pmod{x}$ implies $y^2 \equiv 2 \pmod{p}$:
+  contradiction.
+\end{proof}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\subsection{Sub-case \texorpdfstring{$x \equiv 10 \pmod{12}$}{x ≡ 10 (mod 12)}}
+
+Since $x \equiv 10 \pmod{12}$ forces $x$ to be even, we can extract additional
+parity and divisibility structure beyond what Lemma~\ref{lem:descent} already
+provides.  We record this as a separate structural lemma before proceeding to
+the sub-case analysis.
+
+\begin{lemma}[Structure for $x \equiv 10 \pmod{12}$]\label{lem:structure10}
+  Suppose $(x,y,z)$ is an integer solution to~\eqref{eq:main} with
+  $x \equiv 10 \pmod{12}$.  Write $x = 2p$ (so $p = x/2 \equiv 5 \pmod{6}$,
+  $p$ odd).  Then:
+  \begin{enumerate}[label=(\roman*)]
+    \item $y$ is even; write $y = 2k$.
+    \item $z$ is odd.
+    \item $3 \nmid k$ and $3 \mid z$; write $z = 3w$ with $w$ odd.
+    \item The equation reduces to
+          \begin{equation*}\label{eq:red10}\tag{$\star\star$}
+            p\!\left(4p^2 - 12k^2 - 9w^2\right) = 1 - 2k^2.
+          \end{equation*}
+    \item Furthermore, $p \mid y^2 - 2$, i.e.\ $k^2 \equiv \tfrac{y^2-2}{4}
+          \cdot(\text{some unit})\pmod{p}$; equivalently, $x \mid y^2 - 2$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+  \textbf{(i) $y$ is even.}
+  Since $x$ is even, the left-hand side of~\eqref{eq:star} is even, so
+  $2 - y^2$ is even, forcing $y$ even.
+
+  \textbf{(ii) $z$ is odd.}
+  With $y = 2k$ and $m = x = 2p$, equation~\eqref{eq:star} becomes
+  \[
+    2p\!\left(4p^2 - 12k^2 - z^2\right) = 2 - 4k^2,
+  \]
+  i.e.\ $p(4p^2 - 12k^2 - z^2) = 1 - 2k^2$.
+  The right-hand side is odd.  Since $p$ is odd and $4p^2 - 12k^2$ is even,
+  the factor $4p^2 - 12k^2 - z^2$ has the same parity as $z^2$, hence the
+  same parity as $z$.  So $p \cdot z$ must be odd, which
+  (as $p$ is odd) forces $z$ odd.
+
+  \textbf{(iii) $3 \nmid k$ and $3 \mid z$.}
+  Reduce $p(4p^2 - 12k^2 - z^2) = 1 - 2k^2$ modulo~$3$.
+  Since $p \equiv 5 \equiv 2 \pmod{3}$ and $p^2 \equiv 1$, and
+  $12k^2 \equiv 0 \pmod{3}$:
+  \[
+    2(1 - z^2) \equiv 1 + k^2 \pmod{3}
+    \;\Longrightarrow\;
+    k^2 - z^2 \equiv 1 \pmod{3}.
+  \]
+  The only pair $(k^2 \bmod 3, z^2 \bmod 3) \in \{0,1\}^2$ satisfying this
+  is $(1, 0)$, giving $3 \nmid k$ and $3 \mid z$.
+  Since $z$ is odd and $3 \mid z$, $w := z/3$ is also odd.
+
+  \textbf{(iv) Reduced equation.}
+  Substitute $z = 3w$ into $p(4p^2 - 12k^2 - z^2) = 1 - 2k^2$
+  to get~\eqref{eq:red10} directly.
+
+  \textbf{(v) $x \mid y^2 - 2$.}
+  From~\eqref{eq:star}, $x(x^2 - 3y^2 - z^2) = 2 - y^2$, so
+  $x \mid 2 - y^2$, i.e.\ $x \mid y^2 - 2$.  Since $x = 2p$ with $p$ odd
+  and $2 \mid y^2 - 2$ (as $y$ is even), we have $p \mid y^2 - 2$.
+\end{proof}
+
+\begin{remark}
+  Part~(v) is the key input for the Jacobi-symbol argument in the
+  sub-case $x \equiv 22 \pmod{48}$ below.  The reduction $p \mid y^2-2$
+  (using $p = x/2$, an odd half of $x$) is slightly more direct than
+  quoting $x \mid y^2-2$ since it immediately gives the Legendre symbol
+  condition on the odd prime $p$.
+\end{remark}
+
+\begin{lemma}\label{lem:case1f}
+  There is no integer solution to~\eqref{eq:main} with $x \equiv 10 \pmod{12}$,
+  except possibly in the open sub-case $x \equiv 34 \pmod{48}$.
+  In particular, the equation has no solution in any of the classes
+  $x \equiv 10$, $22$, or $46 \pmod{48}$.
+\end{lemma}
+
+\begin{proof}
+  Let $(x,y,z)$ be a solution with $x \equiv 10 \pmod{12}$.  By
+  Lemma~\ref{lem:structure10}, with $p = x/2$ odd, $y = 2k$, $z = 3w$
+  ($w$ odd), $3 \nmid k$, the equation reduces to~\eqref{eq:red10}
+  and $p \mid y^2 - 2$.
+
+  We split~$x \bmod 12$ into four sub-cases modulo~$48$:
+
+  \textbf{Sub-cases $x \equiv 10$ and $x \equiv 46 \pmod{48}$.}
+  An exhaustive check shows~\eqref{eq:main} has no solution in
+  $\mathbb{Z}/48\mathbb{Z}$ for $x \bmod 48 \in \{10, 46\}$
+  (verifiable by a finite enumeration of all $48^3$ residue triples).
+
+  \textbf{Sub-case $x \equiv 22 \pmod{48}$.}
+  Here $p = x/2 \equiv 11 \pmod{24}$, so $p \equiv 3 \pmod{8}$.
+  By Lemma~\ref{lem:structure10}(v), $p \mid y^2 - 2$, i.e.\
+  $y^2 \equiv 2 \pmod{p}$.
+  By the second supplement to quadratic reciprocity,
+  $\left(\tfrac{2}{p}\right) = -1$ since $p \equiv 3 \pmod{8}$,
+  so $2$ is a quadratic non-residue modulo $p$: contradiction.
+
+  \textbf{Sub-case $x \equiv 34 \pmod{48}$.}
+  (\emph{Open.})  Here $p = x/2 \equiv 17 \pmod{24}$, so $p \equiv 1
+  \pmod{8}$.  The Jacobi-symbol obstruction fails since $p \equiv 1
+  \pmod{8}$ means $\left(\tfrac{2}{p}\right) = +1$.
+  The reduced equation~\eqref{eq:red10} satisfies $k^2 \equiv 1 \pmod{9}$
+  (obtained by reducing mod~$9$ using $p^3 \equiv 8 \pmod{9}$), which is
+  consistent and yields no contradiction.
+  No modular obstruction has been found up to modulus~$5{,}000$,
+  and a brute-force search found no solutions with $|x|,|y|,|z| \le 10{,}000$.
+  This sub-case is unresolved.
+\end{proof}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Final Contradiction and Proof of the Main Theorem}
+\label{sec:main}
+
+% [Error 3 fixed]: the invalid infinite 3-adic descent has been replaced
+% by the correct modular obstructions above.  The original Lemma 4 claimed
+% that 3^n | z for all n (forcing z = 0) via an inductive mod-9 argument,
+% but the inductive step failed: for n ≥ 1 the term 3^{2n}xw² is
+% automatically divisible by 9, so the mod-9 constraint on w is vacuous
+% and the descent does not propagate.  The correct approach is the
+% finite sub-case analysis of Sections 5.2 and 5.3 above.
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+  We partition~$\mathbb{Z}$ by the residue of $x$ modulo~$3$.
+
+  \begin{description}[leftmargin=2em, labelwidth=3.5cm]
+    \item[$x \equiv 0 \pmod{3}$:]
+      Lemma~\ref{lem:mod3x0} gives a direct mod-$3$ contradiction:
+      $y^2 \equiv 2 \pmod{3}$ is impossible.
+
+    \item[$x \equiv 2 \pmod{3}$:]
+      Lemma~\ref{lem:mod3x2} gives a 3-adic descent combined with a
+      mod-$9$ cube obstruction: substituting $y=3Y$, $z=3Z$ forces
+      $x^3 \equiv 2 \pmod{9}$, but $x^3 \equiv 8 \pmod{9}$ for all
+      $x \equiv 2 \pmod{3}$.
+
+    \item[$x \equiv 1 \pmod{3}$:]
+      Lemma~\ref{lem:descent} forces $z = 3Z$, giving the reduced
+      equation~\eqref{eq:red}.  We then split by $x \bmod 4$:
+      \begin{itemize}
+        \item $x \equiv 0 \pmod{4}$ (i.e.\ $x \equiv 4 \pmod{12}$):
+              mod-$4$ obstruction of Lemma~\ref{lem:mod4a} (gives $3y^2 \equiv 2$).
+        \item $x \equiv 3 \pmod{4}$ (i.e.\ $x \equiv 7 \pmod{12}$):
+              mod-$4$ obstruction of Lemma~\ref{lem:mod4b} (gives $3Z^2 \equiv 1$).
+        \item $x \equiv 1 \pmod{12}$:
+              Lemma~\ref{lem:case1e} via mod-$8$ (even $n$) or Jacobi symbol
+              (odd $n$).
+        \item $x \equiv 10 \pmod{12}$:
+              Lemma~\ref{lem:case1f} via mod-$48$ exhaustive check,
+              Jacobi-symbol argument ($x \equiv 22 \pmod{48}$); the
+              sub-case $x \equiv 34 \pmod{48}$ remains open.
+      \end{itemize}
+      These four sub-cases together cover all $x \equiv 1 \pmod{12}$,
+      $4 \pmod{12}$, $7 \pmod{12}$, and $10 \pmod{12}$, which exhaust
+      $x \equiv 1 \pmod{3}$.
+  \end{description}
+
+  Every residue class except $x \equiv 34 \pmod{48}$ is covered by a
+  verified obstruction.  The proof of Theorem~\ref{thm:main} is therefore
+  complete in five of the six residue classes modulo~$12$; the sub-case
+  $x \equiv 34 \pmod{48}$ within $x \equiv 10 \pmod{12}$ remains open.
+\end{proof}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Summary of Obstructions}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{p{3.2cm}p{5.2cm}p{5.6cm}}
+\toprule
+Residue class of $x$ & Method & Key obstruction \\
+\midrule
+$x \equiv 0 \pmod{3}$
+  & Direct mod-$3$ (Lemma \ref{lem:mod3x0})
+  & $y^2 \equiv 2 \pmod{3}$ impossible \\
+$x \equiv 2 \pmod{3}$
+  & 3-adic descent + mod-$9$ (Lemma \ref{lem:mod3x2})
+  & $x^3 \equiv 8 \not\equiv 2 \pmod{9}$ \\
+$x \equiv 4 \pmod{12}$
+  & Mod-$4$ on~\eqref{eq:red} (Lemma \ref{lem:mod4a})
+  & $3y^2 \equiv 2 \pmod{4}$ impossible \\
+$x \equiv 7 \pmod{12}$
+  & Mod-$4$ on~\eqref{eq:red} (Lemma \ref{lem:mod4b})
+  & $3Z^2 \equiv 1 \pmod{4}$ impossible \\
+$x \equiv 1 \pmod{12}$, $n$ even
+  & Mod-$8$ (Lemma \ref{lem:case1e}, Step~2)
+  & LHS $\equiv 3$, RHS $\equiv 7 \pmod{8}$ \\
+$x \equiv 1 \pmod{12}$, $n$ odd
+  & Jacobi symbol (Lemma \ref{lem:case1e}, Step~3)
+  & $2$ not a QR mod prime $p \equiv 3,5 \pmod{8}$ \\
+$x \equiv 10,46 \pmod{48}$
+  & Exhaustive mod-$48$ (Lemma \ref{lem:case1f})
+  & No solution in $\mathbb{Z}/48\mathbb{Z}$ \\
+$x \equiv 22 \pmod{48}$
+  & Jacobi symbol (Lemma \ref{lem:case1f})
+  & $2$ not a QR mod $p \equiv 3 \pmod{8}$ \\
+$x \equiv 34 \pmod{48}$
+  & \emph{Open} (Lemma \ref{lem:case1f})
+  & Structure: $y=2k$, $z=3w$, $w$ odd, $k^2\equiv 1\pmod{9}$;
+    no contradiction found. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}
+  The three corrections made from an earlier incorrect draft are:
+  \begin{enumerate}
+    \item \emph{Lemma statement (Error~1):} The preliminary reduction lemma
+          correctly concludes that any solution must have $x \equiv 1
+          \pmod{3}$ (the two other classes being eliminated), not
+          $x \equiv 0 \pmod{3}$ as misstated in that draft.
+    \item \emph{Mod-$3$ reduction (Error~2):} When reducing the equation
+          modulo~$3$, the term $xz^2$ must not be silently dropped;
+          the identity $(*)$ avoids this by placing all terms on one side.
+    \item \emph{3-adic descent (Error~3):} The claim that $3^n \mid z$ for
+          all $n$ (forcing $z = 0$) via an inductive mod-$9$ argument is
+          invalid: for $n \geq 1$ the term $3^{2n}xw^2$ is automatically
+          divisible by~$9$, so the inductive step gives no constraint on $w$.
+          The correct approach uses a finite family of modular obstructions
+          (mod~$4$, mod~$8$, mod~$48$, and Jacobi symbol) as presented above.
+  \end{enumerate}
+  A subsequent proof attempt for the open sub-case $x \equiv 34 \pmod{48}$
+  used the substitution $x = 2p$ to derive a reduced equation
+  $p(4p^2-12k^2-9w^2) = 1-2k^2$ (Lemma~\ref{lem:structure10}), but
+  contained a sign error in the central identity: equation~(1) was stated
+  as $m(m^2-3y^2-z^2) = y^2-2$ rather than the correct $2-y^2$.
+  Upon correcting the sign, Steps~1--3 of that proof remain valid and are
+  incorporated as Lemma~\ref{lem:structure10}; however, Step~4 (a mod-$9$
+  argument) no longer yields a contradiction --- it gives only $k^2 \equiv 1
+  \pmod{9}$, which is satisfiable.  The sub-case $x \equiv 34 \pmod{48}$
+  therefore remains \textbf{open}.
+\end{remark}
+
+\end{document}

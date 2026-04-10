@@ -158,7 +158,7 @@ lemma no_sol_large_z_nonzero_y (x y z : ℤ)
     have hy2pos : 0 < y ^ 2 := by positivity
     -- Enumerate divisors of 21: {1, 3, 7, 21}
     have hy2_vals : y ^ 2 = 1 ∨ y ^ 2 = 3 ∨ y ^ 2 = 7 ∨ y ^ 2 = 21 := by
-      interval_cases (y ^ 2 : ℤ) <;> simp_all (config := { decide := true }) <;> omega
+      interval_cases (y ^ 2 : ℤ) <;> simp_all (config := { decide := true })
     rcases hy2_vals with h | h | h | h
     · -- y^2=1 → z^2-1=21 → z^2=22: not a perfect square (4^2=16 < 22 < 25=5^2)
       have hz2val : z ^ 2 = 22 := by nlinarith
