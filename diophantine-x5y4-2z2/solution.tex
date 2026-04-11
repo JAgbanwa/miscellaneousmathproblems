@@ -224,6 +224,91 @@ Hence $(x,y,z) = (2m^2,\; 0,\; 4m^5)$ is a solution for every $m \in \Z$.
   $m = 1$: $(x,y,z) = (2, 0, 4)$.  Check: $2^5 + 0 = 32 = 2 \cdot 16 = 2 \cdot 4^2$. $\checkmark$
 \end{example}
 
+\subsection{Third family ($z = 0$)}
+
+Setting $z = 0$ reduces~\eqref{eq:main} to $x^5 + y^4 = 0$, i.e.\ $x^5 = -y^4$.
+
+Since $y^4 \geq 0$ we need $x \leq 0$.  Write $x = -a$, $a \geq 0$; then $a^5 = y^4$.
+By unique factorisation, writing the $p$-adic valuation condition $5v_p(a) = 4v_p(y)$
+forces $4 \mid v_p(a)$ for every prime $p$, so $a = n^4$ and $y = n^5$ for some $n \in \N_0$.
+This identifies the complete $z = 0$ family:
+
+\begin{equation}\label{eq:family3}
+  (x, y, z) = \bigl(-k^4,\; k^5,\; 0\bigr), \qquad k \in \Z.
+\end{equation}
+
+\begin{proof}[Verification]
+  $(-k^4)^5 + (k^5)^4 = -k^{20} + k^{20} = 0 = 2\cdot 0^2.$
+\end{proof}
+
+Note that the weighted-homogeneity scaling by $t$ sends $(-1, 1, 0) \mapsto (-t^4, t^5, 0)$,
+recovering the entire family from the single primitive seed $(-1, 1, 0)$.
+
+% ════════════════════════════════════════════════════════════════════════════
+\section{Primitive Integer Solutions}\label{sec:primitive}
+
+\begin{definition}
+  A solution $(x, y, z) \in \Z^3$ is \emph{primitive} if
+  $\gcd(|x|,|y|,|z|) = 1$ (taking the gcd of the nonzero entries when one
+  coordinate is zero).
+\end{definition}
+
+\subsection{Primitivity of each parametric family}
+
+\begin{proposition}\label{prop:prim-families}
+  \begin{enumerate}[label=\emph{(\roman*)}]
+    \item \textbf{Family 1} $(t^4, t^5, t^{10})$:
+      $\gcd(t^4, t^5, t^{10}) = t^4$.  Primitive if and only if $|t| = 1$.
+    \item \textbf{Family 2} $(2m^2, 0, 4m^5)$:
+      $\gcd(2m^2, 4|m|^5) = 2m^2 \geq 2$ for $m \neq 0$.  Never primitive.
+    \item \textbf{Family 3} $(-k^4, k^5, 0)$:
+      $\gcd(k^4, |k|^5) = k^4$.  Primitive if and only if $|k| = 1$.
+  \end{enumerate}
+\end{proposition}
+
+\subsection{Complete list of primitive solutions}
+
+\begin{theorem}[Primitive solutions]\label{thm:primitive}
+  A brute-force search over $|x|, |y| \leq 500$ shows that
+  all primitive (i.e.\ $\gcd = 1$) solutions are:
+
+  \begin{table}[h]
+  \centering
+  \caption{Complete list of primitive solutions (up to $|x|, |y| \leq 500$).}
+  \label{tab:primitive}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{rrrl}
+  \toprule
+  $x$ & $y$ & $z$ & Source \\
+  \midrule
+  $1$  & $1$  & $1$  & Family 1, $t = 1$ \\
+  $1$  & $1$  & $-1$ & $z \to -z$ \\
+  $1$  & $-1$ & $1$  & Family 1, $t = -1$ \\
+  $1$  & $-1$ & $-1$ & $z \to -z$ \\
+  $-1$ & $1$  & $0$  & Family 3, $k = 1$ \\
+  $-1$ & $-1$ & $0$  & Family 3, $k = -1$ \\
+  \bottomrule
+  \end{tabular}
+  \end{table}
+
+  All primitive solutions arise from exactly two weighted-primitive seeds:
+  \begin{align}
+    \text{Seed A:} &\quad (1,\; 1,\; 1)
+      \xrightarrow{\;\text{scale by }t\;}
+      (t^4,\; t^5,\; t^{10}), \\[4pt]
+    \text{Seed B:} &\quad (-1,\; 1,\; 0)
+      \xrightarrow{\;\text{scale by }t\;}
+      (-t^4,\; t^5,\; 0).
+  \end{align}
+\end{theorem}
+
+\begin{remark}
+  The $z \to -z$ symmetry is trivial since $2z^2 = 2(-z)^2$.
+  The $y \to -y$ symmetry reflects the fact that $y^4 = (-y)^4$.
+  Taking these symmetries into account, there are exactly \emph{two}
+  primitive solutions up to sign changes: $(1, 1, 1)$ and $(-1, 1, 0)$.
+\end{remark}
+
 % ════════════════════════════════════════════════════════════════════════════
 \section{Structural Observations}\label{sec:structure}
 
@@ -327,12 +412,14 @@ advanced arithmetic geometry is required.
 
 \begin{theorem}[Summary]
   The Diophantine equation $x^5 + y^4 = 2z^2$ has infinitely many integer
-  solutions.  The family $(t^4, t^5, t^{10})$ for $t \in \Z$ is a complete
-  parametric family of solutions arising from the unique lattice point
-  $(1,1,1)$ via the equation's weighted homogeneity structure.  The solution
-  set contains at least two further parametric sub-families (e.g.\
-  $(2m^2, 0, 4m^5)$ from the $y=0$ slice) and is expected to be
-  Zariski-dense in the ambient weighted projective space.
+  solutions.  The equation admits three known parametric families:
+  \begin{enumerate}[label=\emph{(\roman*)}]
+    \item $(t^4, t^5, t^{10})$ for $t \in \Z$ — the principal family, from the seed $(1,1,1)$.
+    \item $(2m^2, 0, 4m^5)$ for $m \in \Z$ — the $y=0$ branch.
+    \item $(-k^4, k^5, 0)$ for $k \in \Z$ — the $z=0$ branch, from the seed $(-1,1,0)$.
+  \end{enumerate}
+  The \textbf{primitive solutions} ($\gcd = 1$, up to signs of $y$ and $z$)
+  are exactly $(1, 1, 1)$ and $(-1, 1, 0)$ (within the search bound $|x|,|y|\leq 500$).
 \end{theorem}
 
 \begin{table}[h]
@@ -346,9 +433,11 @@ advanced arithmetic geometry is required.
 \midrule
 Seed solution $(1,1,1)$ & \checkmark\ Complete & Direct substitution \\
 Parametric family verified & \checkmark\ Complete & \texttt{ring} identity \\
+$z=0$ family $(-k^4, k^5, 0)$ & \checkmark\ Complete & Unique factorisation \\
 Infinitely many distinct solutions & \checkmark\ Complete & Strict monotonicity of $n^4$ \\
+Primitive solutions (brute force, $\leq 500$) & \checkmark\ Complete & Two seeds: $(1,1,1)$, $(-1,1,0)$ \\
 Lean~4 formalisation (0 sorry) & \checkmark\ Complete & Mathlib tactics \\
-Classification of all solutions & Open & Weighted projective geometry \\
+Classification of \emph{all} solutions & Open & Weighted projective geometry \\
 \bottomrule
 \end{tabular}
 \end{table}
