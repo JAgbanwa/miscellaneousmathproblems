@@ -62,9 +62,12 @@ def solutions : Set (ℤ × ℤ × ℤ) :=
 
 /-- A solution `(x, y, z)` is primitive if no integer > 1 divides all three
     coordinates simultaneously.  We encode this as
-    `Int.gcd (Int.gcd x y) z = 1`. -/
+    `Nat.gcd (Nat.gcd x.natAbs y.natAbs) z.natAbs = 1`. -/
 def IsPrimitiveSol (x y z : ℤ) : Prop :=
-  Int.gcd (Int.gcd x y) z = 1
+  Nat.gcd (Nat.gcd x.natAbs y.natAbs) z.natAbs = 1
+
+instance (x y z : ℤ) : Decidable (IsPrimitiveSol x y z) :=
+  inferInstanceAs (Decidable (Nat.gcd (Nat.gcd x.natAbs y.natAbs) z.natAbs = 1))
 
 /-! ## Family 1: parametric family `(t^4, t^5, t^10)` -/
 
@@ -175,27 +178,34 @@ theorem family1_t2_not_primitive : ¬ IsPrimitiveSol 16 32 1024 := by
     `gcd(t^4, t^5, t^10) = t^4 ≥ 16 > 1`.
     We formalise this as: the gcd of the Family 1 triple divides `t^4`. -/
 theorem family1_gcd_dvd_pow4 (t : ℤ) :
-    (Int.gcd (Int.gcd (t ^ 4) (t ^ 5)) (t ^ 10) : ℤ) ∣ t ^ 4 := by
-  exact_mod_cast Int.gcd_dvd_left
+    (Nat.gcd (Nat.gcd (t ^ 4).natAbs (t ^ 5).natAbs) (t ^ 10).natAbs : ℤ) ∣ t ^ 4 := by
+  have hd : Nat.gcd (Nat.gcd (t ^ 4).natAbs (t ^ 5).natAbs) (t ^ 10).natAbs ∣
+      (t ^ 4).natAbs :=
+    (Nat.gcd_dvd_left _ _).trans (Nat.gcd_dvd_left _ _)
+  rw [← Int.natAbs_dvd_natAbs]
+  exact_mod_cast hd
 
 /-! ### Family 2 is never primitive (for m ≠ 0) -/
 
 /-- For `m ≠ 0`, the Family 2 member `(2*m^2, 0, 4*m^5)` is not primitive,
     since `2 ∣ 2*m^2` and `2 ∣ 4*m^5`.  We show `2 ∣ gcd(2*m^2, 4*m^5)`. -/
-theorem family2_not_primitive (m : ℤ) (hm : m ≠ 0) :
+theorem family2_not_primitive (m : ℤ) (_hm : m ≠ 0) :
     ¬ IsPrimitiveSol (2 * m ^ 2) 0 (4 * m ^ 5) := by
   unfold IsPrimitiveSol
-  simp only [Int.gcd_zero_right]
+  simp only [Int.natAbs_zero, Nat.gcd_zero_right]
   intro h
-  have h2 : (2 : ℕ) ∣ Int.natAbs (2 * m ^ 2) := by
-    rw [Int.natAbs_mul, Int.natAbs_ofNat]
-    exact Dvd.dvd.mul_right (dvd_refl 2) _
-  have h3 : (2 : ℕ) ∣ Int.natAbs (4 * m ^ 5) := by
-    rw [Int.natAbs_mul, Int.natAbs_ofNat]
-    exact Dvd.dvd.mul_right (dvd_refl 2 |>.trans (by norm_num)) _
-  have := Nat.dvd_gcd h2 h3
-  rw [h] at this
-  exact absurd this (by norm_num)
+  -- 2 divides (2*m^2).natAbs
+  have h2 : 2 ∣ (2 * m ^ 2).natAbs := by
+    simp [Int.natAbs_mul]
+  -- 2 divides (4*m^5).natAbs
+  have h4 : 2 ∣ (4 * m ^ 5).natAbs := by
+    simp only [Int.natAbs_mul, Int.natAbs_pow]
+    exact (dvd_mul_right 2 2).mul_right (m.natAbs ^ 5)
+  -- so 2 ∣ gcd, contradicting gcd = 1
+  have hdvd : 2 ∣ (2 * m ^ 2).natAbs.gcd (4 * m ^ 5).natAbs :=
+    Nat.dvd_gcd h2 h4
+  rw [h] at hdvd
+  exact absurd hdvd (by norm_num)
 
 /-! ### Family 3 is primitive only at |k| = 1 -/
 
