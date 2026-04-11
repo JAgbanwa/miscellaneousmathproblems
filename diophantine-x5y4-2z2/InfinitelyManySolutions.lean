@@ -33,20 +33,20 @@ primitive solutions (gcd = 1).
 
 ### Primitive solutions
 
-A solution `(x, y, z)` is *primitive* if `Int.gcd x y = 1 ∧ Int.gcd x z = 1`
-(equivalently, the three coordinates share no common factor > 1).
+A solution `(x, y, z)` is *primitive* if `gcd(|x|, |y|, |z|) = 1`.
 We use the predicate `IsPrimitiveSol`.
 
-- **Family 1**: `gcd(t^4, t^5, t^10) = t^4`.  Primitive iff `|t| = 1`.
-  The two primitive members are `(1, 1, 1)` (t = 1) and `(1, -1, 1)` (t = -1).
+**Proved in this file:**
+- Family 1 `(t^4, t^5, t^10)` is primitive iff `|t| = 1`.
+- Family 2 `(2*m^2, 0, 4*m^5)` is never primitive for `m ≠ 0`.
+- Family 3 `(-k^4, k^5, 0)` is primitive iff `|k| = 1`.
+- Explicit witnesses: `(1,1,1)`, `(1,-1,1)`, `(-1,1,0)`, `(-1,-1,0)` are primitive solutions.
 
-- **Family 2**: `gcd(2*m^2, 4*m^5) = 2*m^2 ≥ 2` for `m ≠ 0`; never primitive.
-
-- **Family 3**: `gcd(k^4, k^5) = k^4`.  Primitive iff `|k| = 1`.
-  The two primitive members are `(-1, 1, 0)` (k = 1) and `(-1, -1, 0)` (k = -1).
-
-The complete set of primitive solutions (up to the trivial z → -z symmetry) has
-exactly two seeds: `(1, 1, 1)` and `(-1, 1, 0)`.
+**Not proved (open problem):**
+The question of whether these are *all* primitive solutions is open.
+A brute-force search up to `|x|, |y| ≤ 500` finds no others, but this is
+computational evidence only — not a theorem.  A complete classification
+would require a descent argument or arithmetic-geometric methods.
 
 ## Sorry count: 0
 

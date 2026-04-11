@@ -29,6 +29,8 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{example}[theorem]{Example}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{openquestion}[theorem]{Open Question}
 
 % ── Code listings ────────────────────────────────────────────────────────────
 \definecolor{codegray}{rgb}{0.96,0.96,0.96}
@@ -77,7 +79,7 @@
 \title{%
   \Large\bfseries Infinitely Many Integer Solutions to\\[6pt]
   \Huge $x^5 + y^4 = 2z^2$\\[10pt]
-  \large Complete Analysis with Lean~4 Formalisation
+  \large Parametric Families and Computational Evidence, with Lean~4 Formalisation
 }
 \author{%
   \normalsize Verified in Lean~4 / Mathlib~4 (v4.21.0)\\[2pt]
@@ -266,15 +268,15 @@ recovering the entire family from the single primitive seed $(-1, 1, 0)$.
   \end{enumerate}
 \end{proposition}
 
-\subsection{Complete list of primitive solutions}
+\subsection{Computational search for primitive solutions}
 
-\begin{theorem}[Primitive solutions]\label{thm:primitive}
-  A brute-force search over $|x|, |y| \leq 500$ shows that
-  all primitive (i.e.\ $\gcd = 1$) solutions are:
+\begin{remark}[Computational evidence only]\label{rem:search}
+  A brute-force search over $|x|, |y| \leq 500$ finds the following
+  primitive (i.e.\ $\gcd = 1$) solutions and no others within that range:
 
   \begin{table}[h]
   \centering
-  \caption{Complete list of primitive solutions (up to $|x|, |y| \leq 500$).}
+  \caption{Primitive solutions found within $|x|,|y|\leq 500$ (computational search).}
   \label{tab:primitive}
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{rrrl}
@@ -291,43 +293,48 @@ recovering the entire family from the single primitive seed $(-1, 1, 0)$.
   \end{tabular}
   \end{table}
 
-  All primitive solutions arise from exactly two weighted-primitive seeds:
-  \begin{align}
-    \text{Seed A:} &\quad (1,\; 1,\; 1)
-      \xrightarrow{\;\text{scale by }t\;}
-      (t^4,\; t^5,\; t^{10}), \\[4pt]
-    \text{Seed B:} &\quad (-1,\; 1,\; 0)
-      \xrightarrow{\;\text{scale by }t\;}
-      (-t^4,\; t^5,\; 0).
-  \end{align}
-\end{theorem}
-
-\begin{remark}
-  The $z \to -z$ symmetry is trivial since $2z^2 = 2(-z)^2$.
-  The $y \to -y$ symmetry reflects the fact that $y^4 = (-y)^4$.
-  Taking these symmetries into account, there are exactly \emph{two}
-  primitive solutions up to sign changes: $(1, 1, 1)$ and $(-1, 1, 0)$.
+  \textbf{Important caveat.}  A finite search is not a proof of completeness.
+  The above is computational evidence, not a theorem.  In particular, it does
+  \emph{not} rule out the existence of primitive solutions with $|x| > 500$
+  or $|y| > 500$ that lie outside all three known families.  The full
+  classification of primitive solutions remains an open problem.
 \end{remark}
+
+\begin{conjecture}\label{conj:prim}
+  The only primitive solutions to $x^5 + y^4 = 2z^2$ are, up to the
+  symmetries $y \to -y$ and $z \to -z$:
+  \[
+    (1,\;1,\;1) \quad \text{and} \quad (-1,\;1,\;0).
+  \]
+  A proof would require either a descent argument, a factorisation in
+  $\Z[\sqrt{2}]$ or a suitable number field, or a height-bound argument
+  from arithmetic geometry.
+\end{conjecture}
 
 % ════════════════════════════════════════════════════════════════════════════
 \section{Structural Observations}\label{sec:structure}
 
-\subsection{Weighted projective interpretation}
+\subsection{Weighted projective motivation}
 
-The equation~\eqref{eq:main} defines a hypersurface in the
-\emph{weighted projective space} $\mathbb{P}^2_{(4,5,10)}$ (weights
-$4, 5, 10$, common weight $20$).  The rational point
-$[1:1:1]_{(4,5,10)}$ gives rise to the entire parametric family when
-pulled back to affine coordinates via $t \mapsto [t^4 : t^5 : t^{10}]$.
+\begin{remark}[Heuristic context --- not a rigorous argument]
+The equation~\eqref{eq:main} is weighted-homogeneous of degree~$20$ with
+weight vector $(4,5,10)$.  This motivates searching for solutions by
+scaling a seed: if $(x_0,y_0,z_0)$ satisfies the equation, so does
+$(t^4 x_0, t^5 y_0, t^{10} z_0)$.  The parametric families in this paper
+arise exactly this way.  We mention weighted projective space
+$\mathbb{P}^2_{(4,5,10)}$ only as motivating language; we do not invoke
+any theorem about integral points on weighted projective varieties, and no
+result in this paper depends on this framing.
+\end{remark}
 
-\subsection{Why Faltings' theorem does not apply}
+\subsection{Remark on Faltings' theorem}
 
-Faltings' theorem (every smooth projective curve of genus $g \geq 2$
-over $\Q$ has finitely many rational points) does not apply here
-because the `curve' swept out by the parametric family is a rational
-curve (parametrised by one free variable $t$), which has genus $0$.
-Accordingly, infinitely many integral points are entirely expected
-and confirmed.
+Faltings' theorem concerns smooth projective \emph{curves} of genus $\geq 2$.
+The solution set of~\eqref{eq:main} is two-dimensional (it is a surface, not
+a curve), so Faltings' theorem is not directly applicable.  The rational
+curve $t \mapsto (t^4, t^5, t^{10})$ has genus~$0$, which is
+consistent with the existence of infinitely many rational points on it,
+but this is consistency, not a proof.
 
 \subsection{Parity constraint}
 
@@ -410,17 +417,25 @@ advanced arithmetic geometry is required.
 % ════════════════════════════════════════════════════════════════════════════
 \section{Summary}\label{sec:summary}
 
-\begin{theorem}[Summary]
+\begin{theorem}[Proved results]
   The Diophantine equation $x^5 + y^4 = 2z^2$ has infinitely many integer
-  solutions.  The equation admits three known parametric families:
+  solutions.  Three explicit parametric families are verified:
   \begin{enumerate}[label=\emph{(\roman*)}]
-    \item $(t^4, t^5, t^{10})$ for $t \in \Z$ — the principal family, from the seed $(1,1,1)$.
-    \item $(2m^2, 0, 4m^5)$ for $m \in \Z$ — the $y=0$ branch.
-    \item $(-k^4, k^5, 0)$ for $k \in \Z$ — the $z=0$ branch, from the seed $(-1,1,0)$.
+    \item $(t^4, t^5, t^{10})$ for $t \in \Z$;
+    \item $(2m^2, 0, 4m^5)$ for $m \in \Z$;
+    \item $(-k^4, k^5, 0)$ for $k \in \Z$.
   \end{enumerate}
-  The \textbf{primitive solutions} ($\gcd = 1$, up to signs of $y$ and $z$)
-  are exactly $(1, 1, 1)$ and $(-1, 1, 0)$ (within the search bound $|x|,|y|\leq 500$).
+  Families~(ii) and~(iii) are proved to be non-primitive for all parameters
+  with $|$parameter$| \geq 2$.  Family~(i) is primitive if and only if $|t|=1$.
 \end{theorem}
+
+\begin{openquestion}
+  Are $(1, 1, 1)$ and $(-1, 1, 0)$ (up to the symmetries $y \to -y$,
+  $z \to -z$) the only primitive solutions?  A computational search up
+  to $|x|, |y| \leq 500$ finds no others, but this does not constitute
+  a proof.  A complete classification likely requires a descent argument
+  or arithmetic-geometric methods.
+\end{openquestion}
 
 \begin{table}[h]
 \centering
@@ -431,13 +446,16 @@ advanced arithmetic geometry is required.
 \toprule
 \textbf{Component} & \textbf{Status} & \textbf{Method} \\
 \midrule
-Seed solution $(1,1,1)$ & \checkmark\ Complete & Direct substitution \\
-Parametric family verified & \checkmark\ Complete & \texttt{ring} identity \\
-$z=0$ family $(-k^4, k^5, 0)$ & \checkmark\ Complete & Unique factorisation \\
-Infinitely many distinct solutions & \checkmark\ Complete & Strict monotonicity of $n^4$ \\
-Primitive solutions (brute force, $\leq 500$) & \checkmark\ Complete & Two seeds: $(1,1,1)$, $(-1,1,0)$ \\
-Lean~4 formalisation (0 sorry) & \checkmark\ Complete & Mathlib tactics \\
-Classification of \emph{all} solutions & Open & Weighted projective geometry \\
+Seed solution $(1,1,1)$ verified & \checkmark\ Proved & Direct substitution \\
+Family 1 $(t^4,t^5,t^{10})$ verified & \checkmark\ Proved & \texttt{ring} identity \\
+Family 2 $(2m^2,0,4m^5)$ verified & \checkmark\ Proved & \texttt{ring} identity \\
+Family 3 $(-k^4,k^5,0)$ verified & \checkmark\ Proved & Unique factorisation + \texttt{ring} \\
+Infinitely many distinct solutions & \checkmark\ Proved & Strict monotonicity of $n^4$ \\
+Families 2, 3 never primitive for $|$param$|\geq 2$ & \checkmark\ Proved & Direct gcd computation \\
+Family 1 primitive iff $|t|=1$ & \checkmark\ Proved & Direct gcd computation \\
+Lean~4 formalisation (0 sorry) & \checkmark\ Proved & Mathlib tactics \\
+Primitive solutions outside search bound & Open (Conjecture~\ref{conj:prim}) & Requires descent/AG methods \\
+Classification of all primitive solutions & Open & Arithmetic geometry \\
 \bottomrule
 \end{tabular}
 \end{table}
