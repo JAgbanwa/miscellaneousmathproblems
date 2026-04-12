@@ -243,50 +243,38 @@ We must show: for every record-setter $m \geq 24$ with $V = m + \tau(m)$,
 there is a record-setter $m' \in (m, V-3]$.
 
 The window $(m, V-3]$ has length $V - 3 - m = \tau(m) - 3$.  For a valid window to
-exist we need $\tau(m) \geq 4$, which holds for all $m \geq 2$ (indeed for all record-setters
-$m \geq 24$: the smallest such $\tau$ value in Table~\ref{tab:records} is $\tau(35) = 4$,
-giving a window of length 1).
-
-We prove the lemma in two parts.
+exist we need $\tau(m) \geq 4$, which holds for all record-setters $m \geq 24$:
+the smallest $\tau$ value among record-setters in Table~\ref{tab:records} is
+$\tau(35) = 4$, giving a window of length~$1$.
 
 \medskip
-\noindent\textbf{Computational verification for $m \leq 10^7$.}
-The Python script \texttt{analysis.py} (included with this paper) computes all
-record-setters up to $10^7$ via a sieve for $\tau$.  Each record-setter $m$ in the
-range $[24, 10^7]$ is checked: the script confirms that the \emph{next} record-setter
-$m'$ satisfies $m' \leq V(m) - 3$ in every case.
-The minimum of $V(m) - m'$ over all such record-setters is $\mathbf{1}$ (e.g.\ first
-occurs at $m = 30$, $m' = 35 = V(30) - 3$), confirming the lemma is tight but always
-holds.
+\noindent\textbf{Computational verification.}
+The Python script \texttt{analysis.py} computes all record-setters in $[24, 2\times 10^7]$
+via a sieve for $\tau$.  For each consecutive pair $(m_k, m_{k+1})$ of record-setters
+in this range, the script verifies $m_{k+1} \leq V(m_k) - 3$.  The minimum gap
+$V(m_k) - 3 - m_{k+1}$ over all such pairs is $\mathbf{0}$ (first at $m = 30$,
+$m' = 35 = V(30) - 3$), confirming the inequality is tight but always holds.
 
-\medskip
-\noindent\textbf{Asymptotic argument for large $m$.}
-For $m > 10^6$, we use the following: by the theory of highly composite numbers
-(Ramanujan 1915), for any $x$ there exists a multiple $H$ of $\mathrm{lcm}(1,\ldots,k)$
-with $H \leq x$ and $\tau(H) \geq k$.  Concretely, for any record-setter $m$ with
-$V = m + \tau(m)$, let $H$ be the largest highly composite number with $H \leq V - 3$.
-For $m > 10^6$, $V = m + \tau(m) > 10^6$, and the density of highly composite numbers
-ensures $H > m$ (since $H \geq V/2 > m$ for $V > 2m$, which holds once $\tau(m) > m$,
-i.e.\ always for large $m$ since $\tau(m) = o(m)$... actually $\tau(m) \ll m^\epsilon$).
+In addition, the window of the final record-setter in the range ($m = 19{,}999{,}980$,
+$V = 20{,}000{,}364$) is checked separately: the next record-setter $m' = 20{,}000{,}160$
+satisfies $m' \leq V - 3 = 20{,}000{,}361$.
 
-More concretely: for $m$ large, between any two consecutive record-setters $m < m'$
-the interval $(m, m')$ contains a multiple of $\mathrm{lcm}(1,\ldots,12) = 27720$,
-call it $M^*$.  Such a multiple has $\tau(M^*) \geq \tau(27720) = 96$, so
-$g(M^*) = M^* + \tau(M^*) \geq m + 1 + 96 = m + 97 \gg m + \tau(m)$ for any $m$ with
-$\tau(m) < 97$.  Since $\tau(m) < 97$ for all $m$ in range (verified computationally
-for $m \leq 10^7$ and true asymptotically since $\tau(m) = O(m^\epsilon)$), any
-interval of length $\geq 27720$ beyond $m$ contains a new record-setter.  In particular,
-for $m > 10^6$ the window $(m, V(m)-3]$ has length $\tau(m)-3$; since $\tau(m) \geq 4$
-for $m > 1$, the window is non-empty, and it contains a multiple of a sufficiently
-smooth number to beat the current record.
-
-A complete, self-contained computational proof for $m \leq 10^7$ suffices to establish
-the lemma for all practical purposes; the asymptotic argument ensures no finite check
-can be invalidated by arbitrarily large $m$.
+This completes the verification of the lemma for all record-setters $m \in [24, 2\times 10^7]$.
 \end{proof}
 
+\begin{remark}[Proof range]\label{rem:range}
+The computational proof of Lemma~\ref{lem:gap} covers all record-setters
+$m \leq 2 \times 10^7$.  By Theorem~\ref{thm:main}'s inductive proof
+(Section~\ref{sec:proof}), this establishes $\delta(n) \geq 1$ (i.e.\ $M(n) > n+2$)
+for all $n \leq 2\times 10^7$.  Extending the verification to larger ranges
+is straightforward: one runs the same sieve with a larger $N$.  We expect the
+Gap Lemma to hold for all $m \geq 24$, and no counterexample has been found
+computationally; a complete theoretical proof for all $m$ remains an open problem
+in the combinatorial theory of divisor functions.
+\end{remark}
+
 %=======================================================================
-\section{Proof of Theorem~\ref{thm:main}}
+\section{Proof of Theorem~\ref{thm:main}}\label{sec:proof}
 %=======================================================================
 
 \begin{proof}[Proof of Theorem~\ref{thm:main}]
@@ -308,20 +296,31 @@ in the table gives $M(n) \geq g(m')$ for all $n > m'$, and the Gap Lemma
 is overtaken by a new record-setter $m' \leq V(m) - 3$ \emph{before} $n$ reaches
 $V(m)$, preventing $\delta$ from decaying to 0.
 
-Formally: suppose for induction that $\delta(n) \geq 1$ for all $25 \leq n \leq N$ for
-some $N \geq 25$.  Let $m_0$ be the most recent record-setter with $m_0 \leq N$
-and $V_0 = g(m_0) > N + 2$.  By Lemma~\ref{lem:gap} there is a next record-setter
-$m_1 \in (m_0, V_0 - 3]$.  For $n \in (N, m_1]$: $M(n) = V_0$, and
-$\delta(n) = V_0 - n - 2 \geq V_0 - m_1 - 2 \geq 3 - 2 = 1$. \checkmark
-At $n = m_1 + 1$ a new record is set with $M(m_1+1) = g(m_1) > V_0$, resetting
-$\delta(m_1+1) = \tau(m_1) - 1 \geq 1$.  Thus $\delta(n) \geq 1$ for all $n \leq m_1+1$,
-extending the induction.
+Formally: the induction is along the sequence of record-setters.
+Suppose $\delta(n) \geq 1$ for all $25 \leq n \leq N$, where $N \geq 25$.
+Let $m_0$ be the most recent record-setter with $m_0 \leq N$,
+so $V_0 = g(m_0)$ satisfies $V_0 > N + 2$ (since $\delta(N) \geq 1$, i.e.\ $M(N) \geq N+3$,
+and $M(N) = V_0$).
+By Lemma~\ref{lem:gap}, applied to $m_0$ (which satisfies $m_0 \leq 2\times 10^7$ within our
+verified range), there is a next record-setter $m_1 \in (m_0, V_0 - 3]$.
+For $n \in (N, m_1]$: $M(n) = V_0$ (no new record yet), so
+\[
+  \delta(n) = V_0 - n - 2 \geq V_0 - m_1 - 2 \geq 3 - 2 = 1,
+\]
+where the last step uses $m_1 \leq V_0 - 3$, i.e.\ $V_0 - m_1 \geq 3$.
+At $n = m_1 + 1$ a new record is set, giving $\delta(m_1+1) = \tau(m_1) - 1 \geq 1$
+(since $\tau(m_1) \geq 2$).  The induction extends to $N' = m_1 + 1$.
 
-Since the record-setter sequence is infinite (the sequence $g(m)$ is unbounded), the
-induction never terminates, establishing $\delta(n) \geq 1$ for all $n \geq 25$.
+Each inductive step replaces $m_0$ by $m_1$, which is a strictly larger record-setter.
+Since Lemma~\ref{lem:gap} is verified for all record-setters up to $2\times 10^7$,
+this argument establishes $\delta(n) \geq 1$ for all $25 \leq n \leq 2\times 10^7$
+(and somewhat beyond, since the last verified record-setter's window extends to $n \approx 20{,}000{,}500$; see Remark~\ref{rem:range}).
 
-Therefore $\mathcal{S} = \{1, 2, 3, 4, 5, 6, 8, 10, 12, 24\}$ is the complete set
-of solutions, and no $n > 24$ satisfies the condition.
+Therefore, within the verified computational range,
+$\mathcal{S} = \{1, 2, 3, 4, 5, 6, 8, 10, 12, 24\}$ is the complete set of
+solutions to $M(n) \leq n+2$, and no $n$ with $25 \leq n \leq 2\times 10^7$
+satisfies the condition.  Remark~\ref{rem:range} discusses the extension to
+all $n$.
 \end{proof}
 
 %=======================================================================
@@ -360,11 +359,12 @@ of solutions, and no $n > 24$ satisfies the condition.
 \end{remark}
 
 \begin{remark}[Computational verification]
-  The script \texttt{analysis.py} confirms:
+  The script \texttt{analysis.py} (with $N = 2\times 10^7$) confirms:
   \begin{itemize}
-    \item $\mathcal{S} = \{1,2,3,4,5,6,8,10,12,24\}$ with no additional solutions up to $n = 10^7$.
-    \item $\min_{n \in [25, 10^7]} \delta(n) = 1$, first attained at $n = 35$.
-    \item Every record-setter $m \in [24, 10^7]$ satisfies: next record-setter $m' \leq V(m) - 3$.
+    \item $\mathcal{S} = \{1,2,3,4,5,6,8,10,12,24\}$ with no additional solutions up to $n = 2\times 10^7$.
+    \item $\min_{n \in [25,\, 2\times 10^7]} \delta(n) = 1$, first attained at $n = 35$.
+    \item Every record-setter $m \in [24,\, 2\times 10^7]$ satisfies: next record-setter $m' \leq V(m) - 3$.
+      The minimum of $V(m) - 3 - m'$ is $0$, achieved at $m = 30$ (where $m' = 35 = V(30)-3 = 38-3$).
   \end{itemize}
 \end{remark}
 
