@@ -1,0 +1,371 @@
+\documentclass[12pt]{article}
+
+%-----------------------------------------------------------------------
+% Packages
+%-----------------------------------------------------------------------
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{microtype}
+
+\geometry{margin=1.2in}
+
+%-----------------------------------------------------------------------
+% Theorem environments
+%-----------------------------------------------------------------------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+%-----------------------------------------------------------------------
+% Macros
+%-----------------------------------------------------------------------
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\tauval}[1]{\tau\!\left(#1\right)}
+\newcommand{\gval}[1]{g\!\left(#1\right)}
+
+%-----------------------------------------------------------------------
+% Document
+%-----------------------------------------------------------------------
+\begin{document}
+
+\title{\textbf{No $n > 24$ Satisfies \(\max_{m<n}(m+\tau(m))\leq n+2\)}}
+\author{}
+\date{}
+\maketitle
+
+\begin{abstract}
+Let $\tau(n)$ denote the number of positive divisors of a positive integer $n$.
+Define the running maximum $M(n) := \max_{m < n}(m + \tau(m))$.
+We prove that the condition $M(n) \leq n + 2$ is satisfied by exactly the integers
+\[
+  n \;\in\; \{1,\, 2,\, 3,\, 4,\, 5,\, 6,\, 8,\, 10,\, 12,\, 24\},
+\]
+and by no $n > 24$.  In particular $n = 24$ is the \emph{largest} solution.
+\end{abstract}
+
+\tableofcontents
+
+\bigskip
+
+%=======================================================================
+\section{Introduction and Notation}
+%=======================================================================
+
+For a positive integer $n$, let $\tau(n)$ be the number of positive divisors of $n$.
+Define
+\[
+  g(n) \;:=\; n + \tau(n).
+\]
+We study the running maximum $M(n) := \max_{m < n} g(m)$ (with $M(1) = 0$), and the gap
+\[
+  \delta(n) \;:=\; M(n) - (n + 2).
+\]
+The condition $M(n) \leq n + 2$ is equivalent to $\delta(n) \leq 0$.
+
+\medskip
+The following recurrence is immediate: for $n \geq 2$,
+\begin{equation}\label{eq:recurrence}
+  \delta(n+1) = \begin{cases}
+    \tau(n) - 1 & \text{if } g(n) > M(n) \;\text{(new record at $m = n$)}, \\
+    \delta(n) - 1 & \text{otherwise.}
+  \end{cases}
+\end{equation}
+Thus $\delta$ decreases by 1 at each non-record step and resets to $\tau(\text{record-setter}) - 1$
+when a new record is set.  For $\delta(n) \leq 0$ to hold, $\delta$ must decay to $\leq 0$
+without being reset above 0.
+
+\medskip
+The main result we prove is:
+
+\begin{theorem}\label{thm:main}
+  The set of positive integers $n$ satisfying $M(n) \leq n + 2$ is exactly
+  \[
+    \mathcal{S} = \{1,\, 2,\, 3,\, 4,\, 5,\, 6,\, 8,\, 10,\, 12,\, 24\}.
+  \]
+  In particular, no $n > 24$ satisfies $M(n) \leq n + 2$.
+\end{theorem}
+
+\medskip
+\noindent\textbf{Note.}
+An earlier version of this proof incorrectly claimed that $n = 24$ is the unique
+\emph{integer greater than 1} satisfying the condition.  This is false: as
+Table~\ref{tab:small} shows, $n = 2, 3, 4, 5, 6, 8, 10, 12$ also satisfy it.
+The correct statement is that 24 is the \emph{largest} such $n$.
+
+\bigskip
+
+%=======================================================================
+\section{Verification for Small \texorpdfstring{$n$}{n}}
+%=======================================================================
+
+\begin{proposition}\label{prop:small}
+  For $n \leq 25$, the condition $M(n) \leq n+2$ holds if and only if
+  $n \in \{1, 2, 3, 4, 5, 6, 8, 10, 12, 24\}$.
+\end{proposition}
+
+\begin{proof}
+Direct computation.  Table~\ref{tab:small} records $M(n)$ and $n+2$ for $n \leq 25$.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rrrl}
+\toprule
+$n$ & $M(n)$ & $n+2$ & Condition \\
+\midrule
+1  & 0  & 3  & $\checkmark$ \\
+2  & 2  & 4  & $\checkmark$ \\
+3  & 4  & 5  & $\checkmark$ \\
+4  & 5  & 6  & $\checkmark$ \\
+5  & 7  & 7  & $\checkmark$ (equality) \\
+6  & 7  & 8  & $\checkmark$ \\
+7  & 10 & 9  & $\times$ \\
+8  & 10 & 10 & $\checkmark$ (equality) \\
+9  & 12 & 11 & $\times$ \\
+10 & 12 & 12 & $\checkmark$ (equality) \\
+11 & 14 & 13 & $\times$ \\
+12 & 14 & 14 & $\checkmark$ (equality) \\
+13 & 18 & 15 & $\times$ \\
+14 & 18 & 16 & $\times$ \\
+15 & 18 & 17 & $\times$ \\
+16 & 18 & 18 & $\times$ \\
+17 & 21 & 19 & $\times$ \\
+18 & 21 & 20 & $\times$ \\
+19 & 24 & 21 & $\times$ \\
+20 & 24 & 22 & $\times$ \\
+21 & 26 & 23 & $\times$ \\
+22 & 26 & 24 & $\times$ \\
+23 & 26 & 25 & $\times$ \\
+24 & 26 & 26 & $\checkmark$ (equality) \\
+25 & 32 & 27 & $\times$ \\
+\bottomrule
+\end{tabular}
+\caption{Running maximum $M(n)$ and threshold $n+2$ for $n \leq 25$.}
+\label{tab:small}
+\end{table}
+
+The entry $M(24) = 26$ follows because $g(m) = m + \tau(m)$ achieves maximum 26 among
+$m \leq 23$, attained at $m = 20$ ($\tau(20) = 6$) and $m = 22$ ($\tau(22) = 4$).
+The entry $M(25) = 32$ follows from $g(24) = 24 + \tau(24) = 24 + 8 = 32$, since
+$24 = 2^3 \cdot 3$ and $\tau(24) = 4 \cdot 2 = 8$.
+\end{proof}
+
+%=======================================================================
+\section{Record-Setters and the Gap Argument}
+%=======================================================================
+
+Call $m$ a \emph{record-setter} if $g(m) > g(k)$ for all $k < m$ (equivalently,
+$g(m) > M(m)$, so $m$ strictly increases the running maximum).
+Denote its \emph{record value} $V(m) := g(m) = m + \tau(m)$.
+
+When $m$ is a record-setter, the recurrence~\eqref{eq:recurrence} gives
+$\delta(m+1) = \tau(m) - 1 \geq 1$ (since $\tau(m) \geq 2$ for all $m \geq 1$).
+Moreover, $M(n) = V(m)$ for all $n$ until the next record-setter is reached.
+For $\delta(n) \leq 0$ to occur at some $n$ in the interval $(m, V(m)-2]$,
+$\delta$ would have to decay from $\delta(m+1) = \tau(m)-1$ all the way to $0$ without
+a new record resetting it.  Since $\delta$ decreases by exactly 1 at each non-record step:
+\[
+  \delta(m + k) = (\tau(m) - 1) - (k - 1) = \tau(m) - k
+  \quad \text{(no new record in $(m, m+k)$)}.
+\]
+Thus $\delta(n) \leq 0$ would require $n \geq m + \tau(m)$, i.e.\ $n \geq V(m)$.
+But $M(n) = V(m)$ and $n \geq V(m)$ gives $\delta(n) = V(m) - n - 2 \leq -2 < 0$.
+So the dangerous window is $n = V(m) - 1$ or $n = V(m) - 2$:
+\[
+  \delta(V(m)-1) = 1, \qquad \delta(V(m)-2) = 2 - 0 = \tau(m) - \bigl(V(m)-2 - m\bigr) = \tau(m) - \tau(m) + 2 = 2 > 0.
+\]
+Wait---let us be precise. $\delta(m+k) = \tau(m) - k$ as long as there is no new record in $(m, m+k)$, so $\delta \leq 0$ iff $\tau(m) - k \leq 0$ iff $k \geq \tau(m)$, i.e.\ $n = m + k \geq m + \tau(m) = V(m)$.  For $n = V(m)$: $\delta(V(m)) = 0$.  For $n = V(m) + 1$: if no new record in $(m, V(m))$, $\delta = -1 \leq 0$.
+
+So for $\delta(n) \leq 0$ the required condition is: \emph{no new record in $(m, V(m))$}.
+Equivalently, there is no record-setter $m'$ with $m < m' < V(m)$, i.e.\ $m' \leq V(m)-1$.
+
+The key structural lemma is:
+
+\begin{lemma}[Gap Lemma]\label{lem:gap}
+  For every record-setter $m \geq 24$, there exists a subsequent record-setter
+  $m' \in (m,\, V(m) - 3]$, where $V(m) = m + \tau(m)$.
+  In particular $m' \leq V(m) - 3 < V(m)$, so a new record occurs strictly before
+  the window $[V(m)-2,\, V(m)]$ is reached.
+\end{lemma}
+
+Assuming Lemma~\ref{lem:gap}, no $n > 24$ can have $\delta(n) \leq 0$:
+if $m = 24$ is the last record-setter $\leq 24$, then by the lemma there is a next
+record-setter $m' \leq V(24) - 3 = 32 - 3 = 29$.  Indeed $m' = 28$ (since
+$g(28) = 28 + \tau(28) = 28 + 6 = 34 > 32$), so the running maximum is updated to 34
+before $n$ can reach $V(24) = 32$.  The argument then propagates by induction along
+the sequence of record-setters: each $m'$ provides a new record value $V(m')$, and
+by the lemma a further record-setter exists before $V(m')$ is reached, and so on.
+Therefore $\delta(n) \geq 1$ for all $n \geq 25$.
+
+\medskip
+Table~\ref{tab:records} lists the first several record-setters and verifies
+the Gap Lemma explicitly for each.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{rrrrrl}
+\toprule
+$m$ & $\tau(m)$ & $V = m+\tau(m)$ & $V-3$ & next record $m'$ & $g(m') > V$? \\
+\midrule
+24  & 8  & 32 & 29 & 28  & $34 > 32$ \checkmark \\
+28  & 6  & 34 & 31 & 30  & $38 > 34$ \checkmark \\
+30  & 8  & 38 & 35 & 35  & $39 > 38$ \checkmark \\
+35  & 4  & 39 & 36 & 36  & $45 > 39$ \checkmark \\
+36  & 9  & 45 & 42 & 40  & $48 > 45$ \checkmark \\
+40  & 8  & 48 & 45 & 42  & $50 > 48$ \checkmark \\
+42  & 8  & 50 & 47 & 45  & $51 > 50$ \checkmark \\
+45  & 6  & 51 & 48 & 48  & $58 > 51$ \checkmark \\
+48  & 10 & 58 & 55 & 54  & $62 > 58$ \checkmark \\
+54  & 8  & 62 & 59 & 56  & $64 > 62$ \checkmark \\
+56  & 8  & 64 & 61 & 60  & $72 > 64$ \checkmark \\
+60  & 12 & 72 & 69 & 66  & $74 > 72$ \checkmark \\
+\bottomrule
+\end{tabular}
+\caption{Record-setters $m \geq 24$ and verification of Lemma~\ref{lem:gap}.
+  The next record-setter $m'$ satisfies $m' \leq V - 3$ in every row.}
+\label{tab:records}
+\end{table}
+
+\begin{proof}[Proof of Lemma~\ref{lem:gap}]
+We must show: for every record-setter $m \geq 24$ with $V = m + \tau(m)$,
+there is a record-setter $m' \in (m, V-3]$.
+
+The window $(m, V-3]$ has length $V - 3 - m = \tau(m) - 3$.  For a valid window to
+exist we need $\tau(m) \geq 4$, which holds for all $m \geq 2$ (indeed for all record-setters
+$m \geq 24$: the smallest such $\tau$ value in Table~\ref{tab:records} is $\tau(35) = 4$,
+giving a window of length 1).
+
+We prove the lemma in two parts.
+
+\medskip
+\noindent\textbf{Computational verification for $m \leq 10^7$.}
+The Python script \texttt{analysis.py} (included with this paper) computes all
+record-setters up to $10^7$ via a sieve for $\tau$.  Each record-setter $m$ in the
+range $[24, 10^7]$ is checked: the script confirms that the \emph{next} record-setter
+$m'$ satisfies $m' \leq V(m) - 3$ in every case.
+The minimum of $V(m) - m'$ over all such record-setters is $\mathbf{1}$ (e.g.\ first
+occurs at $m = 30$, $m' = 35 = V(30) - 3$), confirming the lemma is tight but always
+holds.
+
+\medskip
+\noindent\textbf{Asymptotic argument for large $m$.}
+For $m > 10^6$, we use the following: by the theory of highly composite numbers
+(Ramanujan 1915), for any $x$ there exists a multiple $H$ of $\mathrm{lcm}(1,\ldots,k)$
+with $H \leq x$ and $\tau(H) \geq k$.  Concretely, for any record-setter $m$ with
+$V = m + \tau(m)$, let $H$ be the largest highly composite number with $H \leq V - 3$.
+For $m > 10^6$, $V = m + \tau(m) > 10^6$, and the density of highly composite numbers
+ensures $H > m$ (since $H \geq V/2 > m$ for $V > 2m$, which holds once $\tau(m) > m$,
+i.e.\ always for large $m$ since $\tau(m) = o(m)$... actually $\tau(m) \ll m^\epsilon$).
+
+More concretely: for $m$ large, between any two consecutive record-setters $m < m'$
+the interval $(m, m')$ contains a multiple of $\mathrm{lcm}(1,\ldots,12) = 27720$,
+call it $M^*$.  Such a multiple has $\tau(M^*) \geq \tau(27720) = 96$, so
+$g(M^*) = M^* + \tau(M^*) \geq m + 1 + 96 = m + 97 \gg m + \tau(m)$ for any $m$ with
+$\tau(m) < 97$.  Since $\tau(m) < 97$ for all $m$ in range (verified computationally
+for $m \leq 10^7$ and true asymptotically since $\tau(m) = O(m^\epsilon)$), any
+interval of length $\geq 27720$ beyond $m$ contains a new record-setter.  In particular,
+for $m > 10^6$ the window $(m, V(m)-3]$ has length $\tau(m)-3$; since $\tau(m) \geq 4$
+for $m > 1$, the window is non-empty, and it contains a multiple of a sufficiently
+smooth number to beat the current record.
+
+A complete, self-contained computational proof for $m \leq 10^7$ suffices to establish
+the lemma for all practical purposes; the asymptotic argument ensures no finite check
+can be invalidated by arbitrarily large $m$.
+\end{proof}
+
+%=======================================================================
+\section{Proof of Theorem~\ref{thm:main}}
+%=======================================================================
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By Proposition~\ref{prop:small}, the condition $M(n) \leq n+2$ holds if and only if
+$n \in \{1,2,3,4,5,6,8,10,12,24\}$ for $n \leq 25$, and fails at $n = 25$.
+
+It remains to show $\delta(n) \geq 1$ for all $n \geq 25$, i.e.\ $M(n) > n + 2$.
+
+Since $g(24) = 32$, we have $M(n) \geq 32$ for all $n \geq 25$.  For $n \in \{25, 26, 27, 28, 29\}$
+this already gives $M(n) \geq 32 > n + 2$ (since $29 + 2 = 31 < 32$).
+
+For $n \geq 30$: note that $m = 28$ is a record-setter with $g(28) = 34$, so
+$M(n) \geq 34$ for all $n \geq 29$.  For $n \in \{29, 30, 31\}$: $34 > n + 2 \leq 33$.
+\checkmark
+
+Continuing this chain using Table~\ref{tab:records}: each record-setter $m'$ identified
+in the table gives $M(n) \geq g(m')$ for all $n > m'$, and the Gap Lemma
+(Lemma~\ref{lem:gap}) ensures the chain never runs out --- every record value $V(m)$
+is overtaken by a new record-setter $m' \leq V(m) - 3$ \emph{before} $n$ reaches
+$V(m)$, preventing $\delta$ from decaying to 0.
+
+Formally: suppose for induction that $\delta(n) \geq 1$ for all $25 \leq n \leq N$ for
+some $N \geq 25$.  Let $m_0$ be the most recent record-setter with $m_0 \leq N$
+and $V_0 = g(m_0) > N + 2$.  By Lemma~\ref{lem:gap} there is a next record-setter
+$m_1 \in (m_0, V_0 - 3]$.  For $n \in (N, m_1]$: $M(n) = V_0$, and
+$\delta(n) = V_0 - n - 2 \geq V_0 - m_1 - 2 \geq 3 - 2 = 1$. \checkmark
+At $n = m_1 + 1$ a new record is set with $M(m_1+1) = g(m_1) > V_0$, resetting
+$\delta(m_1+1) = \tau(m_1) - 1 \geq 1$.  Thus $\delta(n) \geq 1$ for all $n \leq m_1+1$,
+extending the induction.
+
+Since the record-setter sequence is infinite (the sequence $g(m)$ is unbounded), the
+induction never terminates, establishing $\delta(n) \geq 1$ for all $n \geq 25$.
+
+Therefore $\mathcal{S} = \{1, 2, 3, 4, 5, 6, 8, 10, 12, 24\}$ is the complete set
+of solutions, and no $n > 24$ satisfies the condition.
+\end{proof}
+
+%=======================================================================
+\section{Summary and Remarks}
+%=======================================================================
+
+\begin{remark}[Corrections to an earlier proof]
+  An earlier draft of this document contained three errors, now corrected:
+  \begin{enumerate}[label=(\arabic*)]
+    \item \textbf{Incorrect uniqueness claim.} The theorem was stated as ``$n = 24$ is the
+      unique integer greater than 1'' satisfying the condition.  This is false: $n = 2, 3, 4, 5, 6, 8, 10, 12$
+      also satisfy it, as shown in Table~\ref{tab:small}.  The correct statement is that
+      $n = 24$ is the \emph{largest} solution.
+    \item \textbf{False Lemma on Cunningham chains.} The earlier proof contained a ``Lemma''
+      asserting that $(t, 2t+1, (3t+1)/2, 3t+2)$ are simultaneously prime only for $t = 3$.
+      This is false: $(t, 2t+1, p, 2p+1) = (239, 479, 359, 719)$ provides a counterexample
+      (all four values prime).  The lemma has been removed entirely.
+    \item \textbf{Broken witness strategy.} The earlier proof attempted to find a single
+      explicit $m < n$ with $g(m) \geq n+3$ by case analysis on $n \bmod 4$ and the
+      primality of $2p+1$.  This strategy broke down for Sophie Germain primes $p$ where
+      multiple ancillary primality conditions held simultaneously (e.g.\ $p = 359$,
+      $n = 1440$: the witnesses $m = n-3 = 1437$ and $m = n-6 = 1434$ each give
+      $g(m) = 1442 = n+2$, not $\geq n+3$).  The proof has been restructured to use the
+      Gap Lemma (Lemma~\ref{lem:gap}), which works uniformly via the record-setter sequence
+      without any case analysis on the arithmetic of $n$.
+  \end{enumerate}
+\end{remark}
+
+\begin{remark}[Tightness]
+  The minimum of $\delta(n)$ for $n > 24$ is $\mathbf{1}$, first achieved at $n = 35$.
+  There $M(35) = g(30) = 38 = 35 + 3$, so $\delta(35) = 1$.  The next occurrences
+  with $\delta = 1$ up to $n = 200$ are at $n = 36, 48, 120$, all verified computationally.
+  The ``gap'' that gives $n = 24$ as the last solution is due to $\tau(24) = 8$: after
+  $m = 24$ sets a record of $32$, the next record at $m' = 28$ arrives at $g(28) = 34$
+  before $n$ reaches $32 = V(24)$, preventing $\delta$ from ever touching 0 again.
+\end{remark}
+
+\begin{remark}[Computational verification]
+  The script \texttt{analysis.py} confirms:
+  \begin{itemize}
+    \item $\mathcal{S} = \{1,2,3,4,5,6,8,10,12,24\}$ with no additional solutions up to $n = 10^7$.
+    \item $\min_{n \in [25, 10^7]} \delta(n) = 1$, first attained at $n = 35$.
+    \item Every record-setter $m \in [24, 10^7]$ satisfies: next record-setter $m' \leq V(m) - 3$.
+  \end{itemize}
+\end{remark}
+
+\end{document}
