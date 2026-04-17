@@ -1,0 +1,135 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+
+\begin{theorem}
+Let $\tau(n)$ denote the number of positive divisors of $n$. Then there is
+no integer $n>24$ such that
+\[
+\max_{m<n}\bigl(m+\tau(m)\bigr)\le n+2.
+\]
+Equivalently, the only integer $n$ for which
+\[
+\max_{m<n}\bigl(m+\tau(m)\bigr)\le n+2
+\]
+holds is $n=24$.
+\end{theorem}
+
+\begin{lemma}
+Let $N>8$ be even and suppose $\tau(N)\le 4$. Then $N=2p$ for some prime $p$.
+\end{lemma}
+
+\begin{proof}
+Write $N=2^a m$ with $m$ odd. Then
+\[
+\tau(N)=(a+1)\tau(m)\le 4.
+\]
+If $a\ge 2$, then $a+1\ge 3$, hence $\tau(m)=1$, so $m=1$ and $N=2^a$.
+But $N>8$ implies $a\ge 4$, so $\tau(N)=a+1\ge 5$, a contradiction.
+Thus $a=1$, and $N=2m$. Then
+\[
+\tau(N)=2\tau(m)\le 4 \quad\Longrightarrow\quad \tau(m)\le 2.
+\]
+Hence $m$ is prime, and $N=2p$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem]
+Assume, for contradiction, that some $n>24$ satisfies
+\[
+\max_{m<n}\bigl(m+\tau(m)\bigr)\le n+2.
+\]
+Then for each $k\in \{1,2,3\}$ we have
+\[
+(n-k)+\tau(n-k)\le n+2.
+\]
+
+\medskip
+
+\noindent\textbf{Step 1: $\tau(n-1)\le 3$.}
+From
+\[
+(n-1)+\tau(n-1)\le n+2
+\]
+we obtain $\tau(n-1)\le 3$. Hence $n-1$ is either prime or the square of a prime.
+
+\medskip
+
+\noindent\textbf{Case 1: $n-1=p^2$ for some prime $p$.}
+Since $n>24$, we have $p\ge 5$. Then
+\[
+n-2=p^2-1=(p-1)(p+1).
+\]
+We exhibit five distinct divisors of $n-2$:
+\[
+1,\quad 2,\quad p-1,\quad p+1,\quad p^2-1.
+\]
+
+We verify these are distinct. Since $p\ge 5$, we have
+\[
+2 < p-1 < p+1 < p^2-1.
+\]
+Moreover, $p-1 \neq 2$ since $p\ge 5$, and clearly none of these equals $1$ except $1$ itself. Hence the five divisors are pairwise distinct.
+
+Hence $\tau(n-2)\ge 5$, and therefore
+\[
+(n-2)+\tau(n-2)\ge (n-2)+5=n+3,
+\]
+contradicting the assumption.
+
+\medskip
+
+\noindent\textbf{Case 2: $n-1=p$ is prime.}
+From
+\[
+(n-2)+\tau(n-2)\le n+2
+\]
+we get $\tau(n-2)\le 4$. Since $n>24$, we have $n-2>23$, and $n-2$ is even.
+By the lemma, $n-2=2q$ for some prime $q$.
+
+Write
+\[
+q-1=2^a r,
+\]
+where $r$ is odd and $a\ge 1$. Then
+\[
+n-3=p-2=2(q-1)=2^{a+1}r,
+\]
+so
+\[
+\tau(n-3)=(a+2)\tau(r).
+\]
+
+If $r>1$, then $\tau(r)\ge 2$, hence
+\[
+\tau(n-3)\ge 3\cdot 2=6.
+\]
+If $r=1$, then $q-1=2^a$. Since $n-2=2q>23$, we have $q>11$, hence
+$q-1\ge 16$ and $a\ge 4$. Thus
+\[
+\tau(n-3)=a+2\ge 6.
+\]
+In all cases, $\tau(n-3)\ge 6$, so
+\[
+(n-3)+\tau(n-3)\ge (n-3)+6=n+3,
+\]
+again a contradiction.
+
+\medskip
+
+Thus no $n>24$ satisfies the inequality.
+
+\medskip
+
+A direct computation shows that
+\[
+\max_{m<24}(m+\tau(m)) = 26 = 24+2,
+\]
+so $n=24$ satisfies the inequality. This completes the proof.
+
+\end{proof}
+
+\end{document}
