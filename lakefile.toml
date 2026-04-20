@@ -2,6 +2,11 @@ name = "miscellaneousmathproblems"
 version = "0.1.0"
 
 [[lean_lib]]
+name = "MagicSquareOfSquares"
+srcDir = "magic-square-of-squares"
+roots = ["MagicSquareOfSquares"]
+
+[[lean_lib]]
 name = "DiophantineY3X4"
 srcDir = "diophantine-y3-x4"
 
