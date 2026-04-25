@@ -74,14 +74,14 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{\small\thepage}
-\lhead{\small Infinitely Many Solutions to $4x^5 + 4y^5 + 11z^5 = 0$}
+\lhead{\small Integer Solutions to $4x^5 + 4y^5 + 11z^5 = 0$}
 \renewcommand{\headrulewidth}{0.4pt}
 
 % ── Title ────────────────────────────────────────────────────────────────────
 \title{%
-  \Large\bfseries Infinitely Many Integer Solutions to\\[6pt]
+  \Large\bfseries Integer Solutions to\\[6pt]
   \Huge $4x^5 + 4y^5 + 11z^5 = 0$\\[10pt]
-  \large Complete Analysis with Lean~4 Formalisation
+  \large Complete Analysis and Lean~4 Formalisation
 }
 \author{%
   \normalsize Verified in Lean~4 / Mathlib~4 (v4.21.0)\\[2pt]
@@ -109,38 +109,60 @@ We study the Diophantine equation
 
 \subsection{Main theorem}
 
-\begin{theorem}[Main result]\label{thm:main}
-  The equation $4x^5 + 4y^5 + 11z^5 = 0$ has \textbf{infinitely many} integer solutions.
-  In particular, the parametric family
+\begin{theorem}[Characterisation of $z=0$ solutions]\label{thm:main}
+  Every integer solution to $4x^5 + 4y^5 + 11z^5 = 0$ with $z = 0$ is of the form
   \begin{equation}\label{eq:family}
-    (x,\, y,\, z) = (t,\; -t,\; 0), \qquad t \in \Z,
+    (x,\, y,\, z) = (t,\; -t,\; 0), \qquad t \in \Z.
   \end{equation}
-  provides infinitely many distinct integer solutions.
+  In particular, the equation has \textbf{infinitely many} integer solutions.
 \end{theorem}
 
 \begin{proof}
-  Direct verification:
-  $4t^5 + 4(-t)^5 + 11\cdot 0^5 = 4t^5 - 4t^5 + 0 = 0$.
-  The solutions are distinct because distinct $t$ give different triples.
+  Setting $z = 0$ gives $4x^5 + 4y^5 = 0$, i.e.\ $x^5 = -y^5$.  Since $t \mapsto t^5$
+  is strictly monotone on $\Z$ (see Lemma~\ref{lem:mono}), the equation $x^5 = -y^5$
+  forces $x = -y$.  The family \eqref{eq:family} is infinite because the map
+  $t \mapsto (t,-t,0)$ is injective.
 \end{proof}
+
+\begin{remark}\label{rem:z-nonzero}
+  Whether solutions with $z \neq 0$ exist is an open question; see
+  Section~\ref{sec:z-nonzero}.  A brute-force search over $|x|,|y| \leq 50$ finds
+  none.
+\end{remark}
 
 % ════════════════════════════════════════════════════════════════════════════
 \section{Derivation of the Parametric Family}\label{sec:derivation}
 
-\subsection{Step 1: Setting $z = 0$}
+\subsection{Step 1: The fifth-power map is strictly monotone}
+
+\begin{lemma}\label{lem:mono}
+  The map $\varphi\colon \Z \to \Z$, $\varphi(t) = t^5$, is strictly monotone.
+  Consequently, $x^5 = y^5$ implies $x = y$, and $x^5 = -y^5$ implies $x = -y$.
+\end{lemma}
+
+\begin{proof}
+  Let $a < b$ be integers.
+  \begin{itemize}
+    \item If $a \geq 0$: both non-negative, so $a^5 < b^5$ by the power inequality.
+    \item If $a < 0 \leq b$: $a^5 < 0 \leq b^5$.
+    \item If $b < 0$: then $0 < -b < -a$, so $(-b)^5 < (-a)^5$, i.e.\ $-b^5 < -a^5$,
+          i.e.\ $a^5 < b^5$.
+  \end{itemize}
+  For the second claim: $x^5 = -y^5 = (-y)^5$ implies $x = -y$ by injectivity.
+\end{proof}
+
+\subsection{Step 2: Setting $z = 0$}
 
 With $z = 0$, equation~\eqref{eq:main} reduces to
 \[
-  4x^5 + 4y^5 = 0 \implies x^5 = -y^5.
+  4x^5 + 4y^5 = 0 \implies x^5 = -y^5 \xrightarrow{\text{Lemma~\ref{lem:mono}}} x = -y.
 \]
-Since the map $t \mapsto t^5$ is strictly monotone on $\Z$ (for $t > s$, factoring
-$t^5 - s^5 = (t-s)(t^4 + t^3s + t^2s^2 + ts^3 + s^4) > 0$), we have
+This gives the \textbf{complete} set of $z = 0$ solutions:
 \[
-  x^5 = -y^5 \iff x^5 = (-y)^5 \iff x = -y.
+  \{(x,y,z) \in \Z^3 : 4x^5+4y^5+11z^5=0,\ z=0\} = \{(t,-t,0) : t \in \Z\}.
 \]
-So the complete set of solutions with $z = 0$ is $\{(t, -t, 0) : t \in \Z\}$.
 
-\subsection{Step 2: Degree-5 homogeneity}
+\subsection{Step 3: Degree-5 homogeneity}
 
 The equation $4x^5 + 4y^5 + 11z^5 = 0$ is \emph{homogeneous of degree~5}: every
 monomial has degree exactly 5.  Consequently, if $(a, b, c)$ is any solution, then
@@ -236,38 +258,50 @@ The following table lists solutions from the primary family $(\star)$:
 % ════════════════════════════════════════════════════════════════════════════
 \section{Lean 4 Formalisation}\label{sec:lean}
 
-The file \texttt{InfinitelyManySolutions.lean} contains a complete, unconditional
-Lean~4 / Mathlib~4 formalisation of Theorem~\ref{thm:main}.
+Two Lean~4 / Mathlib~4 files formalise the results in this document:
 
-\textbf{Sorry count: 0.  Axiom count: 0.}
+\begin{itemize}
+  \item \texttt{InfinitelyManySolutions.lean} — proves the parametric family and
+        infinitude (original file).
+  \item \texttt{CompleteClassification.lean} — proves the \emph{complete}
+        characterisation of $z=0$ solutions together with all supporting lemmas.
+        \textbf{Sorry count: 0.  Axiom count: 0.}
+\end{itemize}
 
-\subsection{Proof structure}
+\subsection{Key lemmas in \texttt{CompleteClassification.lean}}
 
 \begin{lstlisting}[language=Lean4]
 import Mathlib
 
 def isolution (x y z : Z) : Prop := 4 * x ^ 5 + 4 * y ^ 5 + 11 * z ^ 5 = 0
 
--- Degree-5 homogeneity
-theorem homogeneity (x y z : Z) (h : isolution x y z) (t : Z) :
-    isolution (t * x) (t * y) (t * z) := by
-  unfold isolution at *
-  linear_combination t ^ 5 * h
+-- Strict monotonicity of t^5 on Z
+lemma pow5_strictMono : StrictMono (fun (t : Z) => t ^ 5) := by
+  intro a b hab
+  rcases le_or_gt 0 a with ha | ha
+  · exact pow_lt_pow_left0 hab ha (by norm_num)
+  · rcases le_or_gt 0 b with hb | hb
+    · have ha5 : a ^ 5 < 0 := (Odd.pow_neg_iff (by decide : Odd 5)).mpr ha
+      linarith [pow_nonneg hb 5]
+    · -- both negative: use (-b)^5 < (-a)^5
+      have h1 : (-b) ^ 5 < (-a) ^ 5 :=
+        pow_lt_pow_left0 (by linarith) (by linarith) (by norm_num)
+      simp [neg_pow, show (-1:Z)^5 = -1 from rfl] at h1; linarith
 
--- Primary parametric family (t, -t, 0)
-theorem family (t : Z) : isolution t (-t) 0 := by
-  unfold isolution; ring
+-- x^5 = -y^5 implies x = -y
+lemma pow5_neg_eq {x y : Z} (h : x ^ 5 = -y ^ 5) : x = -y :=
+  pow5_strictMono.injective (by linarith [show x^5 = (-y)^5 by ring_nf; linarith])
 
--- Injectivity of n |-> (n, -n, 0) on N
-theorem natMap_injective : Function.Injective natMap := by
-  intro n1 n2 h
-  simp only [natMap, Prod.mk.injEq] at h
-  exact_mod_cast h.1
+-- z = 0 solution iff x = -y
+theorem solution_z0_iff (x y : Z) : isolution x y 0 <-> x = -y := ...
+
+-- Complete characterisation of z = 0 solutions
+theorem z0_solutions_characterization :
+    {p : Z x Z x Z | isolution p.1 p.2.1 p.2.2 /\ p.2.2 = 0} =
+    Set.range (fun t : Z => (t, -t, (0 : Z))) := ...
 
 -- Infinitude
-theorem solutions_infinite : solutions.Infinite :=
-  (Set.infinite_range_of_injective natMap_injective).mono
-    (fun _ ⟨n, rfl⟩ => natMap_mem n)
+theorem solutions_infinite : solutions.Infinite := ...
 \end{lstlisting}
 
 \subsection{Lean theorem table}
@@ -277,12 +311,16 @@ theorem solutions_infinite : solutions.Infinite :=
   \toprule
   Lean name & Statement & Method \\
   \midrule
-  \texttt{homogeneity} & $\forall\, t,\ (tx,ty,tz)$ is a soln if $(x,y,z)$ is & \texttt{linear\_combination} \\
-  \texttt{family} & $(t,-t,0)$ is a solution for all $t:\Z$ & \texttt{ring} \\
-  \texttt{sol\_1\_neg1\_0} & $(1,-1,0)$ is a solution & \texttt{norm\_num} \\
-  \texttt{natMap\_mem} & $(n,-n,0) \in \mathtt{solutions}$ for all $n:\N$ & \texttt{push\_cast} + \texttt{ring} \\
-  \texttt{natMap\_injective} & $n \mapsto (n,-n,0)$ is injective & \texttt{exact\_mod\_cast} \\
-  \texttt{solutions\_infinite} & solution set is infinite & \texttt{Set.infinite\_range\_of\_injective} \\
+  \texttt{pow5\_strictMono} & $t \mapsto t^5$ strictly monotone on $\Z$ & case split + \texttt{pow\_lt\_pow\_left} \\
+  \texttt{pow5\_injective} & $t \mapsto t^5$ injective on $\Z$ & from \texttt{StrictMono.injective} \\
+  \texttt{pow5\_neg\_eq} & $x^5 = -y^5 \Rightarrow x = -y$ & \texttt{pow5\_injective} \\
+  \texttt{homogeneity} & $(tx,ty,tz)$ a soln if $(x,y,z)$ is & \texttt{linear\_combination} \\
+  \texttt{family\_solution} & $(t,-t,0)$ is a solution for all $t:\Z$ & \texttt{ring} \\
+  \texttt{zero\_z\_imp\_neg} & $z=0$ solution $\Rightarrow x=-y$ & \texttt{pow5\_neg\_eq} \\
+  \texttt{solution\_z0\_iff} & $(x,y,0)$ soln $\iff$ $x=-y$ & \texttt{ring} + \texttt{pow5\_neg\_eq} \\
+  \texttt{z0\_solutions\_characterization} & $z=0$ solns $= \{(t,-t,0)\}$ & \texttt{simp} + \texttt{ext} \\
+  \texttt{natMap\_injective} & $n \mapsto (n,-n,0)$ injective & \texttt{exact\_mod\_cast} \\
+  \texttt{solutions\_infinite} & solution set is infinite & \texttt{Set.infinite\_of\_injective\_forall\_mem} \\
   \bottomrule
 \end{tabular}
 \end{center}
@@ -295,13 +333,15 @@ theorem solutions_infinite : solutions.Infinite :=
   \toprule
   Component & Status \\
   \midrule
+  $t \mapsto t^5$ strictly monotone on $\Z$ & $\checkmark$ Lean: \texttt{pow5\_strictMono} \\
+  $x^5 = -y^5 \Rightarrow x = -y$ & $\checkmark$ Lean: \texttt{pow5\_neg\_eq} \\
   Seed solution $(1,-1,0)$ & $\checkmark$ Direct substitution \\
-  Degree-5 homogeneity & $\checkmark$ Ring identity \\
-  Primary family $(t,-t,0)$ verified & $\checkmark$ \texttt{ring} \\
-  Infinitely many distinct solutions & $\checkmark$ Injectivity of $n \mapsto n$ on $\N$ \\
+  Degree-5 homogeneity & $\checkmark$ Ring identity; Lean: \texttt{homogeneity} \\
+  $z=0$ solutions are exactly $(t,-t,0)$ & $\checkmark$ Lean: \texttt{z0\_solutions\_characterization} \\
+  Infinitely many distinct solutions & $\checkmark$ Lean: \texttt{solutions\_infinite} \\
   No solutions with $z \neq 0$ (search) & $\checkmark$ Exhaustive check, $|x|,|y| \leq 50$ \\
   No solutions with $z \neq 0$ (proof) & Open --- requires Faltings/Chabauty--Coleman \\
-  Lean~4 formalisation (0 sorry) & $\checkmark$ \textbf{Complete} \\
+  Lean~4 formalisation (0 sorry) & $\checkmark$ \textbf{Complete} (both files) \\
   \bottomrule
 \end{tabular}
 \end{center}
