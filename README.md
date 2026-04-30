@@ -26,7 +26,7 @@ $$\max_{m < n}(m + \tau(m)) \leq n + 2\,?$$
 - **Record-setter sequence:** Every record-setter $m > 24$ with value $V = m+\tau(m)$ is immediately followed by another record-setter $m' \in (m, V-3]$, preventing $n$ from ever "catching up". For example: $m=24$ ($V=32$) → $m'=28$ ($V'=34$) → $m''=30$ ($V''=38$) → $m'''=35$ ($V'''=39$) → $m^{(4)}=36$ ($V^{(4)}=45$) → ⋯.
 - **Asymptotic argument:** The density of highly composite numbers guarantees that new records appear within every window of sufficient length, confirming $\delta(n) \geq 1$ for all large $n$.
 
-**Key structural facts:**
+**Key structural facts:** 
 - $\tau(24) = \tau(2^3 \cdot 3) = 8$: the factorisation of 24 is what drives $M(25) = 32 \gg 27 = 25+2$, breaking the pattern.
 - The condition holds with **equality** ($M(n) = n+2$) at $n \in \{5, 8, 10, 12, 24\}$.
 - The closest near-miss for $n > 24$: $n = 35$, where $M(35) = 38 = (35+2)+1$. Had 35 been prime, the condition would hold at $n = 36$.
