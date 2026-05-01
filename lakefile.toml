@@ -65,6 +65,11 @@ name = "Diophantine3xm1y2xz2x3m2"
 srcDir = "diophantine-3xm1y2plusxz2-x3m2"
 roots = ["NonExistenceProof"]
 
+[[lean_lib]]
+name = "DiophantineR4SqConstraint"
+srcDir = "diophantine-r4sq-constraint"
+roots = ["ConstraintProof"]
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
