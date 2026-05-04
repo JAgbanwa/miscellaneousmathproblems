@@ -1418,3 +1418,4 @@ Built against Mathlib v4.21.0. **Axiom count: 0. Sorry count: 2** (`mordell_no_i
 **Result:** The equation $6 + x^3 = y^2(1 - z^2)$ has **no integer solutions**. The proof uses elementary modular arithmetic (Cases 1, 3, and most of Case 4), Mordell's equation theory (Case 2, admitted), and an explicit divisibility argument for $x = -3$.
 
 
+
