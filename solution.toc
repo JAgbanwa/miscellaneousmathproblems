@@ -1,0 +1,11 @@
+\contentsline {section}{\numberline {1}Problem Statement}{1}{section.1}%
+\contentsline {section}{\numberline {2}Algebraic Reformulation}{1}{section.2}%
+\contentsline {section}{\numberline {3}Modular Obstructions}{2}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Background: quadratic residues modulo 3 and 9}{2}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Case $x \equiv 0 \pmod {3}$}{2}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Case $x \equiv 2 \pmod {3}$}{2}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Case $x \equiv 1 \pmod {3}$}{3}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Main Result}{3}{section.4}%
+\contentsline {section}{\numberline {5}Computational Verification}{3}{section.5}%
+\contentsline {section}{\numberline {6}Lean~4 Formalisation}{4}{section.6}%
+\contentsline {section}{\numberline {7}Proof Summary}{4}{section.7}%

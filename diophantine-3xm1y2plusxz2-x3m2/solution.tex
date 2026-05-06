@@ -109,16 +109,15 @@ For $x\equiv 0\pmod 3$ non-existence follows from a quadratic-residue
 obstruction modulo~$3$.
 For $x\equiv 2\pmod 3$ it follows from a 3-adic descent combined with a
 mod-$9$ cube obstruction.
-Within $x\equiv 1\pmod 3$, a further 3-adic descent reduces to six sub-classes
+Within $x\equiv 1\pmod 3$, a further 3-adic descent reduces to four sub-classes
 $x\equiv 4,7,1,10\pmod{12}$: the first two are eliminated by a mod-$4$
 obstruction on the reduced equation; $x\equiv 1\pmod{12}$ is eliminated by a
-combined mod-$8$ and Legendre-symbol argument; and $x\equiv 10\pmod{12}$ is
-eliminated by a mod-$9$ cube-residue obstruction.
-All six residue classes are thereby covered, completing the proof.
-The four older cases are formalised in Lean~4/Mathlib~4 with
-\textbf{zero additional axioms}; one \texttt{sorry} placeholder
-marks the two newly proved sub-cases $x\equiv 1,10\pmod{12}$,
-which are not yet formalised.
+combined mod-$8$ and Jacobi-symbol argument; and $x\equiv 10\pmod{12}$ is
+handled by a mod-$48$ case split in which three sub-cases are closed by
+Jacobi-symbol (using $x \mid y^2-2$ and the second supplement to quadratic
+reciprocity) and mod-$16$ obstructions.
+Five of the six residue classes are thereby covered completely; the sub-case
+$x\equiv 34\pmod{48}$ (within $x\equiv 10\pmod{12}$) remains open.
 \end{abstract}
 
 \tableofcontents
@@ -382,58 +381,127 @@ residue mod $p$: contradiction.
   i.e.\ \texorpdfstring{$x \equiv 10 \pmod{12}$}{x ≡ 10 (mod 12)}}
 \label{sec:case1f}
 
-Write $x = 12n+10 =: m$ and let $p = 6n+5$, so $m = 2p$.
+Since $x\equiv 10\pmod{12}$ forces $x$ to be even, write $x = 2p$.
 
 \begin{lemma}\label{lem:case1f}
   There is no integer solution to~\eqref{eq:main} with $x \equiv 10 \pmod{12}$.
 \end{lemma}
 
 \begin{proof}
-Rewrite~\eqref{eq:main} as $m(m^2-3y^2-z^2)=y^2-2$, i.e.\
-\begin{equation}\label{eq:m10}
-  m\,(m^2 - 3y^2 - z^2) = y^2 - 2.
-\end{equation}
+Since $x \equiv 10\pmod{12}$, $x$ is even; write $x = 2p$ with $p$ odd
+(and $p \equiv 5\pmod{6}$).
 
-\textbf{Step 1 (parity).}
-Since $m$ is even, the RHS $y^2-2$ is even, so $y$ is even.
-Write $y = 2k$.  Then the LHS of~\eqref{eq:m10} is divisible by $m = 2p$,
-and the RHS equals $4k^2-2 = 2(2k^2-1)$, which is $\equiv 2\pmod 4$
-(since $2k^2-1$ is odd).  Hence $m\mid 2(2k^2-1)$ forces $p\mid(2k^2-1)$.
-Substituting $m=2p$ and $y=2k$ into~\eqref{eq:m10} and dividing by $2$:
-\begin{equation}\label{eq:p-reduced}
-  p\,(4p^2 - 12k^2 - z^2) = 2k^2 - 1.
-\end{equation}
-Since $2k^2-1$ is odd and $p$ is a factor of it, $z$ must be odd (if $z$ were
-even then LHS $\equiv 0\pmod 4$ but RHS $\equiv 3\pmod 4$: impossible).
+\textbf{Step~1 (parity of $y$).}
+The left-hand side of~\eqref{eq:star} is divisible by $x$, hence even, so
+$2 - y^2$ is even, forcing $y$ even.  Write $y = 2k$.
 
-\textbf{Step 2 (divisibility by 3).}
-Reduce~\eqref{eq:p-reduced} modulo~$3$.  We have
-$p = 6n+5\equiv 2\pmod 3$ and $p^2\equiv 1\pmod 3$.
-The equation becomes:
+\textbf{Step~2 (parity of $z$).}
+Substituting $y = 2k$ and $x = 2p$ into~\eqref{eq:star} gives
 \[
-  2\,(4 - 0 - z^2) \equiv -k^2 - 1 \pmod{3},
+  p\!\left(4p^2 - 12k^2 - z^2\right) = 1 - 2k^2.
 \]
-i.e.\ $8 - 2z^2\equiv -k^2-1$, so $2k^2+2z^2\equiv -9\equiv 0\pmod 3$,
-giving $k^2+z^2\equiv 0\pmod 3$.
-Since squares mod~$3$ are $0$ or $1$, this forces $3\mid k$ and $3\mid z$.
-Write $k = 3j$ and $z = 3w$.  Substituting into~\eqref{eq:p-reduced}:
-\begin{equation}\label{eq:jw-reduced}
-  p\,(4p^2 - 108j^2 - 9w^2) = 18j^2 - 1.
-\end{equation}
+The right-hand side is odd.  Since $p$ is odd and $4p^2 - 12k^2$ is even,
+$z^2$ and hence $z$ must be odd.  Together with $3 \mid z$ (from
+Lemma~\ref{lem:descent1}), we write $z = 3w$ with $w$ odd.
 
-\textbf{Step 3 (mod-9 obstruction).}
-Reduce~\eqref{eq:jw-reduced} modulo~$9$.
-All terms $108j^2$ and $9w^2$ on the LHS, and $18j^2$ on the RHS, vanish
-modulo~$9$.  Thus:
+\textbf{Step~3 ($x \mid y^2-2$ via the algebraic identity).}
+From~\eqref{eq:star}, $x(x^2-3y^2-z^2)=2-y^2$, so $x \mid y^2-2$.
+With $x = 2p$:
 \[
-  p \cdot 4p^2 \equiv -1 \pmod{9},
-  \qquad\text{i.e.}\qquad
-  4p^3 \equiv -1 \equiv 8 \pmod{9},
-  \qquad\text{so}\qquad
-  p^3 \equiv 2 \pmod{9}.
+  y^2 \equiv 2 \pmod{x}, \quad\text{i.e.,}\quad y^2 \equiv 2 \pmod{2p}.
 \]
-However, the cubes modulo~$9$ are $\{0^3,1^3,\ldots,8^3\}\bmod 9 = \{0,1,8\}$.
-Since $2\notin\{0,1,8\}$, this is a contradiction.
+Since $y$ is even, $y^2$ is divisible by $4$, so $y^2 - 2 \equiv 2
+\pmod{4}$.  This means $2p \mid y^2-2=2(y^2/2 - 1)$ iff $p \mid (y^2-2)/2$,
+but since $2 \mid 4 \mid y^2$ and $p$ is odd, the condition $2p \mid y^2-2$
+reduces to $p \mid y^2 - 2$.
+
+We now split the four sub-cases mod~$48$ into two groups by the value of~$x
+\bmod 8$.
+
+\medskip\noindent
+\textbf{Group~A: $x \equiv 2\pmod{8}$
+  (sub-cases $x \equiv 10$ and $x \equiv 34\pmod{48}$).}
+
+Reduce~\eqref{eq:red} modulo~$8$ with $x \equiv 2$, $z = 3w$ ($w$ odd
+so $z^2 \equiv 1\pmod 8$), and $y = 2k$:
+\[
+  (3\cdot 2-1)\cdot 4k^2 + 9\cdot 2\cdot 1 \equiv 2^3-2\pmod8
+  \;\Longrightarrow\;
+  5\cdot 4k^2 + 18 \equiv 6\pmod8
+  \;\Longrightarrow\;
+  4k^2 \equiv 4\pmod8.
+\]
+Since $4k^2 \equiv 0$ or $4\pmod 8$ according as $k$ is even or odd,
+the only solution is $k$ \emph{odd}.  Thus $y = 2k \equiv 2\pmod{4}$,
+and since $y$ is even with $y = 2k$, $k$ odd,
+\[
+  y^2 - 2 = 4k^2 - 2 = 2(2k^2-1).
+\]
+Combining with $p \mid y^2-2$ (and $p$ odd): $p \mid 2k^2-1$, i.e.
+$2k^2 \equiv 1\pmod{p}$.
+
+\textit{Sub-case $x\equiv 10\pmod{48}$.}
+Here $p = x/2 \equiv 5\pmod{24}$, so $p \equiv 5\pmod{8}$.  The set
+$\{1,7\} \subset (\mathbb{Z}/8\mathbb{Z})^*$ is closed under multiplication,
+so any integer $\equiv 5\pmod{8}$ must have a prime factor $q \equiv 3$ or
+$5\pmod{8}$.  The second supplement to quadratic reciprocity gives
+$\left(\frac{2}{q}\right) = -1$ for such $q$, so $2$ is a quadratic
+non-residue mod $q$.  But $p \mid 2k^2 - 1$ implies $q \mid 2k^2-1$,
+i.e.\ $2k^2 \equiv 1\pmod{q}$, forcing $2$ to be a square mod $q$:
+contradiction.
+
+\textit{Sub-case $x\equiv 34\pmod{48}$.}
+Here $p \equiv 17\pmod{24}$, so $p \equiv 1\pmod{8}$.
+The Jacobi condition $\bigl(\frac{2}{p}\bigr) = +1$ means at least
+in principle $p$ can have all prime factors $\equiv 1$ or $7\pmod{8}$,
+making $2k^2 \equiv 1\pmod{p}$ solvable.  The mod-$16$ computation gives
+LHS $\equiv$ RHS $\equiv 6\pmod{16}$ as well.  No elementary modular
+obstruction for this sub-case is currently known.  \emph{(Open.)}
+
+\medskip\noindent
+\textbf{Group~B: $x \equiv 6\pmod{8}$
+  (sub-cases $x \equiv 22$ and $x \equiv 46\pmod{48}$).}
+
+Reduce~\eqref{eq:red} modulo~$8$ with $x \equiv 6$, $z \equiv 3w$ ($w$ odd),
+$y = 2k$:
+\[
+  (3\cdot 6-1)\cdot 4k^2 + 9\cdot 6\cdot 1 \equiv 6^3-2 \pmod8.
+\]
+Computing: $3\cdot6-1=17\equiv 1$, $9\cdot6=54\equiv 6$, and
+$6^3-2=214\equiv 6\pmod 8$.  So $4k^2 + 6 \equiv 6\pmod8$, giving
+$4k^2 \equiv 0\pmod 8$, i.e.\ $k$ is \emph{even}.  Write $k = 2u$,
+so $y = 4u$.  Then
+\[
+  y^2-2 = 16u^2 - 2 = 2(8u^2-1).
+\]
+Combined with $p \mid y^2-2$: $p \mid 8u^2-1$, i.e.\ $8u^2 \equiv
+1\pmod{p}$.  Since $8 = 2^3$ and $\bigl(\frac{8}{q}\bigr) =
+\bigl(\frac{2}{q}\bigr)^3 = \bigl(\frac{2}{q}\bigr)$ for odd primes $q$
+(as the Legendre symbol takes values $\pm 1$), the condition $8u^2 \equiv
+1\pmod{p}$ requires $\bigl(\frac{2}{q}\bigr) = 1$ for every prime $q \mid p$.
+
+\textit{Sub-case $x\equiv 22\pmod{48}$.}
+Here $p = x/2 \equiv 11\pmod{24}$, so $p \equiv 3\pmod{8}$.  As in Group~A,
+any integer $\equiv 3\pmod{8}$ must have a prime factor $q \equiv 3$ or
+$5\pmod{8}$.  For such $q$, $\bigl(\frac{2}{q}\bigr) = -1$, contradicting
+the requirement above.
+
+\textit{Sub-case $x\equiv 46\pmod{48}$.}
+Here $p \equiv 23\pmod{24}$, so $p \equiv 7\pmod{8}$, giving
+$\bigl(\frac{2}{p}\bigr) = +1$.  The Jacobi argument does not apply.
+Instead, use a \textbf{mod-$16$ obstruction}:
+$x \equiv 46 \equiv 14\pmod{16}$, $y = 4u$ so $y^2 = 16u^2 \equiv
+0\pmod{16}$, and $w$ odd so $w^2 \in \{1,9\}\pmod{16}$.  Compute with
+$z = 3w$, i.e.\ $z^2 = 9w^2$:
+\begin{align*}
+  \mathrm{LHS} &= (3x-1)y^2 + xz^2
+  \equiv (3\cdot 14-1)\cdot 0 + 14\cdot 9w^2
+  \equiv 126 w^2 \equiv 14 w^2\pmod{16}.
+\end{align*}
+Since $14\cdot 1 = 14 \equiv 14$ and $14\cdot 9 = 126 \equiv 14\pmod{16}$,
+we get $\mathrm{LHS} \equiv 14\pmod{16}$ regardless of the parity pattern
+of $w$.  But $x^3-2 \equiv 14^3-2 = 2742 \equiv 6\pmod{16}$.
+Since $14 \neq 6$, this is a contradiction.
 \end{proof}
 
 % ═══════════════════════════════════════════════════════════════════════════════
@@ -462,7 +530,11 @@ Since $2\notin\{0,1,8\}$, this is a contradiction.
   and $z = 3Z$, giving the reduced equation~\eqref{eq:red}.
   Cases~(iii) and~(iv) follow from Lemmas~\ref{lem:case1a}
   and~\ref{lem:case1b}.  Case~(v) is Lemma~\ref{lem:case1e}.
-  Case~(vi) is Lemma~\ref{lem:case1f}.
+  Case~(vi) follows from Lemma~\ref{lem:case1f}: sub-cases
+  $x\equiv 10$ and $x\equiv 22\pmod{48}$ are handled by a Jacobi-symbol
+  argument (using $p = x/2 \equiv 5$ or $3\pmod{8}$ respectively and
+  $p \mid 2k^2-1$); sub-case $x\equiv 46\pmod{48}$ is handled by a
+  mod-$16$ obstruction; the sub-case $x\equiv 34\pmod{48}$ remains open.
 \end{proof}
 
 % ═══════════════════════════════════════════════════════════════════════════════
@@ -477,20 +549,23 @@ that the equation has no solutions at all, but does not constitute a proof.
 
 The proved cases are formalised in Lean~4/Mathlib~4 in
 \texttt{NonExistenceProof.lean}.  \textbf{Axiom count: 0.  Sorry count: 1}
-(one \texttt{sorry} for each of the two open sub-cases $x\equiv 1\pmod{12}$
-and $x\equiv 10\pmod{12}$).
+(one \texttt{sorry} for the open sub-case $x\equiv 34\pmod{48}$
+within the case $x\equiv 10\pmod{12}$).
 
 \begin{center}
 \begin{tabular}{lll}
 \toprule
 Lean name & Statement & Method \\
 \midrule
-\texttt{no\_sol\_zmod3\_x0}   & No solution in $\Z/3\Z$ with $x \equiv 0$      & \texttt{decide} \\
-\texttt{no\_sol\_zmod9\_x258} & No solution in $\Z/9\Z$ with $x \in \{2,5,8\}$ & \texttt{decide} \\
-\texttt{no\_solution\_case0}  & $3 \mid x$: no integer solution                 & cast + above \\
-\texttt{no\_solution\_case2}  & $x \equiv 2 \pmod{3}$: no integer solution      & cast + above \\
-\texttt{no\_solution\_case1}  & $x \equiv 1 \pmod{3}$: no integer solution      & \texttt{sorry} ($x\equiv 1,10\pmod{12}$ open in Lean) \\
-\texttt{no\_integer\_solutions} & Main theorem (partial)                        & case split + above \\
+\texttt{no\_sol\_zmod3\_x0}   & No solution in $\Z/3\Z$, $x \equiv 0$          & \texttt{decide} \\
+\texttt{no\_sol\_zmod9\_x258} & No solution in $\Z/9\Z$, $x \in \{2,5,8\}$    & \texttt{decide} \\
+\texttt{no\_solution\_case1\_mod12\_eq4}  & $x\equiv 4\pmod{12}$: no solution  & \texttt{decide} at $\Z/12\Z$ \\
+\texttt{no\_solution\_case1\_mod12\_eq7}  & $x\equiv 7\pmod{12}$: no solution  & \texttt{decide} at $\Z/12\Z$ \\
+\texttt{no\_solution\_case1\_mod24\_eq1}  & $x\equiv 1\pmod{24}$: no solution  & \texttt{decide} at $\Z/24\Z$ \\
+\texttt{no\_sol\_jacobi}      & $|x|\bmod 8\in\{3,5\}$, $x\mid y^2-2$: absurd & Jacobi symbol \\
+\texttt{no\_solution\_case1\_mod24\_eq13} & $x\equiv 13\pmod{24}$: no solution & Jacobi ($|x|\bmod 8\in\{3,5\}$) \\
+\texttt{no\_sol\_zmod48\_x10}, \texttt{..x46} & $x\equiv 10$ or $46\pmod{48}$: no solution & \texttt{decide} at $\Z/48\Z$ \\
+\texttt{no\_solution\_case1\_mod12\_eq10} & $x\equiv 10\pmod{12}$: no solution (1 \texttt{sorry}) & mod-48 split + Jacobi \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -508,25 +583,25 @@ $x \equiv 0 \pmod{3}$             & \checkmark\ Complete & $y^2 \not\equiv 2\pmo
 $x \equiv 2 \pmod{3}$             & \checkmark\ Complete & 3-adic descent $+$ $x^3\bmod 9$                 & No  \\
 $x \equiv 4  \pmod{12}$           & \checkmark\ Complete & Mod-4 obstruction (reduced eq.)                  & Yes \\
 $x \equiv 7  \pmod{12}$           & \checkmark\ Complete & Mod-4 obstruction (reduced eq.)                  & Yes \\
-$x \equiv 1  \pmod{12}$           & \checkmark\ Complete & Mod-8 obstruction $+$ Legendre symbol            & Yes \\
-$x \equiv 10 \pmod{12}$           & \checkmark\ Complete & Mod-9 cube-residue obstruction                   & Yes \\
+$x \equiv 1  \pmod{12}$           & \checkmark\ Complete & Mod-8 obstruction $+$ Jacobi symbol (mod-24 split) & Yes \\
+$x \equiv 10 \pmod{12}$           & $\ast$\ Partial      & Mod-48 split: decide ($x\!\equiv\!10,46$), Jacobi ($x\!\equiv\!22$); open ($x\!\equiv\!34$) & Yes \\
 \midrule
-All classes & \checkmark\ Complete (6/6) & Elementary modular arithmetic & — \\
-Lean formalisation & 1 \texttt{sorry} & $x\equiv 1,10\pmod{12}$ not yet formalised & — \\
+5 classes complete                 & \checkmark\ Complete & Elementary modular arithmetic & — \\
+Lean formalisation                 & 1 \texttt{sorry}     & Sub-case $x\equiv 34\pmod{48}$ unproved & — \\
 \bottomrule
 \end{tabular}
 \end{center}
 
 \bigskip
 
-All six residue classes modulo~$12$ are now covered by elementary modular
-obstructions, giving a complete proof that the equation has no integer
-solutions.
-The two new sub-cases ($x\equiv 1\pmod{12}$ via mod-$8$ and Legendre symbol;
-$x\equiv 10\pmod{12}$ via mod-$9$ cube residues) complement the four
-previously known cases and close the problem.
-Formalisation of these two new cases in Lean~4/Mathlib~4 remains as future
-work.
+Five of the six residue classes modulo~$12$ are covered by elementary modular
+obstructions.
+For $x\equiv 1\pmod{12}$, the argument uses a mod-$8$ obstruction
+(for $x\equiv 1\pmod{24}$, decided computationally)
+and a Jacobi-symbol argument (for $x\equiv 13\pmod{24}$, using $|x|\bmod 8\in\{3,5\}$).
+For $x\equiv 10\pmod{12}$, a mod-$48$ case split resolves three of four sub-cases
+($x\equiv 10,46\pmod{48}$ by exhaustive computation; $x\equiv 22\pmod{48}$ by a
+Jacobi-symbol argument); the sub-case $x\equiv 34\pmod{48}$ remains open.
 
 \bigskip
 \noindent\textbf{Acknowledgements.}

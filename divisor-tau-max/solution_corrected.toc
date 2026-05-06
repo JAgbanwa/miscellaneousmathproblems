@@ -1,0 +1,5 @@
+\contentsline {section}{\numberline {1}Introduction and Notation}{1}{section.1}%
+\contentsline {section}{\numberline {2}Verification for Small $n$}{2}{section.2}%
+\contentsline {section}{\numberline {3}Record-Setters and the Gap Argument}{2}{section.3}%
+\contentsline {section}{\numberline {4}Proof of Theorem~\ref {thm:main}}{5}{section.4}%
+\contentsline {section}{\numberline {5}Summary and Remarks}{6}{section.5}%

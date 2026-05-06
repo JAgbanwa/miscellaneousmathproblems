@@ -1,0 +1,16 @@
+\contentsline {section}{\numberline {1}Introduction and Problem Statement}{2}{section.1}%
+\contentsline {section}{\numberline {2}Algebraic Reformulations}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Sum-of-squares form}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Factored form}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Pythagorean form}{4}{subsection.2.3}%
+\contentsline {section}{\numberline {3}The Trivial Family of Solutions}{4}{section.3}%
+\contentsline {section}{\numberline {4}Parity Obstruction}{5}{section.4}%
+\contentsline {section}{\numberline {5}Structure When $a^2 = r_3^2$}{5}{section.5}%
+\contentsline {section}{\numberline {6}Non-Existence of Separated Solutions}{6}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Key auxiliary equations}{6}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Sign constraints under the separated conditions}{7}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Discriminant analysis and non-existence}{7}{subsection.6.3}%
+\contentsline {section}{\numberline {7}Integer vs.\ Rational Solutions}{9}{section.7}%
+\contentsline {section}{\numberline {8}Lean~4 Formalisation}{10}{section.8}%
+\contentsline {section}{\numberline {9}Computational Verification}{10}{section.9}%
+\contentsline {section}{\numberline {10}Summary of Results}{11}{section.10}%

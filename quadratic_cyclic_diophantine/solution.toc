@@ -1,0 +1,41 @@
+\contentsline {section}{\numberline {1}Statement, Overview, and Correction}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}The equation}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Correction of the original claim}{3}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}The corrected main theorem}{3}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Basic Properties of the Cyclic Form}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Cyclic symmetry}{4}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}An antisymmetry identity}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Specialisations}{4}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Solutions with a Zero Coordinate}{5}{section.3}%
+\contentsline {section}{\numberline {4}Reduction to a Quadratic: Vieta-Jumping Analysis}{5}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Fixing two variables}{5}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}The Vieta involution}{6}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Vieta jumping generates only period-2 cycles}{6}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}The connected component of $(1,1,0)$ under Vieta jumping}{6}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Structure of the Solution Set: Orbits and Computer Search}{7}{section.5}%
+\contentsline {subsection}{\numberline {5.1}All confirmed orbits}{7}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}The search algorithm}{8}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}A heuristic model for solution density}{8}{subsection.5.3}%
+\contentsline {section}{\numberline {6}Absence of a Polynomial Parametric Family}{8}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Obstruction from the leading form}{8}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}The near-miss identity}{9}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Analysis of special one-parameter substitutions}{9}{subsection.6.3}%
+\contentsline {section}{\numberline {7}The Cubic Surface over $\mathbb {Q}$}{9}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Definition and projectivisation}{9}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Smoothness}{10}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Fibration by cubic curves}{10}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Why the union is infinite: a Mordell--Weil sketch}{10}{subsection.7.4}%
+\contentsline {section}{\numberline {8}Modular Analysis}{11}{section.8}%
+\contentsline {subsection}{\numberline {8.1}No congruence obstruction}{11}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Residue constraints from small moduli}{11}{subsection.8.2}%
+\contentsline {section}{\numberline {9}Proof of Infinitude}{11}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Formal proof strategy}{11}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}The formally proved component}{12}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}The residual sorry and why it is hard}{12}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}Main infinitude theorem}{12}{subsection.9.4}%
+\contentsline {section}{\numberline {10}Lean~4 Formalisation}{13}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Overview}{13}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Complete theorem index}{13}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Key Lean~4 excerpts}{13}{subsection.10.3}%
+\contentsline {section}{\numberline {11}Proof Status Summary}{15}{section.11}%
+\contentsline {section}{\numberline {12}Conclusion}{15}{section.12}%

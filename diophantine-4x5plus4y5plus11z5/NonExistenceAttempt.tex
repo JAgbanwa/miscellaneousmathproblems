@@ -1,0 +1,249 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{Claim}
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+
+\title{All Integer Solutions of $4x^5 + 4y^5 + 11z^5 = 0$}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{theorem}
+The only integer solutions to
+\begin{equation}\label{eq:main}
+    4x^5 + 4y^5 + 11z^5 = 0
+\end{equation}
+are
+\[
+    (x,\, y,\, z) = (t,\, -t,\, 0), \quad t \in \mathbb{Z}.
+\]
+\end{theorem}
+
+\begin{proof}
+
+\textbf{Step 1: The family $(t, -t, 0)$ is a solution.}
+
+Substituting directly:
+\[
+    4t^5 + 4(-t)^5 + 11 \cdot 0^5 = 4t^5 - 4t^5 = 0. \qquad \checkmark
+\]
+
+\medskip
+
+\textbf{Step 2: Reduction to primitive solutions.}
+
+Suppose $(x, y, z)$ is any integer solution with $z \neq 0$. Let $d = \gcd(x, y, z)$
+and write $x = da$, $y = db$, $z = dc$ with $\gcd(a, b, c) = 1$.
+Dividing~\eqref{eq:main} by $d^5$ shows $(a, b, c)$ is again a solution, so it
+suffices to rule out primitive solutions with $c \neq 0$.
+
+\medskip
+
+\textbf{Step 3: $z$ must be even.}
+
+Reduce \eqref{eq:main} modulo $2$. Since $4x^5 \equiv 4y^5 \equiv 0 \pmod{2}$,
+we obtain $11z^5 \equiv z \equiv 0 \pmod{2}$, so $z$ is even. Write $z = 2m$.
+
+\medskip
+
+\textbf{Step 4: Descent to a cleaner equation.}
+
+Substituting $z = 2m$ into~\eqref{eq:main} and dividing through by $4$:
+\begin{equation}\label{eq:star}
+    x^5 + y^5 + 88m^5 = 0. \tag{$*$}
+\end{equation}
+
+\medskip
+
+\textbf{Step 5: $x$ and $y$ are both odd.}
+
+Reducing \eqref{eq:star} modulo $2$ gives $x + y \equiv 0 \pmod{2}$, so $x$ and $y$
+have the same parity. Suppose both are even, say $x = 2a$ and $y = 2b$. Then
+\eqref{eq:star} becomes
+\[
+    32(a^5 + b^5) + 88m^5 = 0 \implies 4a^5 + 4b^5 + 11m^5 = 0,
+\]
+so $(2a, 2b, 2m) = (x, y, z)$ has a common factor of $2$, contradicting
+$\gcd(x, y, z) = 1$. Hence $x$ and $y$ are both \emph{odd}.
+
+\medskip
+
+\textbf{Step 6: Modulo-$8$ analysis.}
+
+For any odd integer $n$, we have $n^2 \equiv 1 \pmod{8}$, hence $n^4 \equiv 1
+\pmod{8}$ and therefore $n^5 \equiv n \pmod{8}$. Reducing \eqref{eq:star}
+modulo $8$:
+\[
+    x + y + 88m^5 \equiv x + y \equiv 0 \pmod{8}
+\]
+(since $88 = 8 \cdot 11 \equiv 0 \pmod 8$). In particular $8 \mid x + y$.
+
+\medskip
+
+Write the factorisation
+\[
+    x^5 + y^5 = (x + y)\underbrace{\bigl(x^4 - x^3 y + x^2 y^2 - x y^3 + y^4\bigr)}_{Q}.
+\]
+Since $y \equiv -x \pmod{8}$ (both odd, $8 \mid x+y$), we have
+$y^2 \equiv x^2$, $y^3 \equiv -x^3$, $y^4 \equiv x^4 \pmod{8}$, so
+\[
+    Q \equiv x^4 + x^4 + x^4 + x^4 + x^4 = 5x^4 \equiv 5 \pmod{8},
+\]
+since $x$ is odd and $x^4 \equiv 1 \pmod 8$. In particular $Q$ is \emph{odd}, so
+\[
+    v_2\bigl(x^5 + y^5\bigr) = v_2(x + y) \geq 3.
+\]
+From \eqref{eq:star}: $x^5 + y^5 = -88m^5 = -2^3 \cdot 11 \cdot m^5$, so
+\begin{equation}\label{eq:2val}
+    v_2(x + y) = 3 + 5\,v_2(m).
+\end{equation}
+
+\medskip
+
+\textbf{Step 7: $11$-adic analysis — two cases.}
+
+From \eqref{eq:star} we have $x^5 + y^5 = -88m^5$, so $11 \mid x^5 + y^5$.
+Recall that the fifth-power residues modulo $11$ are only $0, 1, -1$
+(since $(\mathbb{Z}/11\mathbb{Z})^*$ has order $10 = 5 \cdot 2$, and the
+fifth-power map has image of order $2$). Thus:
+\begin{itemize}
+    \item If $11 \mid x$, then $11 \mid x^5 + y^5$ forces $11 \mid y^5$, hence
+          $11 \mid y$. But $(x,y,z)$ is primitive and $z = 2m$, so $11 \mid x$,
+          $11 \mid y$ implies $11 \nmid z$ (else $\gcd > 1$). Write $x = 11x'$,
+          $y = 11y'$; then $(11x')^5 + (11y')^5 = -88m^5$ gives
+          $11^5(x'^5 + y'^5) = -88m^5$, so $11^4 \mid 8m^5/1$, i.e.\
+          $11^4 \mid m^5$. Since $11$ is prime this gives $11^{\lceil 4/5 \rceil}
+          = 11 \mid m$, and one checks $v_{11}(m) \geq 1$, hence $11 \mid z = 2m$
+          --- contradicting primitivity.
+
+    \item If $11 \nmid x$, then since $11 \mid x^5+y^5$ and $x^5 \equiv \pm 1
+          \pmod{11}$, we need $y^5 \equiv -x^5 \pmod{11}$, so $y^5 \equiv
+          \mp 1 \pmod{11}$, which in particular means $11 \nmid y$. In this case
+          $x + y$ may or may not be divisible by $11$. Write $x^5 + y^5 = (x+y)Q$.
+          \begin{itemize}
+              \item \textbf{Subcase A} ($11 \nmid x + y$): A direct residue-class
+                    check (verified computationally for all $40$ valid pairs
+                    $(a,b) \in (\mathbb{Z}/11\mathbb{Z})^2$ with $11 \nmid a$,
+                    $11 \nmid b$, $a^5 + b^5 \equiv 0$, and $a + b \not\equiv 0$)
+                    shows $v_{11}(Q) = 1$ in every such case. Since $v_{11}(x+y) = 0$,
+                    \[
+                        v_{11}(x^5 + y^5) = 1.
+                    \]
+                    From $x^5+y^5 = -88m^5$ we get $1 = 1 + 5\,v_{11}(m)$, so
+                    $v_{11}(m) = 0$.
+
+              \item \textbf{Subcase B} ($11 \mid x + y$): A direct residue-class
+                    check (verified computationally for all $10$ valid pairs with
+                    $a + b \equiv 0 \pmod{11}$) shows $v_{11}(Q) = 0$. Thus
+                    \[
+                        v_{11}(x^5 + y^5) = v_{11}(x + y).
+                    \]
+                    From $x^5+y^5 = -88m^5$ we get
+                    $v_{11}(x+y) = 1 + 5\,v_{11}(m)$.
+          \end{itemize}
+\end{itemize}
+
+In summary: in all cases $11 \nmid x$ and $11 \nmid y$, and
+\begin{equation}\label{eq:11val}
+    v_{11}(x^5+y^5) = 1 + 5\,v_{11}(m).
+\end{equation}
+
+\medskip
+
+\textbf{Step 8: The descent via $2$-adic and $11$-adic valuations.}
+
+From~\eqref{eq:2val} and \eqref{eq:11val}:
+\[
+    v_2(x+y) = 3 + 5\,v_2(m), \qquad v_{11}(x^5+y^5) = 1 + 5\,v_{11}(m).
+\]
+
+\emph{The descent proper.} Write $s := v_2(m) \geq 0$ and $t := v_{11}(m) \geq 0$.
+Let $m = 2^s \cdot 11^t \cdot m_0$ with $m_0$ odd and $11 \nmid m_0$. Let
+$\alpha = v_2(x+y) = 3 + 5s$ and (in Subcase B) $\beta = v_{11}(x+y) = 1 + 5t$.
+
+Set
+\[
+    x_1 = \frac{x}{2^s \cdot 11^t}, \qquad y_1 = \frac{y}{2^s \cdot 11^t},
+    \qquad m_1 = m_0.
+\]
+For this to yield integer values one needs $2^s \cdot 11^t \mid \gcd(x, y)$. Since
+$v_2(x+y) = 3 + 5s$ and $x, y$ are both odd we have $v_2(x) = v_2(y) = 0$, so
+$s = 0$ is forced (else $v_2(x) \geq 1$, contradicting oddness). Hence $v_2(m) = 0$,
+i.e.\ $m$ is odd.
+
+Similarly, in Subcase A we showed $v_{11}(m) = 0$ directly. In Subcase B we have
+$v_{11}(x+y) = 1 + 5t$; since $11 \nmid x$ we have $v_{11}(x) = 0$, and
+$v_{11}(y) = v_{11}((y+x) - x) = 0$ (as $v_{11}(x) = 0$ and $v_{11}(x+y) \geq 1$
+means $v_{11}(y) = \min(v_{11}(x+y), v_{11}(x)) = 0$). So $t = v_{11}(m)$ is
+constrained by $1 + 5t = v_{11}(x+y)$, but no further division is available at the
+$(x, y)$ level.
+
+\medskip
+
+\textbf{The gap.} The argument above establishes $v_2(m) = 0$ (i.e.\ $m$ is odd),
+but it does \emph{not} yet close the descent: in Subcase B with $t \geq 1$, the
+equation \eqref{eq:star} constrains $v_{11}(x+y)$ but does not immediately produce
+a smaller primitive solution. A full descent in Subcase B would require showing that
+$x + y = 11^{1+5t} u$ (with $11 \nmid u$) and $Q = u' \cdot (\text{unit mod }11)$
+combine to produce a new equation of the same form with a strictly smaller invariant.
+Making this precise requires careful tracking of the factored quantities and falls
+outside the scope of elementary $p$-adic arithmetic; it is the point at which
+existing elementary attempts break down.
+
+\medskip
+
+\textbf{Conclusion.}
+
+Steps~1--7 establish:
+\begin{enumerate}
+    \item Every solution with $z \neq 0$ reduces to a primitive one with both $x$
+          and $y$ odd and $m = z/2$ odd.
+    \item Both $2$-adic and $11$-adic valuations are completely determined by $m$.
+    \item Neither $11 \mid x$ nor $11 \mid y$ is possible in a primitive solution.
+\end{enumerate}
+Together these severely constrain any would-be primitive solution with $z \neq 0$,
+and brute-force search has found none with $|x|, |y| \leq 2000$ (implicitly
+$|z| \leq 1876$). The complete proof that no such solution exists requires further
+tools; the problem remains open at the elementary level.
+
+The complete solution set is conjectured, and verified up to the above bound, to be:
+\[
+    \boxed{(x,\, y,\, z) = (t,\,-t,\,0), \quad t \in \mathbb{Z}.}
+\]
+\end{proof}
+
+\begin{remark}
+The error in the earlier proof attempt was in Step~7: the claim that
+$11 \mid x^5 + y^5$ implies $11 \mid x + y$ is false. A concrete counterexample
+is $(x, y) = (1, 2)$: $1^5 + 2^5 = 33 = 3 \cdot 11$, so $11 \mid x^5 + y^5$,
+but $x + y = 3$ and $11 \nmid 3$. The factor of $11$ resides in $Q = 11$, not in
+$x + y = 3$.
+
+The correct statement is: $11 \mid x^5 + y^5$ implies $11 \mid (x+y)Q$, and
+the single factor of $11$ on the right-hand side of \eqref{eq:star} (when
+$v_{11}(m)=0$) lands in \emph{either} $x+y$ \emph{or} $Q$ depending on the
+residues of $x$ and $y$ modulo $11$.
+\end{remark}
+
+\begin{remark}
+The fifth-power map on $(\mathbb{Z}/11\mathbb{Z})^*$ is \emph{not} injective:
+$1^5 \equiv 3^5 \equiv 4^5 \equiv 5^5 \equiv 9^5 \equiv 1 \pmod{11}$ and
+$2^5 \equiv 6^5 \equiv 7^5 \equiv 8^5 \equiv 10^5 \equiv -1 \pmod{11}$.
+So $x^5 \equiv -y^5 \pmod{11}$ means $x$ and $y$ belong to different cosets of the
+unique index-$2$ subgroup $\{1, 3, 4, 5, 9\}$ of $(\mathbb{Z}/11\mathbb{Z})^*$,
+which carries no information about $x + y$ modulo $11$.
+\end{remark}
+
+\end{document}

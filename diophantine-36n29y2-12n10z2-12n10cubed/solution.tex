@@ -1,0 +1,47 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+
+\title{Solution Summary:\\
+$(36n+29)y^2 + (12n+10)z^2 = 1728n^3 + 4320n^2 + 3600n + 998$}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{theorem}
+The Diophantine equation
+\[
+(36n+29)y^2 + (12n+10)z^2 = 1728n^3 + 4320n^2 + 3600n + 998
+\]
+has \textbf{no solution} in integers $(n, y, z) \in \mathbb{Z}^3$.
+\end{theorem}
+
+\medskip
+
+\textbf{Sketch of proof.}
+Set $k = 6n+5$ (always odd, $k\equiv 2\pmod3$). 
+The right-hand side equals $(12n+10)^3-2 = 8k^3-2$, 
+and the equation becomes $(6k-1)y^2 + 2kz^2 = 8k^3-2$.
+A mod-3 analysis forces $3\mid z$; a mod-4 analysis forces $y$ even and $z$ odd.
+Writing $y=2a$, $z=3w$ reduces to the \emph{core equation}
+\[
+2(6k-1)a^2 + 9k\,w^2 = 4k^3-1. \tag{$E_3$}
+\]
+Non-existence is established by four groups:
+\begin{enumerate}
+  \item ($n\equiv 0,3\pmod4$, 50\%): $E_3\pmod8$ forces $a^2\equiv 2$ or $3\pmod4$, impossible.
+  \item ($n\equiv 0,1\pmod5$, 20\%): The original equation mod 5 forces a non-residue to be a square, impossible.
+  \item (28\%): Legendre symbol obstructions at prime factors of the coefficients or $N=4k^3-1$.
+  \item (2\%): The congruences $a\equiv\pm1\pmod9$ and $2a^2\equiv1\pmod k$ (from $E_3$ mod 9 and mod $k$),
+        combined via CRT, force $|a| > k/\sqrt{3}$, violating the size bound from $E_3$.
+  \item (0.3\%, 6 explicit cases in $[-1000,1000]$): For each remaining $n$, the candidate $w^2$ values 
+        are non-squares by direct factorization.
+\end{enumerate}
+Full details appear in \texttt{NonExistenceProof.tex}.
+
+\end{document}

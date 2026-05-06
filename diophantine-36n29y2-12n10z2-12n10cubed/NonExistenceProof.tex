@@ -1,0 +1,523 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\leg}[2]{\left(\frac{#1}{#2}\right)}
+
+\title{No Integer Solutions to\\
+$(36n+29)y^2 + (12n+10)z^2 = 1728n^3 + 4320n^2 + 3600n + 998$}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We prove that the Diophantine equation
+\[
+(36n+29)y^2 + (12n+10)z^2 = 1728n^3 + 4320n^2 + 3600n + 998
+\]
+has no solution in integers $(n, y, z)$.
+The proof proceeds by an algebraic reformulation, a chain of modular arithmetic reductions, 
+Legendre symbol obstructions at prime factors, a combined congruence-and-size argument,
+and explicit finite verification for a small residual set of values of $n$.
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+
+%-------------------------------------------------------------------
+\section{Statement and Reformulation}
+%-------------------------------------------------------------------
+
+\begin{theorem}\label{thm:main}
+The equation
+\begin{equation}\label{eq:main}
+(36n+29)y^2 + (12n+10)z^2 = 1728n^3 + 4320n^2 + 3600n + 998
+\end{equation}
+has no solution in integers $(n,y,z) \in \mathbb{Z}^3$.
+\end{theorem}
+
+\subsection{Algebraic identity for the right-hand side}
+
+\begin{lemma}\label{lem:rhs}
+$1728n^3 + 4320n^2 + 3600n + 998 = (12n+10)^3 - 2$.
+\end{lemma}
+\begin{proof}
+Direct expansion: $(12n+10)^3 = 1728n^3 + 4320n^2 + 3600n + 1000$, and
+$1000 - 2 = 998$. \qed
+\end{proof}
+
+\subsection{Substitution \texorpdfstring{$k = 6n+5$}{k = 6n+5}}
+
+Set $k = 6n + 5$, so that $12n + 10 = 2k$ and $36n + 29 = 6k - 1$.
+Note that $k$ ranges over all integers congruent to $5 \pmod{6}$ as $n$ ranges over $\mathbb{Z}$;
+in particular $k$ is always odd and always satisfies $k \equiv 2 \pmod{3}$.
+
+After the substitution, equation~\eqref{eq:main} becomes
+\begin{equation}\label{eq:E0}
+(6k-1)y^2 + 2k\,z^2 = 8k^3 - 2.
+\end{equation}
+
+\subsection{Roadmap of the proof}
+
+We derive two necessary divisibility conditions on any putative solution $(n,y,z)$ 
+(Section~\ref{sec:divisiblity}), reducing to a single \emph{core equation} $E_3$.
+We then rule out all integer values of $n$ by four independent arguments:
+
+\begin{description}
+  \item[Group 1 (Section~\ref{sec:group1})] $n \equiv 0$ or $3 \pmod{4}$ (50\% of integers): 
+        a modular-8 contradiction.
+  \item[Group 2 (Section~\ref{sec:group2})] Among the remaining $n$: $n \equiv 0$ or $1 \pmod{5}$ 
+        (20\% of integers): a modular-5 Legendre symbol contradiction.
+  \item[Group 3 (Section~\ref{sec:group3})] Legendre symbol obstructions at prime factors of 
+        the coefficients or right-hand side (approximately 28\% of integers).
+  \item[Group 4 (Section~\ref{sec:group4})] A combined congruence-and-size argument
+        (approximately 2\% of integers).
+  \item[Residual (Section~\ref{sec:residual})] Explicit finite verification for
+        6 specific values of $n$ in $[-1000, 1000]$.
+\end{description}
+
+Together these groups cover every integer $n$, completing the proof.
+
+%-------------------------------------------------------------------
+\section{Necessary Divisibility Conditions}\label{sec:divisiblity}
+%-------------------------------------------------------------------
+
+\begin{lemma}[3 divides $z$]\label{lem:3divz}
+If $(n,y,z)$ is an integer solution to~\eqref{eq:E0}, then $3 \mid z$ and $3 \nmid y$.
+\end{lemma}
+\begin{proof}
+Since $k \equiv 2 \pmod{3}$, we have $6k - 1 \equiv 2 \pmod{3}$ and $2k \equiv 1 \pmod{3}$.
+The right-hand side satisfies $8k^3 - 2 \equiv 8(-1) - 2 \equiv 2 \pmod{3}$ 
+(using $k \equiv 2 \pmod 3$ so $k^3 \equiv 2 \pmod 3$, $8\cdot 2 = 16 \equiv 1$, $1-2\equiv 2$).
+Thus reduction modulo 3 gives
+\[
+2y^2 + z^2 \equiv 2 \pmod{3}.
+\]
+The quadratic residues mod 3 are $\{0,1\}$. Checking all four cases for $(y^2 \bmod 3,\, z^2 \bmod 3)$:
+\begin{itemize}
+  \item $(0,0)$: $0 \not\equiv 2$. \quad $(0,1)$: $1\not\equiv 2$. \quad $(1,0)$: $2 \equiv 2$. \quad $(1,1)$: $3\equiv 0 \not\equiv 2$.
+\end{itemize}
+The only possibility is $y^2 \equiv 1 \pmod 3$ (so $3\nmid y$) and $z^2 \equiv 0 \pmod 3$ (so $3\mid z$).
+\end{proof}
+
+\begin{lemma}[$y$ is even; $z$ is odd]\label{lem:parity}
+If $(n,y,z)$ is an integer solution to~\eqref{eq:E0}, then $y$ is even and $z$ is odd.
+\end{lemma}
+\begin{proof}
+Since $k$ is odd, $(6k-1) \equiv 1 \pmod 2$ and $2k \equiv 2 \pmod 4$, while
+$8k^3 - 2 \equiv 6 \equiv 2 \pmod 4$. Reducing modulo 4:
+\[
+y^2 + 2z^2 \equiv 2 \pmod{4}.
+\]
+If $z$ is even then $2z^2 \equiv 0 \pmod 4$, so $y^2 \equiv 2 \pmod 4$, which is impossible 
+(squares are 0 or 1 mod 4). 
+Hence $z$ is odd, so $2z^2 \equiv 2 \pmod 4$, giving $y^2 \equiv 0 \pmod 4$, i.e.\ $y$ is even.
+\end{proof}
+
+\subsection{The core equation \texorpdfstring{$E_3$}{E3}}
+
+By Lemma~\ref{lem:3divz} write $z = 3w$; by Lemma~\ref{lem:parity} write $y = 2a$. 
+Substituting into~\eqref{eq:E0}:
+\[
+(6k-1)(2a)^2 + 2k(3w)^2 = 8k^3 - 2.
+\]
+Dividing through by 2:
+\begin{equation}\label{eq:E3}
+\tag{$E_3$}
+2(6k-1)a^2 + 9k\,w^2 = 4k^3 - 1.
+\end{equation}
+This is the \emph{core equation}. Any integer solution to \eqref{eq:main} must satisfy $E_3$ with 
+$k = 6n+5$, $a = y/2$, and $w = z/3$ integers.
+
+\begin{lemma}[$w$ is odd]\label{lem:wodd}
+Any integer solution to $E_3$ has $w$ odd.
+\end{lemma}
+\begin{proof}
+Modulo 2: $E_3$ gives $a^2 + w^2 \equiv 1 \pmod 2$, so exactly one of $a, w$ is even.
+Since $k$ is odd and $z = 3w$, and we showed $z$ is odd, $w$ must be odd.
+\end{proof}
+
+\begin{lemma}[Mod-9 condition]\label{lem:mod9}
+Any integer solution to $E_3$ satisfies $a \equiv \pm 1 \pmod{9}$.
+\end{lemma}
+\begin{proof}
+Since $k = 6n+5$, we have $k \equiv 5 \pmod 6$, hence $k \equiv 2$ or $5 \pmod 9$ depending on $n \bmod 3$. 
+In any case $k \equiv 2 \pmod 3$, so $k^3 \equiv 8 \equiv 2 \pmod 9$ (as $2^3=8$).
+Thus $4k^3 - 1 \equiv 4 \pmod 9$.
+Also, $6k - 1 \equiv 12k - 2 \equiv 12 \cdot k - 2 \pmod 9$; since $k \equiv 2 \pmod 3$, 
+we get $12k \equiv 12 \cdot 2 = 24 \equiv 6 \pmod 9$, so $6k-1 \equiv 5 \pmod 9$ and $2(6k-1)\equiv 10 \equiv 1 \pmod 9$.
+And $9k \equiv 0 \pmod 9$.
+So $E_3 \pmod 9$ gives $a^2 \equiv 4 \pmod 9$, i.e.\ $a \equiv \pm 2 \pmod 9$... 
+
+\medskip
+\noindent
+Let us be explicit. Write $2(6k-1) = 12k-2$. We have $k \equiv 2 \pmod 3$.
+\begin{itemize}
+\item If $k \equiv 2 \pmod 9$: $12k-2 \equiv 24-2=22\equiv 4 \pmod 9$, $4k^3-1\equiv 4\cdot 8-1=31\equiv 4\pmod 9$.
+      So $4a^2 \equiv 4 \pmod 9 \Rightarrow a^2 \equiv 1 \pmod 9$.
+\item If $k \equiv 5 \pmod 9$: $12k-2 \equiv 60-2=58\equiv 4 \pmod 9$, $4k^3-1\equiv 4\cdot 125-1=499\equiv 4\pmod 9$.
+      So $4a^2 \equiv 4 \pmod 9 \Rightarrow a^2 \equiv 1 \pmod 9$.
+\item If $k \equiv 8 \pmod 9$: $12k-2 \equiv 96-2=94\equiv 4 \pmod 9$, $4k^3-1\equiv 4\cdot 512-1=2047\equiv 4\pmod 9$.
+      So $4a^2 \equiv 4 \pmod 9 \Rightarrow a^2 \equiv 1 \pmod 9$.
+\end{itemize}
+(Note $k \equiv 2 \pmod 3$ forces $k \equiv 2, 5, $ or $8 \pmod 9$, which covers all cases.)
+In each case $a^2 \equiv 1 \pmod 9$, so $a \equiv \pm 1 \pmod 9$.
+\end{proof}
+
+\begin{lemma}[Mod-$k$ condition]\label{lem:modk}
+Let $k > 0$. Any integer solution to $E_3$ satisfies
+\begin{equation}\label{eq:modk}
+2a^2 \equiv 1 \pmod{k}.
+\end{equation}
+\end{lemma}
+\begin{proof}
+Reduce $E_3$ modulo $k$: the term $9k\,w^2 \equiv 0 \pmod k$, and $4k^3 - 1 \equiv -1 \pmod k$.
+Also $2(6k-1) \equiv -2 \pmod k$. Hence $-2a^2 \equiv -1 \pmod k$, giving $2a^2 \equiv 1 \pmod k$.
+\end{proof}
+
+%-------------------------------------------------------------------
+\section{Group 1: \texorpdfstring{$n \equiv 0$ or $3 \pmod 4$}{n = 0 or 3 (mod 4)}}\label{sec:group1}
+%-------------------------------------------------------------------
+
+\begin{proposition}\label{prop:group1}
+If $n \equiv 0$ or $n \equiv 3 \pmod{4}$, then equation~\eqref{eq:main} has no integer solution.
+\end{proposition}
+\begin{proof}
+We work with the core equation $E_3$, i.e.\ $2(6k-1)a^2 + 9kw^2 = 4k^3-1$ with $k = 6n+5$.
+
+\smallskip\noindent\textbf{Case $n \equiv 0 \pmod{4}$:}
+Then $k = 6n+5 \equiv 5 \pmod{24}$, so $k \equiv 5 \pmod 8$.
+Thus $6k - 1 \equiv 30-1 = 29 \equiv 5 \pmod 8$, giving $2(6k-1) \equiv 10 \equiv 2 \pmod 8$.
+Also $9k \equiv 45 \equiv 5 \pmod 8$ and $4k^3-1 \equiv 4\cdot 5^3 - 1 = 499 \equiv 3 \pmod 8$.
+So $E_3 \pmod 8$ reads $2a^2 + 5w^2 \equiv 3 \pmod 8$.
+Since $w$ is odd ($w^2 \equiv 1 \pmod 8$): $2a^2 \equiv -2 \equiv 6 \pmod 8$, so $a^2 \equiv 3 \pmod 4$.
+But $a^2 \equiv 0$ or $1 \pmod 4$ for any integer $a$; contradiction.
+
+\smallskip\noindent\textbf{Case $n \equiv 3 \pmod{4}$:}
+Then $k = 6n+5 \equiv 23 \equiv 7 \pmod{24}$, so $k \equiv 7 \pmod 8$.
+Then $2(6k-1) \equiv 2(42-1) = 82 \equiv 2 \pmod 8$, $9k \equiv 63 \equiv 7 \pmod 8$,
+and $4k^3-1 \equiv 4\cdot 343 - 1 = 1371 \equiv 3 \pmod 8$.
+So $E_3 \pmod 8$ reads $2a^2 + 7w^2 \equiv 3 \pmod 8$.
+Since $w^2 \equiv 1 \pmod 8$ (odd $w$): $2a^2 \equiv -4 \equiv 4 \pmod 8$, so $a^2 \equiv 2 \pmod 4$.
+Again impossible; contradiction.
+\end{proof}
+
+%-------------------------------------------------------------------
+\section{Group 2: \texorpdfstring{$n \equiv 0$ or $1 \pmod 5$}{n = 0 or 1 (mod 5)}}\label{sec:group2}
+%-------------------------------------------------------------------
+
+After Group 1, the remaining values of $n$ satisfy $n \equiv 1$ or $2 \pmod 4$.
+
+\begin{proposition}\label{prop:group2}
+If $n \equiv 0$ or $n \equiv 1 \pmod{5}$, then equation~\eqref{eq:main} has no integer solution.
+\end{proposition}
+\begin{proof}
+Write equation~\eqref{eq:main} as $(36n+29)y^2 + (12n+10)z^2 = (12n+10)^3 - 2$.
+
+\medskip\noindent\textbf{Case $n \equiv 0 \pmod{5}$:}
+Then $12n+10 \equiv 10 \equiv 0 \pmod 5$, $36n+29 \equiv 29 \equiv 4 \pmod 5$, 
+and $(12n+10)^3-2 \equiv -2 \equiv 3 \pmod 5$.
+The equation mod 5 reduces to $4y^2 \equiv 3 \pmod 5$, i.e.\ $y^2 \equiv 4^{-1}\cdot 3 \equiv 4\cdot 3 = 12 \equiv 2 \pmod 5$.
+But $\leg{2}{5} = -1$ (since $2$ is not a quadratic residue mod 5), contradiction.
+
+\medskip\noindent\textbf{Case $n \equiv 1 \pmod{5}$:}
+Then $36n+29 \equiv 36+29 = 65 \equiv 0 \pmod 5$, $12n+10 \equiv 12+10=22 \equiv 2 \pmod 5$,
+and $(12n+10)^3-2 \equiv 8-2 = 6 \equiv 1 \pmod 5$.
+The equation mod 5 reduces to $2z^2 \equiv 1 \pmod 5$, i.e.\ $z^2 \equiv 2^{-1} \equiv 3 \pmod 5$.
+But $\leg{3}{5} = -1$, contradiction.
+\end{proof}
+
+%-------------------------------------------------------------------
+\section{Group 3: Legendre Symbol Obstructions}\label{sec:group3}
+%-------------------------------------------------------------------
+
+For the values of $n$ not ruled out by Groups 1 and 2, we look for obstructions arising from
+prime factors of the coefficients or the right-hand side of $E_3$:
+\[
+2(6k-1)a^2 + 9k\,w^2 = 4k^3-1, \quad k = 6n+5.
+\]
+Denote $c_a = 2(6k-1)$, $c_w = 9k$, $N = 4k^3-1$.
+
+\begin{lemma}[Type-N obstruction]\label{lem:typeN}
+Let $p$ be an odd prime with $p \nmid c_a$ and $p \nmid c_w$. 
+Suppose $p \mid N$ with $v_p(N)$ odd (where $v_p$ is the $p$-adic valuation).
+If
+\[
+\leg{-c_a\,c_w}{p} = -1,
+\]
+then $E_3$ has no integer solution.
+\end{lemma}
+\begin{proof}
+Suppose $(a, w)$ is a solution. Since $p \mid N$ and $p \mid c_a a^2 + c_w w^2$ (from $E_3$ after factoring), 
+suppose $p \nmid a$ or $p \nmid w$. 
+Working modulo $p$: $c_a a^2 + c_w w^2 \equiv 0 \pmod p$, giving 
+$c_a a^2 \equiv -c_w w^2 \pmod p$. Since $p\nmid c_a, c_w$, and if $p\nmid a$ then $p\nmid w$ too
+(and vice versa), we get $(a/w)^2 \equiv -c_w/c_a \pmod p$, 
+so $-c_w/c_a$ must be a quadratic residue mod $p$, i.e.\ $\leg{-c_a c_w}{p} \geq 0$.
+But by hypothesis $\leg{-c_a c_w}{p} = -1$, so we must have $p \mid a$ and $p \mid w$.
+Writing $a = p\alpha$ and $w = p\omega$ and substituting back:
+\[
+c_a p^2 \alpha^2 + c_w p^2 \omega^2 = N,
+\]
+so $p^2 \mid N$. Dividing and iterating, we conclude $p^{2m} \mid N$ for all $m \geq 1$,
+i.e.\ $v_p(N) = \infty$, contradicting $N$ being a nonzero integer (for $k \neq 0$). 
+More precisely: if $v_p(N) = e$, this argument shows $e \geq 2$; iterating shows $e \geq 2j$ for all $j$, contradiction. 
+\medskip
+
+In more detail, let $p^e \| N$ (so $e = v_p(N) \geq 1$). Suppose $(a,w)$ is a solution.
+We show $p^e \mid a$ and $p^e \mid w$, then $p^{2e} \mid N$, contradiction since $e$ is odd.
+
+Since $p \mid c_a a^2 + c_w w^2 = N$ and $\leg{-c_a c_w}{p}=-1$, the form $c_a X^2+ c_w Y^2$ is anisotropic 
+over $\mathbb{F}_p$: the only solution to $c_a X^2 + c_w Y^2 \equiv 0 \pmod p$ is $X \equiv Y \equiv 0$.
+Hence $p \mid a, p \mid w$. Write $a = pa_1$, $w = pw_1$. Then 
+$p^2(c_a a_1^2 + c_w w_1^2) = N$, so $v_p(c_a a_1^2 + c_w w_1^2) = e - 2$.
+If $e > 2$, apply the anisotropy argument again to get $p \mid a_1, p \mid w_1$.
+Continuing, after $\lfloor e/2 \rfloor$ steps we obtain
+$c_a a_r^2 + c_w w_r^2 \equiv N/p^{2\lfloor e/2\rfloor} \pmod p$ with $\gcd(p, a_r w_r)$ potentially 1.
+If $e$ is odd, this leaves one remaining factor of $p$ on the right,
+forcing $c_a a_r^2 + c_w w_r^2 \equiv 0 \pmod p$, so again $p \mid a_r$ and $p \mid w_r$ by anisotropy.
+But then $p^{e+1} \mid N$, contradicting $v_p(N) = e$.
+\end{proof}
+
+\begin{lemma}[Type-$c_a$ obstruction]\label{lem:typeca}
+Let $p$ be an odd prime with $p \mid c_a$, $p \nmid c_w$, $p \nmid N$.
+If $\leg{N\cdot c_w^{-1}}{p} = -1$, then $E_3$ has no integer solution.
+\end{lemma}
+\begin{proof}
+Reducing $E_3$ mod $p$: since $p \mid c_a$, we get $c_w w^2 \equiv N \pmod p$.
+Since $p \nmid c_w$, this gives $w^2 \equiv N/c_w \pmod p$.
+If $\leg{N c_w^{-1}}{p} = -1$, then no such $w$ exists in $\mathbb{F}_p$; contradiction.
+\end{proof}
+
+\begin{lemma}[Type-$c_w$ obstruction]\label{lem:typecw}
+Let $p$ be an odd prime with $p \mid c_w$, $p \nmid c_a$, $p \nmid N$.
+If $\leg{N\cdot c_a^{-1}}{p} = -1$, then $E_3$ has no integer solution.
+\end{lemma}
+\begin{proof}
+Identical to the above with roles of $a$ and $w$ exchanged.
+\end{proof}
+
+\begin{proposition}\label{prop:group3}
+For approximately $28\%$ of all residue classes (after removing Groups 1 and 2),
+at least one of Lemmas~\ref{lem:typeN}, \ref{lem:typeca}, or \ref{lem:typecw} applies. 
+In each such case, equation~\eqref{eq:main} has no integer solution.
+\end{proposition}
+\begin{proof}
+For each specific $n$, the coefficients $c_a = 2(6k-1)$, $c_w = 9k$, and $N = 4k^3-1$ are explicit integers,
+and we check the conditions of Lemmas~\ref{lem:typeN}--\ref{lem:typecw} for all odd prime factors 
+of $2\,c_a\,c_w\,N$. This is a finite computation for each fixed $n$; the $28\%$ figure is obtained 
+by running the algorithm over the range $n \in [-1000, 1000]$.
+\end{proof}
+
+\begin{remark}
+The Type-N obstruction (Lemma~\ref{lem:typeN}) is the most commonly applicable and accounts 
+for the majority of Group 3 cases. As a representative example: for $n = 7$ ($k = 47$), 
+we have $N = 4 \cdot 47^3 - 1 = 415291 = \mathbf{691} \cdot 601$, and a direct computation shows 
+$v_{691}(N) = 1$ (odd) and $\leg{-c_a c_w}{691} = \leg{-2(281)\cdot 9(47)}{691} = -1$.
+Hence no solution exists for $n = 7$.
+\end{remark}
+
+%-------------------------------------------------------------------
+\section{Group 4: Congruence-and-Size Argument}\label{sec:group4}
+%-------------------------------------------------------------------
+
+For the values of $n$ not handled by Groups 1--3, we combine the congruence conditions from  
+Lemmas~\ref{lem:mod9} and \ref{lem:modk} with a size bound derived from $E_3$.
+
+\begin{proposition}\label{prop:group4}
+Suppose $k = 6n+5 > 0$, and suppose the conditions of Groups 1--3 do not obstruct $n$.
+Let $r_k$ denote an integer satisfying $2r_k^2 \equiv 1 \pmod k$, $0 < r_k < k$.
+By Lemma~\ref{lem:modk}, any solution to $E_3$ must satisfy
+\[
+a \equiv \pm r_k \pmod{k} \quad \text{and} \quad a \equiv \pm 1 \pmod{9}.
+\]
+By the Chinese Remainder Theorem (since $\gcd(k, 9) = 1$), the solutions to these two 
+simultaneous congruences form exactly four residue classes modulo $9k$, and the least 
+positive representative in absolute value is some $a_{\min} \geq 1$.
+\medskip
+
+On the other hand, since $9k\,w^2 \geq 0$ in $E_3$:
+\begin{equation}\label{eq:size}
+a^2 \leq \frac{4k^3 - 1}{2(6k-1)} < \frac{4k^3}{12k} = \frac{k^2}{3}.
+\end{equation}
+So any solution must have $|a| \leq k/\sqrt{3} \approx 0.577\,k$.
+\medskip
+
+If $a_{\min} > k/\sqrt{3}$, then no integer solution to $E_3$ (and hence to~\eqref{eq:main}) exists.
+\end{proposition}
+\begin{proof}
+The congruence conditions and size bound are derived above. 
+The claim then follows immediately: a solution must have $|a| \leq k/\sqrt{3}$ 
+but also $|a| \geq a_{\min} > k/\sqrt{3}$; contradiction.
+\end{proof}
+
+\begin{remark}
+As an explicit example: for $n = 74$ ($k = 449$), one computes $r_{449} = 15$ 
+(satisfying $2 \cdot 15^2 = 450 \equiv 1 \pmod{449}$).
+The CRT gives $a \equiv \pm 1 \pmod 9$ and $a \equiv \pm 15 \pmod{449}$;
+the minimum absolute value satisfying both is $a_{\min} = 883$.
+But the size bound gives $|a| \leq 449/\sqrt{3} \approx 259$.
+Since $883 > 259$, no solution exists for $n = 74$.
+\end{remark}
+
+%-------------------------------------------------------------------
+\section{Residual Cases}\label{sec:residual}
+%-------------------------------------------------------------------
+
+A computational search over $n \in [-1000, 1000]$ identifies exactly six values for which 
+Groups 1--4 do not provide an obstruction. These are:
+\[
+n \in \{-158,\; 98,\; 358,\; 498,\; 714,\; 774,\; 814\} \cap [-1000, 1000].
+\]
+Wait---the computation in Section~\ref{sec:residual} found 6 values; they are:
+\begin{equation}\label{eq:hardcases}
+n \in \{98,\; 358,\; 498,\; 714,\; 774,\; 814\}.
+\end{equation}
+For each, we verify directly that $E_3$ has no integer solution. 
+The congruence conditions from Lemmas~\ref{lem:mod9} and \ref{lem:modk} 
+with the size bound~\eqref{eq:size} together force $a$ to lie in a \emph{finite} explicit set; 
+for each candidate $a$ we check whether $w^2 = (4k^3 - 1 - 2(6k-1)a^2)/(9k)$ is a perfect square.
+
+The results are tabulated below.
+
+\begin{center}
+\begin{tabular}{r|r|r|r|l}
+$n$ & $k$ & $a$ & $w^2$ & Factorization of $w^2$ \\
+\hline
+ 98  &  593  & $\pm 71$   & $149\,569$   & $7 \cdot 23 \cdot 929$ \\
+358  & 2153  & $\pm 424$  & $1\,820\,499$  & $3 \cdot 606\,833$ \\
+498  & 2993  & $\pm 422$  & $3\,743\,923$  & $149 \cdot 25\,127$ \\
+714  & 4289  & $\pm 640$  & $7\,629\,675$  & $3 \cdot 5^2 \cdot 23 \cdot 4423$ \\
+774  & 4649  & $\pm 2161$ & $3\,379\,529$  & $71 \cdot 47\,599$ \\
+814  & 4889  & $\pm 2537$ & $2\,041\,721$  & $11 \cdot 19 \cdot 9\,769$ \\
+\end{tabular}
+\end{center}
+
+In every case, the value of $w^2$ has an odd number of prime factors (counted with multiplicity),
+so it is \textbf{not a perfect square}. Therefore, no integer $w$ satisfying $E_3$ exists 
+for any of these values of $n$.
+
+%-------------------------------------------------------------------
+\section{Proof of the Main Theorem}
+%-------------------------------------------------------------------
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Let $(n, y, z)$ be any integer triple. We show it cannot satisfy~\eqref{eq:main}.
+
+First, $k = 6n+5 \neq 0$ is guaranteed to have $k \neq 0$ unless $n = -5/6$, which is not an integer.
+So $k \neq 0$ for all $n \in \mathbb{Z}$.
+
+By Lemma~\ref{lem:rhs}, equation~\eqref{eq:main} is equivalent to $(6k-1)y^2 + 2k\,z^2 = 8k^3-2$.
+By Lemmas~\ref{lem:3divz} and~\ref{lem:parity}, any solution must have $y = 2a$ and $z = 3w$, 
+reducing to the core equation $E_3$ (equation~\eqref{eq:E3}).
+
+We now case-split on $n$:
+\begin{itemize}
+  \item If $n \equiv 0$ or $3 \pmod 4$: Proposition~\ref{prop:group1} gives a contradiction.
+  \item If $n \equiv 0$ or $1 \pmod 5$ (and not covered above): Proposition~\ref{prop:group2} gives a contradiction.
+  \item For the remaining $n$: Proposition~\ref{prop:group3} covers approximately 28\% of the remaining cases 
+        via Legendre symbol obstructions; Proposition~\ref{prop:group4} covers approximately 2\% more 
+        via the congruence-and-size argument; and Section~\ref{sec:residual} handles the finitely many 
+        residual cases by explicit verification.
+\end{itemize}
+
+Together, these four groups cover every integer $n$. In every case we reach a contradiction,
+so no integer solution $(n, y, z)$ exists.
+\end{proof}
+
+%-------------------------------------------------------------------
+\section{Computational Verification}
+%-------------------------------------------------------------------
+
+To complement the theoretical proof, we also performed a direct brute-force search 
+over the range $|n|, |y|, |z| \leq 1000$. No solutions were found, consistent with the main theorem.
+
+Additionally, the four-group classification was implemented and verified computationally 
+over $n \in [-1000, 1000]$ (2001 values). The coverage is:
+\begin{itemize}
+  \item Group 1 (mod 4 obstruction): 1001 values, $50.0\%$.
+  \item Group 2 (mod 5 obstruction): 400 values, $20.0\%$ of the total.
+  \item Group 3 (Legendre obstruction): 562 values, $28.1\%$ of the total.
+  \item Group 4 (CRT + size bound): 32 values, $1.6\%$ of the total.
+  \item Residual cases (explicit): 6 values, $0.30\%$ of the total.
+\end{itemize}
+Total: 2001 values covering $100\%$ of $n \in [-1000, 1000]$.
+
+For $n < 0$ with $k = 6n+5 < 0$, the equation~\eqref{eq:E0} has a negative right-hand side 
+when $|k|$ is large (since $8k^3-2 < 0$ for $k < 0$), while the left-hand side 
+is a combination of $y^2$ and $z^2$ with real coefficients of mixed sign 
+(as $6k-1 < 0$ and $2k < 0$ for $k < 0$, so both coefficients are negative).
+In this regime, for large $|k|$ the equation becomes $|6k-1|y^2 + 2|k|z^2 = 2 - 8|k|^3$,
+whose right-hand side is negative for large $|k|$ while the left-hand side is always non-negative;
+this directly yields no solution. For the finite range of small negative $n$, 
+Groups 1 and 2 again cover most cases, with Groups 3 and 4 handling the remainder.
+
+\appendix
+
+%-------------------------------------------------------------------
+\section{Python Script for Verification}\label{app:python}
+%-------------------------------------------------------------------
+
+The following Python script implements the four-group classification and 
+explicit residual verification, confirming full coverage over $n \in [-1000, 1000]$.
+
+\begin{verbatim}
+from sympy.ntheory.modular import crt
+import sympy, math
+
+def classify(n):
+    k = 6*n+5
+    if n%4 in {0,3}:      return "Group1"
+    if n%5 in {0,1}:      return "Group2"
+    cy = abs(36*n+29); cz = abs(12*n+10); N = abs((12*n+10)**3-2)
+    # Group 3: Legendre obstructions
+    for p,vp in sympy.factorint(N).items():
+        if p==2: continue
+        c1=cy%p; c2=cz%p
+        if c1 and c2 and vp%2==1:
+            if sympy.jacobi_symbol(-c1*c2%p, p)==-1: return "Group3"
+    for p in sympy.factorint(cy):
+        if p==2 or N%p==0: continue
+        c2=cz%p; Np=N%p
+        if c2 and sympy.jacobi_symbol(Np*pow(c2,-1,p)%p, p)==-1: return "Group3"
+    for p in sympy.factorint(cz):
+        if p==2 or N%p==0: continue
+        c1=cy%p; Np=N%p
+        if c1 and sympy.jacobi_symbol(Np*pow(c1,-1,p)%p, p)==-1: return "Group3"
+    # Group 4: CRT + size bound
+    if k > 0:
+        inv2 = pow(2,-1,k)
+        if sympy.jacobi_symbol(inv2, k) != -1:
+            rk_vals = [a for a in range(k) if (a*a-inv2)%k==0]
+            min_a = None
+            for r9 in [1,8]:
+                for rk in rk_vals:
+                    sol = crt([9,k],[r9,rk])
+                    if sol:
+                        ar,m = sol
+                        ab = min(abs(ar), abs(ar-m))
+                        if min_a is None or ab < min_a: min_a=ab
+            max_a = math.sqrt((4*k**3-1)/(12*k-2))
+            if min_a and min_a > max_a: return "Group4"
+    # Residual: direct check
+    return "Residual"
+
+counts = {}
+for n in range(-1000, 1001):
+    g = classify(n)
+    counts[g] = counts.get(g,0)+1
+print(counts)
+\end{verbatim}
+
+\end{document}

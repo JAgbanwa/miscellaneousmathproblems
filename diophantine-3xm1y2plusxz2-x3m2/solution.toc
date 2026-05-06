@@ -1,0 +1,15 @@
+\contentsline {section}{\numberline {1}Problem Statement}{2}{section.2}%
+\contentsline {section}{\numberline {2}Algebraic Reformulation}{2}{section.4}%
+\contentsline {section}{\numberline {3}Modular Background}{2}{section.9}%
+\contentsline {section}{\numberline {4}Modular Obstructions}{3}{section.10}%
+\contentsline {subsection}{\numberline {4.1}Case $x \equiv 0 \pmod {3}$}{3}{subsection.11}%
+\contentsline {subsection}{\numberline {4.2}Case $x \equiv 2 \pmod {3}$}{3}{subsection.13}%
+\contentsline {subsection}{\numberline {4.3}Case $x \equiv 1 \pmod {3}$: partial results}{3}{subsection.15}%
+\contentsline {subsubsection}{\numberline {4.3.1}Sub-case $x \equiv 0 \pmod {4}$}{3}{subsubsection.19}%
+\contentsline {subsubsection}{\numberline {4.3.2}Sub-case $x \equiv 3 \pmod {4}$}{4}{subsubsection.21}%
+\contentsline {subsubsection}{\numberline {4.3.3}Sub-case $x \equiv 1 \pmod {4}$, i.e.\ $x \equiv 1 \pmod {12}$}{4}{subsubsection.23}%
+\contentsline {subsubsection}{\numberline {4.3.4}Sub-case $x \equiv 2 \pmod {4}$, i.e.\ $x \equiv 10 \pmod {12}$}{4}{subsubsection.27}%
+\contentsline {section}{\numberline {5}Main Result}{6}{section.29}%
+\contentsline {section}{\numberline {6}Computational Verification}{6}{section.37}%
+\contentsline {section}{\numberline {7}Lean~4 Formalisation}{7}{section.38}%
+\contentsline {section}{\numberline {8}Proof Summary and Open Problems}{7}{section.39}%
