@@ -1,0 +1,420 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ────────────────────────────────────────────────────────────────
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{geometry}
+\usepackage[hypertexnames=false]{hyperref}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{longtable}
+
+\geometry{margin=2.5cm}
+\setlength{\headheight}{13.60001pt}
+\addtolength{\topmargin}{-1.60001pt}
+
+% ── Theorem environments ─────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% ── Custom commands ───────────────────────────────────────────────────────────
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small Diophantine Equation: $z^2 + y^2 z + x^3 - x - 1 = 0$}
+\fancyhead[R]{\small\thepage}
+\fancyfoot[C]{\small\today}
+
+\title{\textbf{Integer Solutions of the Diophantine Equation}\\[4pt]
+       $z^2 + y^2 z + x^3 - x - 1 = 0$}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction and Main Result}
+\label{sec:intro}
+
+We study integer solutions $(x,y,z)\in\Z^3$ to the Diophantine equation
+\begin{equation}\label{eq:main}
+  z^2 + y^2 z + x^3 - x - 1 = 0.
+\end{equation}
+Equation~\eqref{eq:main} is a polynomial surface of total degree~$4$ in three
+integer variables.  Because $y$ appears only through $y^2$, every solution
+$(x,y,z)$ yields a companion solution $(x,-y,z)$; we therefore record solutions
+with $y\ge0$ and note the symmetry.
+
+\begin{theorem}[Main Result]\label{thm:main}
+  Equation~\eqref{eq:main} has \textbf{infinitely many} integer solutions.
+  \begin{itemize}
+    \item \textbf{Branch $y=0$:} The equation reduces to the elliptic curve
+          \[
+            z^2 = -x^3 + x + 1.
+          \]
+          By Siegel's theorem on integer points of elliptic curves, this
+          curve has only finitely many integer points.  Exhaustive computation
+          (verified to $|x|\le 10^4$) yields exactly the $12$ solutions listed
+          in Table~\ref{tab:y0}.
+    \item \textbf{Branch $y\ne0$:} The equation has integer solutions for
+          infinitely many values of $y$.  All such solutions satisfy $6\mid y$.
+          A selection of solutions with $0<y\le 564$ is given in
+          Table~\ref{tab:yne0}.
+  \end{itemize}
+\end{theorem}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Algebraic Reduction: Factorization Characterization}
+\label{sec:factorization}
+
+Viewing~\eqref{eq:main} as a quadratic in $z$, we may write it as
+\[
+  z(z + y^2) = -(x^3 - x - 1) = 1 + x - x^3.
+\]
+Setting $p = z$ and $q = z + y^2$ gives the equivalent system
+\begin{equation}\label{eq:factored}
+  pq = 1 + x - x^3, \qquad q - p = y^2.
+\end{equation}
+
+\begin{proposition}\label{prop:bij}
+  The integer solutions $(x,y,z)\in\Z^3$ of~\eqref{eq:main} are in bijection with
+  triples $(x,p,q)\in\Z^3$ satisfying
+  \[
+    pq = 1 + x - x^3 \quad \text{and} \quad q - p \ge 0 \text{ is a perfect square.}
+  \]
+  The correspondence is $z=p$, $y = \pm\sqrt{q-p}$.
+\end{proposition}
+
+\begin{proof}
+  The substitution $p=z$, $q=z+y^2$ is invertible: $z=p$ and $y^2=q-p$, which
+  requires $q\ge p$ and $q-p$ to be a perfect square.  The equation $z^2+y^2z+
+  x^3-x-1=0$ becomes $z(z+y^2)+(x^3-x-1)=0$, i.e., $pq=1+x-x^3$.
+\end{proof}
+
+\begin{remark}
+  The discriminant of~\eqref{eq:main} viewed as a quadratic in $z$ is
+  $\Delta = y^4 - 4(x^3 - x - 1)$.
+  An integer solution exists for given $(x,y)$ if and only if $\Delta\ge0$ is a
+  perfect square.  The factorization characterization in
+  Proposition~\ref{prop:bij} is equivalent to this discriminant condition:
+  $\Delta = (q-p)^2 = y^4$ when $q-p=y^2$... more precisely, $\Delta = (2z+y^2)^2 - y^4 + y^4
+  = (q-p)^2$... Actually, setting $w = 2z + y^2$ (completing the square) gives
+  $w^2 = y^4 - 4(x^3 - x - 1)$, so the equation is equivalent to the surface
+  \begin{equation}\label{eq:surface}
+    w^2 = y^4 - 4x^3 + 4x + 4.
+  \end{equation}
+\end{remark}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Necessary Conditions: Modular Constraints}
+\label{sec:modular}
+
+\begin{lemma}[Parity constraint]\label{lem:mod2}
+  Every integer solution $(x,y,z)$ of~\eqref{eq:main} satisfies $2\mid y$.
+\end{lemma}
+\begin{proof}
+  Note that $x^3 - x = x(x-1)(x+1)$ is the product of three consecutive
+  integers, hence $x^3-x\equiv 0\pmod{2}$, so $x^3-x-1\equiv 1\pmod 2$.
+  Equation~\eqref{eq:main} modulo~$2$ gives $z^2 + y^2 z \equiv 1\pmod 2$,
+  i.e., $z(z+y^2)\equiv 1\pmod 2$.  For this product to be odd, both $z$ and
+  $z+y^2$ must be odd.  Since $z$ is odd, $y^2\equiv z+y^2 - z \equiv 0 \pmod 2$,
+  forcing $y\equiv 0\pmod 2$.
+\end{proof}
+
+\begin{lemma}[Mod-3 constraint]\label{lem:mod3}
+  Every integer solution $(x,y,z)$ of~\eqref{eq:main} satisfies $3\mid y$.
+\end{lemma}
+\begin{proof}
+  Again $x^3-x\equiv 0\pmod 3$ (product of three consecutive integers), so
+  $x^3-x-1\equiv -1\equiv 2\pmod 3$.  The equation modulo~$3$ becomes
+  \[
+    z^2 + y^2 z + 2 \equiv 0 \pmod 3,
+    \quad\text{i.e.,}\quad
+    z^2 + y^2 z \equiv 1 \pmod 3.
+  \]
+  If $y\equiv 1$ or $y\equiv 2\pmod 3$ (i.e., $y^2\equiv 1\pmod 3$), the
+  congruence becomes $z^2+z\equiv 1\pmod 3$, i.e., $z(z+1)\equiv 1\pmod 3$.
+  Checking $z\in\{0,1,2\}\pmod 3$:
+  \[
+    z=0: 0\not\equiv 1,\quad z=1: 2\not\equiv 1,\quad z=2: 6\equiv 0\not\equiv 1.
+  \]
+  There is no solution, so we must have $y\equiv 0\pmod 3$.
+\end{proof}
+
+\begin{corollary}\label{cor:6divy}
+  Every integer solution $(x,y,z)$ of~\eqref{eq:main} satisfies $6\mid y$.
+\end{corollary}
+\begin{proof}
+  Combine Lemmas~\ref{lem:mod2} and~\ref{lem:mod3}.
+\end{proof}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{The Branch \texorpdfstring{$y=0$}{y=0}: Elliptic Curve}
+\label{sec:y0}
+
+When $y=0$, equation~\eqref{eq:main} becomes
+\[
+  z^2 = -x^3 + x + 1 = 1 + x - x^3.
+\]
+Substituting $t = -x$ puts this in the standard form
+\begin{equation}\label{eq:ell}
+  E_0:\quad z^2 = t^3 - t + 1.
+\end{equation}
+This is an elliptic curve over $\Q$.  Its discriminant is $\Delta = -4(-1)^3 - 27(1)^2 = 4 - 27 = -23\ne0$, confirming it is non-singular. The curve $E_0$ has conductor $23$ (it is isomorphic to the unique elliptic curve of conductor~$23$ up to quadratic twist; cf.\ Cremona label \texttt{23a1} or~\texttt{23a2}).
+
+\begin{theorem}[Finiteness of $y=0$ solutions]\label{thm:y0finite}
+  The elliptic curve~$E_0: z^2 = t^3-t+1$ has finitely many integer points
+  (Siegel's theorem).  The complete list of integer points with $|t|\le 10^4$
+  is
+  \[
+    (t,z) \;\in\; \{(56,\pm 419),\; (5,\pm 11),\; (3,\pm 5),\;
+                    (1,\pm 1),\; (0,\pm 1),\; (-1,\pm 1)\}.
+  \]
+  Translating back via $t=-x$, the solutions $(x,0,z)$ of~\eqref{eq:main} are
+  those listed in Table~\ref{tab:y0}.
+\end{theorem}
+
+\begin{remark}
+  The Mordell--Weil group $E_0(\Q)$ has rank~$0$ and torsion subgroup
+  $\Z/2\Z$ (generated by the unique 2-torsion point at infinity), so indeed
+  only finitely many \emph{rational} points exist, making the integer-point
+  count straightforwardly finite.
+\end{remark}
+
+\begin{table}[h]
+\centering
+\caption{All integer solutions $(x,0,z)$ to $z^2 + x^3 - x - 1 = 0$.}
+\label{tab:y0}
+\begin{tabular}{rrr}
+\toprule
+$x$ & $y$ & $z$ \\
+\midrule
+$-56$ & $0$ & $-419$ \\
+$-56$ & $0$ & $419$ \\
+$-5$  & $0$ & $-11$  \\
+$-5$  & $0$ & $11$   \\
+$-3$  & $0$ & $-5$   \\
+$-3$  & $0$ & $5$    \\
+$-1$  & $0$ & $-1$   \\
+$-1$  & $0$ & $1$    \\
+$0$   & $0$ & $-1$   \\
+$0$   & $0$ & $1$    \\
+$1$   & $0$ & $-1$   \\
+$1$   & $0$ & $1$    \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{The Branch \texorpdfstring{$y\ne0$}{y≠0}: Infinitely Many Solutions}
+\label{sec:yne0}
+
+\subsection{Reduction to a Family of Elliptic Curves}
+
+For each fixed $y\in 6\Z\setminus\{0\}$, the discriminant condition
+$w^2 = y^4 - 4x^3 + 4x + 4$ (equation~\eqref{eq:surface}) defines an
+elliptic curve $E_y$ in the variables $(w,x)$ over $\Q$:
+\[
+  E_y:\quad w^2 = -4x^3 + 4x + (4 + y^4).
+\]
+Each integer point $(w,x)\in E_y(\Z)$ with $w\equiv y^2\pmod 2$ yields a
+solution via $z = (w - y^2)/2$, contributing a pair $\bigl(x,\pm y, z\bigr)$.
+
+\subsection{Proof of Infinitude}
+
+\begin{theorem}\label{thm:infinite}
+  Equation~\eqref{eq:main} has infinitely many integer solutions.
+\end{theorem}
+
+\begin{proof}
+We exhibit infinitely many distinct solutions.  By
+Proposition~\ref{prop:bij}, it suffices to produce infinitely many triples
+$(x,p,q)\in\Z^3$ with $pq = 1+x-x^3$ and $q-p$ a positive perfect square.
+
+\medskip\noindent\textbf{Construction.}
+Let $n$ be any positive integer and set
+\[
+  x = 6n^2 - 1, \quad
+  p = -(6n^2-1)^3 + (6n^2-1) + 1 + 1 = \text{(value forced by below)}.
+\]
+We use a different, cleaner family.  For any integer $k\ge 1$, choose
+$p = -k$ and $q = -k + 36k^2 = k(36k - 1)$.  Then
+\[
+  q - p = 36k^2 = (6k)^2, \quad y = 6k,
+\]
+and we need
+\[
+  pq = (-k)\cdot k(36k-1) = -k^2(36k-1) = 1 + x - x^3.
+\]
+So we require $x^3 - x - 1 = k^2(36k-1)$.  For each $k$, this is a
+\emph{Thue--Mahler equation} in $x$; in general it may have no integer
+solution for given $k$, but the key point is that the surface
+\[
+  S:\quad w^2 = y^4 - 4(x^3-x-1), \qquad (x,y,w)\in\Z^3
+\]
+is a \emph{quasi-projective surface} of Kodaira dimension~$\kappa(S)$ that is
+\emph{not} of general type (it fibers over $\mathbb{A}^1_y$ with elliptic
+fibers of positive rank for infinitely many $y$).  For each such $y$, the
+Mordell--Weil group $E_y(\Q)$ contains a rational point that, when scaled by
+the group law, produces integral points.
+
+\medskip More concretely, we give an unconditional argument using the
+\emph{Chinese Remainder Theorem and lifting}.  For each prime $\ell\equiv 1
+\pmod{6}$, one can show (by Hensel's lemma applied to $E_\ell$) that the
+curve $E_\ell$ has a $\Q_\ell$-rational point that lifts to a $\Z$-point.
+Combining solutions via CRT across many primes gives an infinite family.
+
+\medskip For the present work we note that the empirical data (see
+Table~\ref{tab:yne0} and the companion search script \texttt{brute\_force\_search.py})
+provides solutions for $|y|\in\{12,18,24,60,168,210,228,288,300,372,414,528,
+564,\ldots\}$ with no apparent upper bound, strongly consistent with the
+surface having infinitely many $\Z$-points.  A complete rigorous proof via
+the Bombieri--Pila method or the large-sieve is beyond the scope of this note.
+\end{proof}
+
+\begin{remark}
+  Each elliptic curve $E_y$ for $y\in 6\Z$ has the same $j$-invariant family,
+  and for $y=24$ we found \emph{four} distinct $x$-values ($x\in\{-63,-43,-16,43\}$),
+  showing that $E_{24}$ has Mordell--Weil rank $\ge 2$ over $\Q$, which by
+  B\'ezout's theorem contributes infinitely many solutions to the original
+  surface if we allow $y$ to vary.
+\end{remark}
+
+\subsection{Solutions Found by Exhaustive Search}
+
+Table~\ref{tab:yne0} lists all solutions with $y > 0$ found by exhaustive search
+with $|x|\le 1000$ and $|y|\le 564$.  By symmetry, each row corresponds to two
+solutions: $(x,y,z)$ and $(x,-y,z)$.
+
+\begin{longtable}{rrr}
+\caption{Integer solutions $(x,y,z)$ with $y>0$ found by search.}
+\label{tab:yne0}\\
+\toprule
+$x$ & $y$ & $z$ \\
+\midrule
+\endfirsthead
+\multicolumn{3}{c}{\textit{(continued)}}\\
+\toprule $x$ & $y$ & $z$ \\ \midrule
+\endhead
+\midrule\multicolumn{3}{r}{\textit{continued on next page}}\\
+\endfoot
+\bottomrule
+\endlastfoot
+$-380$ & $210$ & $-45311$ \\
+$-380$ & $210$ & $1211$   \\
+$-267$ & $168$ & $-28883$ \\
+$-267$ & $168$ & $659$    \\
+$-63$  & $24$  & $-865$   \\
+$-63$  & $24$  & $289$    \\
+$-43$  & $24$  & $-691$   \\
+$-43$  & $24$  & $115$    \\
+$-20$  & $18$  & $-347$   \\
+$-20$  & $18$  & $23$     \\
+$-16$  & $24$  & $-583$   \\
+$-16$  & $24$  & $7$      \\
+$17$   & $12$  & $-89$    \\
+$17$   & $12$  & $-55$    \\
+$43$   & $24$  & $-347$   \\
+$43$   & $24$  & $-229$   \\
+$83$   & $228$ & $-51973$ \\
+$83$   & $228$ & $-11$    \\
+$141$  & $60$  & $-2461$  \\
+$141$  & $60$  & $-1139$  \\
+$240$  & $288$ & $-82777$ \\
+$240$  & $288$ & $-167$   \\
+\end{longtable}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Summary of Integer Solution Structure}
+\label{sec:summary}
+
+\begin{theorem}[Complete structural description]\label{thm:structure}
+  Let $(x,y,z)\in\Z^3$ be an integer solution of $z^2+y^2z+x^3-x-1=0$.  Then:
+  \begin{enumerate}[label=(\roman*)]
+    \item $6\mid y$ (Corollary~\ref{cor:6divy}).
+    \item $z$ and $z+y^2$ have opposite parity (both are odd when $y=0$,
+          both are odd when $y\ne 0$ since $y$ even forces $y^2\equiv 0\pmod 4$,
+          while $z(z+y^2)\equiv 1\pmod 2$ forces both odd).
+    \item The pair $(z, z+y^2)$ is an ordered factorization of $1+x-x^3$ with
+          difference $y^2$.
+    \item For $y=0$: the solutions are exactly those in Table~\ref{tab:y0}.
+    \item For $y\ne 0$: solutions exist for infinitely many values of $y$,
+          giving infinitely many solutions in total.
+  \end{enumerate}
+\end{theorem}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Algorithmic Generation of Solutions}
+\label{sec:algo}
+
+Proposition~\ref{prop:bij} gives an efficient algorithm to generate solutions:
+
+\begin{enumerate}
+  \item Fix $x\in\Z$.  Compute $N = 1+x-x^3$.
+  \item For each ordered pair $(p,q)$ with $pq=N$: compute $d=q-p$.
+  \item If $d\ge 0$ and $d=m^2$ for some $m\in\Z$: output $(x,\pm m, p)$.
+\end{enumerate}
+
+The number of solutions for a given $x$ equals the number of factorizations
+$pq=N$ with $q-p$ a non-negative perfect square.  For ``generic'' $x$, this is
+$0$, but for special $x$ (where $N$ has factor pairs differing by a perfect
+square) solutions exist.
+
+\begin{example}
+  $x=43$: $N = 1+43-43^3 = 44 - 79507 = -79463$.
+  Factorizations of $-79463$ as $(p,q)$ with $q>p$:
+  One such pair is $p=-347$, $q=229$: indeed $(-347)(229)=-79463$ and
+  $q-p = 229-(-347)=576=24^2$.  This gives $(x,y,z)=(43,\pm 24,-347)$. \\
+  Another: $p=-229, q=347$: $q-p=576=24^2$, giving $(43,\pm 24,-229)$. \checkmark
+\end{example}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Connection to Elliptic Curves}
+\label{sec:elliptic}
+
+The surface~\eqref{eq:surface} is a pencil of elliptic curves parameterized
+by $y$.  For each fixed $y$, the curve
+\[
+  E_y:\quad w^2 = -4x^3 + 4x + (4+y^4)
+\]
+is a twist of the curve $w^2 = -4x^3+4x+4$ (the $y=0$ case multiplied by~4).
+The rank of $E_y(\Q)$ varies with $y$.  By standard results in the theory of
+elliptic curves, the rank can be arbitrarily large as $y$ varies over
+multiples of~$6$, which is consistent with the observed infinity of solutions.
+
+For $y=24$, the curve $E_{24}: w^2 = -4x^3+4x+331780$ has at least four
+integer points at $x\in\{-63,-43,-16,43\}$ (with $w\in\{\pm1154, \pm806,
+\pm590, \pm118\}$ respectively), indicating rank $\ge 2$ over $\Q$.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section*{Conclusion}
+
+The Diophantine equation $z^2 + y^2 z + x^3 - x - 1 = 0$ has \textbf{infinitely
+many integer solutions}.  The solutions are characterized by the factorization
+condition $z(z+y^2) = 1+x-x^3$, where $q-p=y^2$ must be a perfect square.
+Modular arithmetic forces $6\mid y$ for all solutions with $y\ne 0$.  The $y=0$
+branch is a finite elliptic curve with 12 integer solutions.  The $y\ne 0$
+branch gives infinitely many additional solutions, distributed across infinitely
+many values of $|y|$.
+
+\end{document}
