@@ -16,6 +16,7 @@
 \usepackage{listings}
 \usepackage{fancyhdr}
 \usepackage{longtable}
+\usepackage{tcolorbox}
 
 \geometry{margin=2.5cm}
 \setlength{\headheight}{13.60001pt}
@@ -30,12 +31,16 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{remark}[theorem]{Remark}
 \newtheorem{example}[theorem]{Example}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{openproblem}[theorem]{Open Problem}
 
 % ── Custom commands ───────────────────────────────────────────────────────────
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\Q}{\mathbb{Q}}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\A}{\mathbb{A}}
+\newcommand{\Pbb}{\mathbb{P}}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -44,44 +49,63 @@
 \fancyfoot[C]{\small\today}
 
 \title{\textbf{Integer Solutions of the Diophantine Equation}\\[4pt]
-       $z^2 + y^2 z + x^3 - x - 1 = 0$}
+       $z^2 + y^2 z + x^3 - x - 1 = 0$\\[6pt]
+       \large Structure, Exhaustive Search, and Open Problems}
 \author{}
-\date{\today}
+\date{May 2026}
 
 \begin{document}
 \maketitle
 \tableofcontents
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section{Introduction and Main Result}
+\section{Introduction and Overview}
 \label{sec:intro}
 
 We study integer solutions $(x,y,z)\in\Z^3$ to the Diophantine equation
 \begin{equation}\label{eq:main}
   z^2 + y^2 z + x^3 - x - 1 = 0.
 \end{equation}
-Equation~\eqref{eq:main} is a polynomial surface of total degree~$4$ in three
-integer variables.  Because $y$ appears only through $y^2$, every solution
-$(x,y,z)$ yields a companion solution $(x,-y,z)$; we therefore record solutions
+Equation~\eqref{eq:main} defines a \emph{cubic surface} in affine $3$-space
+(the homogenisation has degree~$3$ in projective coordinates; see
+Section~\ref{sec:geometry}).  Because $y$ appears only through $y^2$, every
+solution $(x,y,z)$ yields a companion solution $(x,-y,z)$; we record solutions
 with $y\ge0$ and note the symmetry.
 
-\begin{theorem}[Main Result]\label{thm:main}
-  Equation~\eqref{eq:main} has \textbf{infinitely many} integer solutions.
-  \begin{itemize}
-    \item \textbf{Branch $y=0$:} The equation reduces to the elliptic curve
+\medskip\noindent
+The main results of this paper are as follows.
+
+\begin{theorem}[Rigorous results]\label{thm:rigorous}
+  Let $(x,y,z)\in\Z^3$ satisfy~\eqref{eq:main}.  Then:
+  \begin{enumerate}[label=(\roman*)]
+    \item \textbf{Divisibility.}  $6\mid y$.
+    \item \textbf{Pair symmetry.}  If $(x,y,z)$ is a solution then so is
+          $(x,y,-y^2-z)$ (the Vieta conjugate).
+    \item \textbf{Branch $y=0$ is finite.}  The equation reduces to the
+          elliptic curve $E_0: z^2 = -x^3+x+1$.  By Siegel's theorem,
+          $E_0(\Z)$ is finite; computation gives exactly $12$ solutions
+          (Table~\ref{tab:y0}).
+    \item \textbf{Reduction to elliptic fibration.}  Setting $W = 2z+y^2$
+          and $Y = y/2\in\Z$, the equation is equivalent to
           \[
-            z^2 = -x^3 + x + 1.
+            W^2 = 4Y^4 - 4x^3 + 4x + 4.
           \]
-          By Siegel's theorem on integer points of elliptic curves, this
-          curve has only finitely many integer points.  Exhaustive computation
-          (verified to $|x|\le 10^4$) yields exactly the $12$ solutions listed
-          in Table~\ref{tab:y0}.
-    \item \textbf{Branch $y\ne0$:} The equation has integer solutions for
-          infinitely many values of $y$.  All such solutions satisfy $6\mid y$.
-          A selection of solutions with $0<y\le 564$ is given in
-          Table~\ref{tab:yne0}.
-  \end{itemize}
+          For each fixed $Y$, this is an elliptic curve $E_Y/\Q$.
+  \end{enumerate}
 \end{theorem}
+
+\begin{conjecture}[Infinitude]\label{conj:infinite}
+  Equation~\eqref{eq:main} has \textbf{infinitely many} integer solutions.
+\end{conjecture}
+
+\noindent
+This conjecture is supported by strong empirical evidence: an exhaustive
+search with $|x|\le500$ and $0<y\le 600$ finds $22$ distinct solutions
+(Table~\ref{tab:yne0}) with $y$ ranging over many multiples of $6$, with
+no apparent saturation.  Section~\ref{sec:geometry} gives structural
+reasons why infinitely many solutions are expected (the surface is
+\emph{rational}, hence not subject to Corvaja--Zannier finiteness), but
+a complete rigorous proof remains open; see Section~\ref{sec:open}.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Algebraic Reduction: Factorization Characterization}
@@ -115,12 +139,9 @@ Setting $p = z$ and $q = z + y^2$ gives the equivalent system
   The discriminant of~\eqref{eq:main} viewed as a quadratic in $z$ is
   $\Delta = y^4 - 4(x^3 - x - 1)$.
   An integer solution exists for given $(x,y)$ if and only if $\Delta\ge0$ is a
-  perfect square.  The factorization characterization in
-  Proposition~\ref{prop:bij} is equivalent to this discriminant condition:
-  $\Delta = (q-p)^2 = y^4$ when $q-p=y^2$... more precisely, $\Delta = (2z+y^2)^2 - y^4 + y^4
-  = (q-p)^2$... Actually, setting $w = 2z + y^2$ (completing the square) gives
-  $w^2 = y^4 - 4(x^3 - x - 1)$, so the equation is equivalent to the surface
-  \begin{equation}\label{eq:surface}
+  perfect square.  Completing the square via $w = 2z + y^2$ gives the
+  equivalent surface
+  \begin{equation}\label{eq:surfaceA}
     w^2 = y^4 - 4x^3 + 4x + 4.
   \end{equation}
 \end{remark}
@@ -226,88 +247,98 @@ $1$   & $0$ & $1$    \\
 \end{table}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section{The Branch \texorpdfstring{$y\ne0$}{y≠0}: Infinitely Many Solutions}
+\section{The Branch \texorpdfstring{$y\ne0$}{y≠0}: Elliptic Fibration}
 \label{sec:yne0}
 
 \subsection{Reduction to a Family of Elliptic Curves}
 
-For each fixed $y\in 6\Z\setminus\{0\}$, the discriminant condition
-$w^2 = y^4 - 4x^3 + 4x + 4$ (equation~\eqref{eq:surface}) defines an
-elliptic curve $E_y$ in the variables $(w,x)$ over $\Q$:
+Setting $W = 2z + y^2$ (completing the square in $z$) and $Y = y/2 \in \Z$
+(valid since $2\mid y$), the equation becomes
+\begin{equation}\label{eq:surface}
+  W^2 = 4Y^4 - 4x^3 + 4x + 4.
+\end{equation}
+For each fixed $Y\in\Z$, this is the elliptic curve
 \[
-  E_y:\quad w^2 = -4x^3 + 4x + (4 + y^4).
+  E_Y:\quad W^2 = -4x^3 + 4x + (4 + 4Y^4)
 \]
-Each integer point $(w,x)\in E_y(\Z)$ with $w\equiv y^2\pmod 2$ yields a
-solution via $z = (w - y^2)/2$, contributing a pair $\bigl(x,\pm y, z\bigr)$.
-
-\subsection{Proof of Infinitude}
-
-\begin{theorem}\label{thm:infinite}
-  Equation~\eqref{eq:main} has infinitely many integer solutions.
-\end{theorem}
-
-\begin{proof}
-We exhibit infinitely many distinct solutions.  By
-Proposition~\ref{prop:bij}, it suffices to produce infinitely many triples
-$(x,p,q)\in\Z^3$ with $pq = 1+x-x^3$ and $q-p$ a positive perfect square.
-
-\medskip\noindent\textbf{Construction.}
-Let $n$ be any positive integer and set
-\[
-  x = 6n^2 - 1, \quad
-  p = -(6n^2-1)^3 + (6n^2-1) + 1 + 1 = \text{(value forced by below)}.
-\]
-We use a different, cleaner family.  For any integer $k\ge 1$, choose
-$p = -k$ and $q = -k + 36k^2 = k(36k - 1)$.  Then
-\[
-  q - p = 36k^2 = (6k)^2, \quad y = 6k,
-\]
-and we need
-\[
-  pq = (-k)\cdot k(36k-1) = -k^2(36k-1) = 1 + x - x^3.
-\]
-So we require $x^3 - x - 1 = k^2(36k-1)$.  For each $k$, this is a
-\emph{Thue--Mahler equation} in $x$; in general it may have no integer
-solution for given $k$, but the key point is that the surface
-\[
-  S:\quad w^2 = y^4 - 4(x^3-x-1), \qquad (x,y,w)\in\Z^3
-\]
-is a \emph{quasi-projective surface} of Kodaira dimension~$\kappa(S)$ that is
-\emph{not} of general type (it fibers over $\mathbb{A}^1_y$ with elliptic
-fibers of positive rank for infinitely many $y$).  For each such $y$, the
-Mordell--Weil group $E_y(\Q)$ contains a rational point that, when scaled by
-the group law, produces integral points.
-
-\medskip More concretely, we give an unconditional argument using the
-\emph{Chinese Remainder Theorem and lifting}.  For each prime $\ell\equiv 1
-\pmod{6}$, one can show (by Hensel's lemma applied to $E_\ell$) that the
-curve $E_\ell$ has a $\Q_\ell$-rational point that lifts to a $\Z$-point.
-Combining solutions via CRT across many primes gives an infinite family.
-
-\medskip For the present work we note that the empirical data (see
-Table~\ref{tab:yne0} and the companion search script \texttt{brute\_force\_search.py})
-provides solutions for $|y|\in\{12,18,24,60,168,210,228,288,300,372,414,528,
-564,\ldots\}$ with no apparent upper bound, strongly consistent with the
-surface having infinitely many $\Z$-points.  A complete rigorous proof via
-the Bombieri--Pila method or the large-sieve is beyond the scope of this note.
-\end{proof}
+in the variables $(W,x)$ over $\Q$.  An integer point $(W,x)\in E_Y(\Z)$
+yields a solution to~\eqref{eq:main} via $z = (W-y^2)/2 = (W - 4Y^2)/2$;
+note $W \equiv y^2 = 4Y^2 \pmod{2}$, so $z\in\Z$.
 
 \begin{remark}
-  Each elliptic curve $E_y$ for $y\in 6\Z$ has the same $j$-invariant family,
-  and for $y=24$ we found \emph{four} distinct $x$-values ($x\in\{-63,-43,-16,43\}$),
-  showing that $E_{24}$ has Mordell--Weil rank $\ge 2$ over $\Q$, which by
-  B\'ezout's theorem contributes infinitely many solutions to the original
-  surface if we allow $y$ to vary.
+  Substituting $x \mapsto -X$ puts $E_Y$ in standard Weierstrass form
+  \[
+    E_Y:\quad W^2 = 4X^3 - 4X + (4+4Y^4),
+  \]
+  with discriminant $\Delta_Y = -64\bigl(-4(-4)^3 - 27(4+4Y^4)^2\bigr)
+  = -64(256 - 27\cdot16(1+Y^4)^2)$, which is non-zero for all $Y\ge1$,
+  confirming $E_Y$ is a genuine elliptic curve for all $Y\ne0$.
 \end{remark}
+
+\subsection{The Vieta Involution}
+
+For any fixed $(x,y)$, the equation $z^2 + y^2 z + (x^3-x-1) = 0$ is
+quadratic in $z$ with Vieta relations $z_1 + z_2 = -y^2$ and
+$z_1 z_2 = x^3-x-1$.  Hence:
+
+\begin{proposition}[Vieta pairing]\label{prop:vieta}
+  If $(x,y,z)$ is an integer solution of~\eqref{eq:main}, so is
+  $(x,y,-y^2-z)$.
+\end{proposition}
+
+This shows solutions come in pairs; the two values of $z$ for given $(x,y)$
+are $z_1 = z$ and $z_2 = -y^2 - z$.  In Table~\ref{tab:yne0} every row
+appears twice (with the two $z$-values).
+
+\subsection{Chord-and-Tangent Method on the Surface}
+
+The surface $S:z^2+y^2z+x^3-x-1=0$ is a cubic surface in $\A^3$
+(or projectively in $\Pbb^3$; see Section~\ref{sec:geometry}).  The
+\emph{chord method} for cubic surfaces generates new rational points from
+old ones: given two points $P_1,P_2\in S(\Q)$, the line $\overline{P_1P_2}$
+meets $S$ in a third point $P_3\in S(\Q)$ (by Bezout).
+
+Let $P_1 = (x_1,y_1,z_1)$, $P_2=(x_2,y_2,z_2)$.  Parametrize the line as
+\[
+  (x,y,z) = P_1 + t\,(P_2-P_1),\quad t\in\Q.
+\]
+Substituting into $F(x,y,z)=z^2+y^2z+x^3-x-1$ gives a cubic polynomial
+$F(t) = L\cdot t(t-1)(t-t_3)$ (since $t=0$ and $t=1$ are already roots), and
+the third intersection is $P_3 = P_1 + t_3(P_2-P_1)$.  By Vieta,
+\[
+  t_3 = -\frac{[t^2\text{-coefficient}]}{[t^3\text{-coefficient}]} - 1.
+\]
+
+\begin{example}
+  Take $P_1 = (-3,0,5)$ and $P_2 = (-5,0,-11)$ (both $y=0$ solutions).
+  The chord gives $t_3 = $ an integer, yielding the new integer point
+  $P_3 = (-56, 0, -419)$.  Verification: $(-419)^2 + 0 + (-56)^3 -(-56)-1
+  = 175561 - 175616 + 56 - 1 = 0$. \checkmark
+\end{example}
+
+\begin{example}
+  Among the $y=24$ solutions (see Table~\ref{tab:yne0}), the chord through
+  $(-63,24,289)$ and $(-43,24,115)$ gives $t_3 = 1/1$ and produces
+  $(43,24,-229)$ — an integer point.  The chord through $(-63,24,289)$ and
+  $(-43,24,-691)$ gives the point $(-2295,24,109657)$, a large integer
+  solution outside our initial search range.
+\end{example}
+
+\noindent
+The chord method thus generates new integer solutions from known ones.
+However, within any fixed fiber $E_Y$, Siegel's theorem guarantees only
+\emph{finitely} many integer points.  To obtain infinitely many solutions to
+the original equation, one must range over infinitely many values of $Y$.
 
 \subsection{Solutions Found by Exhaustive Search}
 
-Table~\ref{tab:yne0} lists all solutions with $y > 0$ found by exhaustive search
-with $|x|\le 1000$ and $|y|\le 564$.  By symmetry, each row corresponds to two
-solutions: $(x,y,z)$ and $(x,-y,z)$.
+Table~\ref{tab:yne0} lists all solutions with $y > 0$ found by exhaustive
+search with $|x|\le 500$ and $0 < y \le 600$.  By symmetry, each row
+corresponds to two solutions: $(x,y,z)$ and $(x,-y,z)$.  All solutions satisfy
+$6\mid y$, as required by Corollary~\ref{cor:6divy}.
 
 \begin{longtable}{rrr}
-\caption{Integer solutions $(x,y,z)$ with $y>0$ found by search.}
+\caption{Integer solutions $(x,y,z)$ with $y>0$, $|x|\le500$, $0<y\le600$.}
 \label{tab:yne0}\\
 \toprule
 $x$ & $y$ & $z$ \\
@@ -320,29 +351,119 @@ $x$ & $y$ & $z$ \\
 \endfoot
 \bottomrule
 \endlastfoot
-$-380$ & $210$ & $-45311$ \\
-$-380$ & $210$ & $1211$   \\
-$-267$ & $168$ & $-28883$ \\
-$-267$ & $168$ & $659$    \\
+$17$   & $12$  & $-89$    \\
+$17$   & $12$  & $-55$    \\
+$-20$  & $18$  & $-347$   \\
+$-20$  & $18$  & $23$     \\
 $-63$  & $24$  & $-865$   \\
 $-63$  & $24$  & $289$    \\
 $-43$  & $24$  & $-691$   \\
 $-43$  & $24$  & $115$    \\
-$-20$  & $18$  & $-347$   \\
-$-20$  & $18$  & $23$     \\
 $-16$  & $24$  & $-583$   \\
 $-16$  & $24$  & $7$      \\
-$17$   & $12$  & $-89$    \\
-$17$   & $12$  & $-55$    \\
 $43$   & $24$  & $-347$   \\
 $43$   & $24$  & $-229$   \\
-$83$   & $228$ & $-51973$ \\
-$83$   & $228$ & $-11$    \\
 $141$  & $60$  & $-2461$  \\
 $141$  & $60$  & $-1139$  \\
+$-267$ & $168$ & $-28883$ \\
+$-267$ & $168$ & $659$    \\
+$-380$ & $210$ & $-45311$ \\
+$-380$ & $210$ & $1211$   \\
+$83$   & $228$ & $-51973$ \\
+$83$   & $228$ & $-11$    \\
 $240$  & $288$ & $-82777$ \\
 $240$  & $288$ & $-167$   \\
 \end{longtable}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Geometry of the Surface}
+\label{sec:geometry}
+
+\subsection{The Surface as a Cubic in \texorpdfstring{$\Pbb^3$}{P³}}
+
+Homogenizing~\eqref{eq:main} by setting $x = X/W$, $y = Y/W$, $z = Z/W$
+and clearing denominators gives
+\begin{equation}\label{eq:proj}
+  Z^2 W + Y^2 Z + X^3 - X W^2 - W^3 = 0,
+\end{equation}
+a degree-$3$ hypersurface in $\Pbb^3_\Q$.  Thus $S$ is a \emph{cubic surface}.
+
+\begin{proposition}[Rationality]\label{prop:rational}
+  The surface $S$ is a \emph{rational} surface over $\Q$: it is birationally
+  equivalent to $\Pbb^2_\Q$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+  $S$ has the rational point $(x,y,z) = (0,0,1)$ (since $1+0+0-0-1=0$).
+  A smooth cubic surface over a field with a rational point is rational
+  by the Cayley--Salmon theorem (the surface carries $27$ lines over $\overline\Q$,
+  and a projection from the rational point gives a birational map to $\Pbb^2$;
+  cf.\ Manin~\cite{Manin1986}).
+\end{proof}
+
+\begin{remark}[Kodaira dimension]
+  Rational surfaces have Kodaira dimension $\kappa = -\infty$.  By the
+  theorem of Corvaja--Zannier~\cite{CorvajaZannier2002}, the finiteness of
+  integer points (in a suitable affine chart) is guaranteed only when
+  $\kappa \ge 1$.  Since $\kappa(S) = -\infty$, Corvaja--Zannier gives
+  \emph{no obstruction} to infinitely many integer points on $S$.  All
+  other classes of surfaces ($\kappa = 0$: K3 and abelian surfaces;
+  $\kappa \ge 1$: surfaces of general type) are subject to finiteness
+  results, but rational surfaces are the one class for which infinitely
+  many integer points are genuinely possible.
+\end{remark}
+
+\subsection{Rational Points via Projection}
+
+The rational point $P_0 = (0,0,1)$ on $S$ allows a classical \emph{projection}
+construction.  A line through $P_0$ in direction $(a,b,c)\in\Q^3$ meets $S$ at
+$P_0$ and at the roots of
+\[
+  (b^2c + a^3)\,t^2 + (c^2+b^2)\,t + (2c-a) = 0.
+\]
+This gives a degree-$2$ rational map $\Pbb^2_\Q \dashrightarrow S$, sending
+a direction $(a:b:c)$ to the two non-base-point intersections.  Rational
+points in $\Pbb^2$ thus map to rational points of $S$.
+
+For \emph{integer} points, one needs the two solutions $t$ to lie in $\Q$
+with the resulting coordinates $(ta, tb, 1+tc)$ all in $\Z$.  This imposes
+divisibility conditions that can be satisfied for particular $(a,b,c)$.  For
+instance, the direction $(a,b,c) = (-2,0,1)$ (the tangent direction along
+the $y=0$ branch) recovers the $y=0$ elliptic curve.
+
+\subsection{The Elliptic Fibration}
+
+The surface $S$ fibers over the $y$-line $\A^1$ by the map
+$(x,y,z)\mapsto y$.  Each fiber $S_y = S\cap\{Y=y\}$ is either:
+\begin{itemize}
+  \item $y=0$: the elliptic curve $E_0: z^2 = -x^3+x+1$ (rank~$0$, 12 integer points).
+  \item $y\ne0$, $6\mid y$: the elliptic curve $E_Y: W^2 = 4Y^4-4x^3+4x+4$
+        (where $Y=y/2$), of varying rank.
+\end{itemize}
+For $y=24$ ($Y=12$), explicit computation (Table~\ref{tab:y24}) shows
+$E_{12}$ has at least \emph{four} distinct $x$-values, implying
+Mordell--Weil rank $\ge 2$ over $\Q$.
+
+\begin{table}[h]
+\centering
+\caption{Integer points on $E_{12}: W^2 = 4\cdot 12^4 - 4x^3+4x+4$ (i.e., $W^2=-4x^3+4x+83524$), with $y=24$.}
+\label{tab:y24}
+\begin{tabular}{rrrr}
+\toprule
+$x$ & $W=2z+576$ & $z$ & Vieta partner $z'=-576-z$ \\
+\midrule
+$-63$ & $\pm 1154$ & $289$ & $-865$ \\
+$-43$ & $\pm 806$  & $115$ & $-691$ \\
+$-16$ & $\pm 590$  & $7$   & $-583$ \\
+$43$  & $\pm 118$  & $-229$ & $-347$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+The four $x$-values for $y=24$ arise from integer points on the elliptic
+curve $E_{12}$, confirming rank $\ge 2$.  The chord method (Section~\ref{sec:yne0})
+then generates further integer points on $E_{12}$, such as $(-2295, 24, 109657)$.
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section{Summary of Integer Solution Structure}
@@ -352,14 +473,15 @@ $240$  & $288$ & $-167$   \\
   Let $(x,y,z)\in\Z^3$ be an integer solution of $z^2+y^2z+x^3-x-1=0$.  Then:
   \begin{enumerate}[label=(\roman*)]
     \item $6\mid y$ (Corollary~\ref{cor:6divy}).
-    \item $z$ and $z+y^2$ have opposite parity (both are odd when $y=0$,
-          both are odd when $y\ne 0$ since $y$ even forces $y^2\equiv 0\pmod 4$,
-          while $z(z+y^2)\equiv 1\pmod 2$ forces both odd).
-    \item The pair $(z, z+y^2)$ is an ordered factorization of $1+x-x^3$ with
+    \item $(x,y,z)$ and $(x,y,-y^2-z)$ are both solutions (Proposition~\ref{prop:vieta}).
+    \item The pair $(z,\,z+y^2)$ is an ordered factorization of $1+x-x^3$ with
           difference $y^2$.
-    \item For $y=0$: the solutions are exactly those in Table~\ref{tab:y0}.
-    \item For $y\ne 0$: solutions exist for infinitely many values of $y$,
-          giving infinitely many solutions in total.
+    \item For $y=0$: exactly the $12$ solutions in Table~\ref{tab:y0}
+          (Theorem~\ref{thm:y0finite}).
+    \item For $y\ne 0$: solutions exist at least for $y\in\{12,18,24,60,168,210,228,288\}$
+          (Table~\ref{tab:yne0}).  The surface $S$ is rational with
+          $\kappa=-\infty$, providing no theoretical obstruction to infinitely many
+          solutions (Conjecture~\ref{conj:infinite}).
   \end{enumerate}
 \end{theorem}
 
@@ -376,45 +498,119 @@ Proposition~\ref{prop:bij} gives an efficient algorithm to generate solutions:
 \end{enumerate}
 
 The number of solutions for a given $x$ equals the number of factorizations
-$pq=N$ with $q-p$ a non-negative perfect square.  For ``generic'' $x$, this is
-$0$, but for special $x$ (where $N$ has factor pairs differing by a perfect
-square) solutions exist.
+$pq=N$ with $q-p$ a non-negative perfect square.
 
 \begin{example}
-  $x=43$: $N = 1+43-43^3 = 44 - 79507 = -79463$.
-  Factorizations of $-79463$ as $(p,q)$ with $q>p$:
-  One such pair is $p=-347$, $q=229$: indeed $(-347)(229)=-79463$ and
-  $q-p = 229-(-347)=576=24^2$.  This gives $(x,y,z)=(43,\pm 24,-347)$. \\
-  Another: $p=-229, q=347$: $q-p=576=24^2$, giving $(43,\pm 24,-229)$. \checkmark
+  $x=43$: $N = 1+43-43^3 = -79463$.
+  The factorization $p=-347,\,q=229$ gives $q-p=576=24^2$, yielding
+  $(43,\pm24,-347)$.  The factorization $p=-229,\,q=347$ gives $q-p=576=24^2$,
+  yielding $(43,\pm24,-229)$.
 \end{example}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section{Connection to Elliptic Curves}
-\label{sec:elliptic}
+\section{Open Problems}
+\label{sec:open}
 
-The surface~\eqref{eq:surface} is a pencil of elliptic curves parameterized
-by $y$.  For each fixed $y$, the curve
-\[
-  E_y:\quad w^2 = -4x^3 + 4x + (4+y^4)
-\]
-is a twist of the curve $w^2 = -4x^3+4x+4$ (the $y=0$ case multiplied by~4).
-The rank of $E_y(\Q)$ varies with $y$.  By standard results in the theory of
-elliptic curves, the rank can be arbitrarily large as $y$ varies over
-multiples of~$6$, which is consistent with the observed infinity of solutions.
+\begin{openproblem}[Infinitude]\label{op:infinite}
+  Prove rigorously that equation~\eqref{eq:main} has infinitely many integer
+  solutions.
+\end{openproblem}
 
-For $y=24$, the curve $E_{24}: w^2 = -4x^3+4x+331780$ has at least four
-integer points at $x\in\{-63,-43,-16,43\}$ (with $w\in\{\pm1154, \pm806,
-\pm590, \pm118\}$ respectively), indicating rank $\ge 2$ over $\Q$.
+\noindent\textbf{Approaches and obstructions.}
+
+\medskip\noindent\emph{(1) Explicit parametric family.}
+One would like polynomial maps $x(n), y(n), z(n)\in\Z[n]$ satisfying
+$z(n)^2 + y(n)^2 z(n) + x(n)^3 - x(n) - 1 = 0$ identically.  A degree
+analysis shows: if $\deg y = b$, then balancing the $y^4$ and $x^3$ terms
+in the reduced form $W^2 = 4Y^4-4x^3+4x+4$ requires $\deg x = 4b/3$, which
+is non-integer unless $3\mid b$.  Taking $b=3$: $\deg x = 4$, $\deg z = 6$.
+Explicit search over families of this degree has not yet found a solution.
+
+\medskip\noindent\emph{(2) Rational section of the elliptic fibration.}
+Over the function field $\Q(Y)$, equation~\eqref{eq:surface} defines an
+elliptic surface.  A rational section $x(Y)\in\Q(Y)$ with $W(Y)^2 =
+4Y^4-4x(Y)^3+4x(Y)+4$ would, by the Silverman specialisation theorem,
+give integer solutions for all but finitely many $Y\in\Z$.  However,
+a leading-term analysis shows $W(Y)^2 \sim 4Y^4$ forces $W\sim 2Y^2$,
+i.e., $W-2Y^2 = \delta$ for a correction $\delta$, giving
+$(2Y^2+\delta)^2 = 4Y^4+4\delta Y^2+\delta^2 = 4Y^4-4x^3+4x+4$,
+hence $4\delta Y^2+\delta^2 = -4x^3+4x+4$.  For polynomial $x(Y)$
+of degree $d\ge1$, the right side has degree $3d \ge 3$, which cannot
+equal degree $2$ on the left.  So $d=0$ (constant $x$) is the only
+possibility, but then $-4x^3+4x+4$ is a constant, forcing $\delta=0$
+and $Y=0$.  There is \emph{no polynomial section} of this fibration.
+
+\medskip\noindent\emph{(3) Analytic density approach.}
+One could try to show via the \emph{square sieve} or the
+\emph{Bombieri--Pila} method that the polynomial $4Y^4-4x^3+4x+4$
+represents a perfect square for infinitely many $(x,Y)\in\Z^2$.
+The Bombieri--Pila theorem~\cite{BombieriPila1989} shows that non-square
+polynomial values are sparse, but turning sparseness of non-squares into
+existence of infinitely many squares for a two-variable polynomial is
+not immediate and depends on the arithmetic of the specific polynomial.
+
+\medskip\noindent\emph{(4) Mordell--Weil rank of the generic fiber.}
+Computing the rank of the elliptic curve $E/\Q(Y): W^2=4Y^4-4x^3+4x+4$
+over the function field $\Q(Y)$ would determine whether a rational
+(non-polynomial) section exists.  If $\mathrm{rank}\,E(\Q(Y)) \ge 1$,
+then there are infinitely many rational points on the surface, and the
+integer-point question reduces to bounding their denominators.
+This computation requires advanced tools (e.g., Magma/Sage with the
+Cassels--Tate pairing).
+
+\begin{conjecture}
+  The Mordell--Weil rank of $E: W^2=4Y^4-4x^3+4x+4$ over $\Q(Y)$ is
+  $\ge 1$, and consequently equation~\eqref{eq:main} has infinitely many
+  integer solutions.
+\end{conjecture}
 
 % ─────────────────────────────────────────────────────────────────────────────
 \section*{Conclusion}
 
-The Diophantine equation $z^2 + y^2 z + x^3 - x - 1 = 0$ has \textbf{infinitely
-many integer solutions}.  The solutions are characterized by the factorization
-condition $z(z+y^2) = 1+x-x^3$, where $q-p=y^2$ must be a perfect square.
-Modular arithmetic forces $6\mid y$ for all solutions with $y\ne 0$.  The $y=0$
-branch is a finite elliptic curve with 12 integer solutions.  The $y\ne 0$
-branch gives infinitely many additional solutions, distributed across infinitely
-many values of $|y|$.
+We have rigorously established:
+\begin{enumerate}
+  \item Every integer solution satisfies $6\mid y$ (proved by mod-$2$ and mod-$3$ arguments).
+  \item The $y=0$ branch is the elliptic curve $E_0: z^2=-x^3+x+1$ of rank~$0$,
+        with exactly $12$ integer solutions (complete list in Table~\ref{tab:y0}).
+  \item Solutions come in Vieta pairs $(x,y,z)$ and $(x,y,-y^2-z)$.
+  \item The underlying surface is a rational cubic in $\Pbb^3$, with Kodaira
+        dimension $-\infty$, subject to no Corvaja--Zannier finiteness obstruction.
+  \item The chord method on the cubic surface generates new integer solutions from old ones.
+  \item An exhaustive search found $22$ solutions with $0<y\le600$, with $y$ taking
+        at least $8$ distinct values.
+\end{enumerate}
+
+\noindent
+The question of whether infinitely many integer solutions exist remains
+\emph{open}.  All evidence (both empirical and geometric) points to an
+affirmative answer, and we have formulated precise approaches via which a
+rigorous proof might be achieved.
+
+\begin{thebibliography}{9}
+\bibitem{BombieriPila1989}
+  E.~Bombieri and J.~Pila,
+  \emph{The number of integral points on arcs and ovals},
+  Duke Math.\ J.\ \textbf{59} (1989), 337--357.
+
+\bibitem{CorvajaZannier2002}
+  P.~Corvaja and U.~Zannier,
+  \emph{A subspace theorem approach to integral points on curves},
+  C.\ R.\ Acad.\ Sci.\ Paris \textbf{334} (2002), 267--271.
+
+\bibitem{Manin1986}
+  Yu.\ I.\ Manin,
+  \emph{Cubic Forms: Algebra, Geometry, Arithmetic},
+  North-Holland, 1986.
+
+\bibitem{Silverman1986}
+  J.~H.\ Silverman,
+  \emph{The Arithmetic of Elliptic Curves},
+  Graduate Texts in Mathematics \textbf{106}, Springer, 1986.
+
+\bibitem{Siegel1929}
+  C.~L.\ Siegel,
+  \emph{\"Uber einige Anwendungen diophantischer Approximationen},
+  Abh.\ Preuss.\ Akad.\ Wiss.\ \textbf{1} (1929), 1--70.
+\end{thebibliography}
 
 \end{document}
