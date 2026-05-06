@@ -1,0 +1,16 @@
+\contentsline {section}{\numberline {1}Introduction and Overview}{1}{section.2}%
+\contentsline {section}{\numberline {2}Algebraic Reduction: Factorization Characterization}{2}{section.10}%
+\contentsline {section}{\numberline {3}Necessary Conditions: Modular Constraints}{3}{section.15}%
+\contentsline {section}{\numberline {4}The Branch $y=0$: Elliptic Curve}{3}{section.19}%
+\contentsline {section}{\numberline {5}The Branch $y\ne 0$: Elliptic Fibration}{4}{section.24}%
+\contentsline {subsection}{\numberline {5.1}Reduction to a Family of Elliptic Curves}{4}{subsection.25}%
+\contentsline {subsection}{\numberline {5.2}The Vieta Involution}{5}{subsection.28}%
+\contentsline {subsection}{\numberline {5.3}Chord-and-Tangent Method on the Surface}{5}{subsection.30}%
+\contentsline {subsection}{\numberline {5.4}Solutions Found by Exhaustive Search}{5}{subsection.33}%
+\contentsline {section}{\numberline {6}Geometry of the Surface}{6}{section.34}%
+\contentsline {subsection}{\numberline {6.1}The Surface as a Cubic in $\mathbb {P}^3$}{6}{subsection.35}%
+\contentsline {subsection}{\numberline {6.2}Rational Points via Projection}{7}{subsection.39}%
+\contentsline {subsection}{\numberline {6.3}The Elliptic Fibration}{7}{subsection.40}%
+\contentsline {section}{\numberline {7}Summary of Integer Solution Structure}{7}{section.42}%
+\contentsline {section}{\numberline {8}Algorithmic Generation of Solutions}{8}{section.49}%
+\contentsline {section}{\numberline {9}Open Problems}{8}{section.54}%
