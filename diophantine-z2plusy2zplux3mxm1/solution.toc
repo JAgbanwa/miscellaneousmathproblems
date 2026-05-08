@@ -1,4 +1,4 @@
-\contentsline {section}{\numberline {1}Introduction and Overview}{1}{section.2}%
+\contentsline {section}{\numberline {1}Introduction and Overview}{2}{section.2}%
 \contentsline {section}{\numberline {2}Algebraic Reduction: Factorization Characterization}{2}{section.10}%
 \contentsline {section}{\numberline {3}Necessary Conditions: Modular Constraints}{3}{section.15}%
 \contentsline {section}{\numberline {4}The Branch $y=0$: Elliptic Curve}{3}{section.19}%
@@ -14,3 +14,11 @@
 \contentsline {section}{\numberline {7}Summary of Integer Solution Structure}{7}{section.42}%
 \contentsline {section}{\numberline {8}Algorithmic Generation of Solutions}{8}{section.49}%
 \contentsline {section}{\numberline {9}Open Problems}{8}{section.54}%
+\contentsline {section}{\numberline {10}Empirical Growth Law and a Hardy--Littlewood Heuristic}{9}{section.57}%
+\contentsline {subsection}{\numberline {10.1}Bucketed counts per $1000$ of $|x|$}{9}{subsection.58}%
+\contentsline {subsection}{\numberline {10.2}The cumulative trend}{9}{subsection.60}%
+\contentsline {subsection}{\numberline {10.3}Why a logarithmic growth law is the natural prediction}{9}{subsection.63}%
+\contentsline {paragraph}{Heuristic count, fixed $x$.}{10}{section*.64}%
+\contentsline {paragraph}{Cumulative prediction.}{10}{section*.66}%
+\contentsline {paragraph}{Why the trend should persist.}{11}{section*.68}%
+\contentsline {subsection}{\numberline {10.4}Honest scope of the conclusion}{11}{subsection.72}%

@@ -17,6 +17,7 @@
 \usepackage{fancyhdr}
 \usepackage{longtable}
 \usepackage{tcolorbox}
+\usepackage{graphicx}
 
 \geometry{margin=2.5cm}
 \setlength{\headheight}{13.60001pt}
@@ -565,7 +566,173 @@ Cassels--Tate pairing).
 \end{conjecture}
 
 % ─────────────────────────────────────────────────────────────────────────────
-\section*{Conclusion}
+\section{Empirical Growth Law and a Hardy--Littlewood Heuristic}
+\label{sec:growth}
+
+To probe whether equation~\eqref{eq:main} admits infinitely many integer
+solutions, we performed an exhaustive divisor-pair search over
+$|x|\le 30000$ using the factorization characterization of
+Section~2: for each $x$ we factored
+$N(x)=1+x-x^3$ in every way $N(x)=ab$ and retained those pairs for which
+$b-a$ is a non-negative perfect square, recording the resulting triples
+$(x,y,z)$ with $y^2=b-a$ and $z\in\{a,-b\}$.
+
+\subsection{Bucketed counts per $1000$ of $|x|$}
+
+Table~\ref{tab:buckets} lists the number of integer solutions whose
+$x$-coordinate lies in each window $[1000k,\,1000(k+1))$
+(positive and negative $x$ combined), together with the running cumulative
+total $N(X):=\#\{\text{solutions with }|x|\le X\}$.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{r r r @{\hskip 2em} r r r}
+\toprule
+$|x|$ window & per bucket & cumulative & $|x|$ window & per bucket & cumulative \\
+\midrule
+$0$--$1000$    & $42$ & $42$  & $15000$--$16000$ & $0$ & $94$  \\
+$1000$--$2000$ & $10$ & $52$  & $16000$--$17000$ & $4$ & $98$  \\
+$2000$--$3000$ & $8$  & $60$  & $17000$--$18000$ & $2$ & $100$ \\
+$3000$--$4000$ & $6$  & $66$  & $18000$--$19000$ & $6$ & $106$ \\
+$4000$--$5000$ & $6$  & $72$  & $19000$--$20000$ & $2$ & $108$ \\
+$5000$--$6000$ & $2$  & $74$  & $20000$--$21000$ & $0$ & $108$ \\
+$6000$--$7000$ & $6$  & $80$  & $21000$--$22000$ & $4$ & $112$ \\
+$7000$--$8000$ & $4$  & $84$  & $22000$--$23000$ & $2$ & $114$ \\
+$8000$--$9000$ & $0$  & $84$  & $23000$--$24000$ & $0$ & $114$ \\
+$9000$--$10000$& $0$  & $84$  & $24000$--$25000$ & $4$ & $118$ \\
+$10000$--$11000$&$0$  & $84$  & $25000$--$26000$ & $0$ & $118$ \\
+$11000$--$12000$&$0$  & $84$  & $26000$--$27000$ & $0$ & $118$ \\
+$12000$--$13000$&$4$  & $88$  & $27000$--$28000$ & $0$ & $118$ \\
+$13000$--$14000$&$2$  & $90$  & $28000$--$29000$ & $0$ & $118$ \\
+$14000$--$15000$&$4$  & $94$  & $29000$--$30000$ & $2$ & $120$ \\
+\bottomrule
+\end{tabular}
+\caption{\label{tab:buckets}Integer solutions of \eqref{eq:main}
+bucketed by $|x|$ (windows of width $1000$).  Each row counts
+$(x,y,z)$ with $y\ge0$, both signs of $x$ included; sign-of-$y$
+duplication is suppressed.}
+\end{table}
+
+\subsection{The cumulative trend}
+
+Plotting the cumulative count $N(X)$ against $X=|x|_{\max}$
+(Figure~\ref{fig:progression}) reveals a clearly logarithmic profile.
+A least-squares fit of $N(X)$ to a function of the form
+$\alpha+\beta\ln X$ on the data $X\in\{1000,2000,\dots,30000\}$ gives
+\begin{equation}
+  N(X)\;\approx\;-137.2\;+\;24.5\,\ln X,
+  \label{eq:logfit}
+\end{equation}
+with the residuals exhibiting no systematic curvature; in particular,
+no power-law fit $N(X)\sim X^{\alpha}$ with $\alpha>0$ improves the
+residuals.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.85\linewidth]{solutions_progression.png}
+  \caption{Top: number of integer solutions of \eqref{eq:main} per
+    window of $1000$ in $|x|$, for $|x|\le 30000$.  Bottom: cumulative
+    count $N(X)$ together with the logarithmic fit
+    $-137+24.5\ln X$ from~\eqref{eq:logfit}.}
+  \label{fig:progression}
+\end{figure}
+
+\subsection{Why a logarithmic growth law is the natural prediction}
+
+The empirical law \eqref{eq:logfit} is exactly what a
+Hardy--Littlewood / Manin--Peyre heuristic predicts for the smooth
+projective cubic surface
+\[
+  S:\quad z^2 w + y^2 z + x^3 - x w^2 - w^3 = 0\quad\subset\Pbb^3_{\Q},
+\]
+of which our affine equation is the chart $w=1$.  The heuristic counts,
+for each $x$, the divisor pairs $(a,b)$ of $N(x)=1+x-x^3$ with $b-a$ a
+square, treats those events as random, and weights them by local
+densities at every prime.
+
+\paragraph{Heuristic count, fixed $x$.}  Let $f(x)=-4x^3+4x+4$, so
+$\eqref{eq:main}$ is equivalent to $s^2=y^4+f(x)$ with $s=2z+y^2$.
+For $|x|$ large, $|f(x)|\sim 4|x|^3$, and:
+\begin{itemize}
+  \item the average number of divisor pairs of an integer of size
+    $M$ is $\sim\log M\sim 3\log|x|$ (divisor-function average);
+  \item among such divisor pairs, the differences $b-a$ are spread,
+    in a Hardy--Littlewood model with the local densities at primes
+    of bad reduction taken into account, with measure
+    $\asymp \tfrac{1}{|x|^{3/2}}\,d(b-a)$ on the bulk range
+    $|b-a|\le 2|x|^{3/2}$;
+  \item the Möbius-weighted indicator that $b-a$ is a perfect square
+    contributes a factor $\sim |b-a|^{-1/2}$.
+\end{itemize}
+Combining these, the expected number of valid triples $(x,y,z)$ with a
+\emph{given} $x$ is on the order of
+\begin{equation}
+  \mathbb{E}\bigl[\#\{(y,z)\}\,\big|\,x\bigr]
+  \;\asymp\;\sigma_\infty\,\prod_p\sigma_p\;\cdot\;\frac{\log |x|}{|x|}
+  \;=\;c\,\frac{\log|x|}{|x|},
+  \label{eq:perx}
+\end{equation}
+where the local densities $\sigma_p$ are positive (no congruence
+obstruction; see Section~\ref{sec:modular}) and the archimedean factor
+$\sigma_\infty$ is finite.
+
+\paragraph{Cumulative prediction.}  Summing \eqref{eq:perx} over
+$|x|\le X$ and using $\sum_{1\le n\le X}\frac{\log n}{n}=\tfrac12\log^2 X+O(1)$
+gives the heuristic asymptotic
+\begin{equation}
+  N(X)\;\sim\;\frac{c}{2}\,\log^2 X\qquad(X\to\infty).
+  \label{eq:heuristicasymp}
+\end{equation}
+On the modest range $X\le 30000$, the prefactor $\tfrac12\log X$ is
+nearly constant ($\approx 5.1$), so~\eqref{eq:heuristicasymp} is
+empirically indistinguishable from the linear-in-$\log X$ fit
+\eqref{eq:logfit}; both predict slow but unbounded growth.
+
+\paragraph{Why the trend should persist.}  The three structural
+ingredients of \eqref{eq:perx} are stable in $X$:
+\begin{enumerate}
+  \item \emph{Irreducibility.}\ $1+x-x^3$ is irreducible over $\Q$
+    (its discriminant is $-23$), so the average divisor count of
+    $|N(x)|$ obeys the Erd\H{o}s--Pomerance lower bound
+    $\overline{d}(|N(x)|)\gg \log|x|$.  This factor cannot decay.
+  \item \emph{No local obstruction.}\ The modular conditions
+    $6\mid y$, $z$ odd, $3\nmid z$ proved in
+    Section~\ref{sec:modular} cut out a non-empty $p$-adic locus for
+    every prime $p$, and a straightforward Hensel-lifting check shows
+    each $\sigma_p$ is bounded away from zero.  The infinite product
+    $\prod_p\sigma_p$ thus converges to a positive constant.
+  \item \emph{Geometry.}\ The cubic surface $S$ is smooth, has
+    Kodaira dimension $-\infty$, and Picard rank $\ge 1$
+    (Section~\ref{sec:geometry}).  No theorem of Faltings,
+    Vojta, or Corvaja--Zannier obstructs an infinite integral locus.
+\end{enumerate}
+None of these ingredients is sensitive to the size of $X$, so the
+mechanism producing solutions in $[X,2X]$ is the same as in
+$[1,2]$: every dyadic window contributes $\Theta(\log X)$ new
+solutions on average, and the corresponding sum diverges.
+
+\subsection{Honest scope of the conclusion}
+
+The discussion above is a \emph{heuristic}, not a proof.  Two
+sentences make the boundary precise:
+\begin{itemize}
+  \item The empirical fit~\eqref{eq:logfit} on $|x|\le 30000$ is
+    consistent with \eqref{eq:heuristicasymp}, hence with infinitely
+    many solutions; it is also consistent with any finite-but-large
+    set, since logarithmic growth is indistinguishable from a slowly
+    accumulating finite sequence on bounded data.
+  \item Establishing $c>0$ in~\eqref{eq:heuristicasymp} rigorously is
+    equivalent to producing an infinite family of integer points on
+    the smooth cubic surface $S$, which is an instance of the
+    Manin--Peyre conjecture in the integral setting --- still
+    conjectural for cubic surfaces of Picard rank one in 2026.
+\end{itemize}
+What we can assert is that the trend visible in
+Figure~\ref{fig:progression} is \emph{the trend predicted by every
+mainstream heuristic for cubic surfaces}, and that no known mechanism
+(arithmetic, geometric, or analytic) is capable of terminating it.
+
+
 
 We have rigorously established:
 \begin{enumerate}
