@@ -24,7 +24,7 @@ This file formalizes the main results from:
 | `completeness`           | Theorem 5.4        | axiom           |
 | `integrality_family_I`   | Theorem 6.1        | ✓ proved        |
 | `main_identity_family_I` | Theorem 6.1        | ✓ proved        |
-| `positivity_family_I`    | Theorem 6.1        | sorry           |
+| `positivity_family_I`    | Theorem 6.1        | ✓ proved        |
 | `distinctness_family_I`  | Corollary 6.1      | ✓ proved        |
 | `hardy_ramanujan`        | Corollary 6.3      | ✓ norm_num      |
 | `recurrence_C_family_I`  | Theorem 7.1        | sorry           |
@@ -354,7 +354,7 @@ theorem main_identity_family_II (unit : Zsqrtd (3 : ℤ))
   exact (pell_reduction_iff (C_m_II unit m n) (B_m_II unit m n) sm hs).mpr hscaled
 
 -- ============================================================================
--- §6.  Positivity (sorry)
+-- §6.  Positivity
 -- ============================================================================
 
 theorem positivity_family_I (unit : Zsqrtd (3 : ℤ))
@@ -362,14 +362,120 @@ theorem positivity_family_I (unit : Zsqrtd (3 : ℤ))
     (hu_pos : 0 < unit.re) (hv_pos : 0 < unit.im) (m n : ℕ) (hn : 1 ≤ n) :
     0 < A_m_I unit m n ∧ 0 < B_m_I unit m n ∧
     0 < C_m_I unit m n ∧ 0 < D_m_I unit m n := by
-  sorry
+  -- u² = 1 + 3v² ≥ 4, so u ≥ 2
+  have hu2 : 2 ≤ unit.re := by nlinarith [sq_nonneg unit.im]
+  -- For k ≥ 1: xₖ > 3 and yₖ > 9  (key lower bounds)
+  have hbound : ∀ k : ℕ, 1 ≤ k →
+      3 < (familyI_element unit k).re ∧ 9 < (familyI_element unit k).im := by
+    intro k hk
+    induction k with
+    | zero => omega
+    | succ j ih =>
+      rcases Nat.eq_zero_or_pos j with rfl | hjpos
+      · -- base case k = 1: x₁ = 15u + 21v ≥ 51 > 3, y₁ = 15v + 7u ≥ 29 > 9
+        refine ⟨?_, ?_⟩
+        · show 3 < (seed_I * unit ^ 1).re
+          rw [pow_one, Zsqrtd.mul_re]
+          show 3 < (15 : ℤ) * unit.re + 3 * 7 * unit.im
+          linarith
+        · show 9 < (seed_I * unit ^ 1).im
+          rw [pow_one, Zsqrtd.mul_im]
+          show 9 < (15 : ℤ) * unit.im + 7 * unit.re
+          linarith
+      · -- inductive step: use IH
+        obtain ⟨ihr, ihi⟩ := ih (by omega)
+        simp only [familyI_element] at ihr ihi ⊢
+        simp only [pow_succ, ← mul_assoc]
+        refine ⟨?_, ?_⟩
+        · rw [Zsqrtd.mul_re]
+          -- re·u + 3·im·v ≥ 4·2 + 0 > 3
+          nlinarith [mul_nonneg (show (0 : ℤ) ≤ (seed_I * unit ^ j).re from by linarith)
+                                (show (0 : ℤ) ≤ unit.re - 2 from by linarith),
+                     mul_nonneg (show (0 : ℤ) ≤ (seed_I * unit ^ j).im from by linarith)
+                                hv_pos.le]
+        · rw [Zsqrtd.mul_im]
+          -- re·v + im·u ≥ 0 + 10·2 > 9
+          nlinarith [mul_nonneg (show (0 : ℤ) ≤ (seed_I * unit ^ j).im from by linarith)
+                                (show (0 : ℤ) ≤ unit.re - 2 from by linarith),
+                     mul_nonneg (show (0 : ℤ) ≤ (seed_I * unit ^ j).re from by linarith)
+                                hv_pos.le]
+  obtain ⟨hxn, hyn⟩ := hbound n hn
+  -- Integrality: 3^m*(xₙ-3) = 2*c_re and 3^m*(yₙ-9) = 2*c_im
+  obtain ⟨hdiv_re, hdiv_im⟩ := integrality_family_I unit m n hunit_pell
+  obtain ⟨c_re, hc_re⟩ := hdiv_re
+  obtain ⟨c_im, hc_im⟩ := hdiv_im
+  set xn := (familyI_element unit n).re
+  set yn := (familyI_element unit n).im
+  set sm := (3 : ℤ) ^ m
+  have hsm : 0 < sm := by positivity
+  have hC : 0 < C_m_I unit m n := by
+    show 0 < sm * (xn - 3) / 2
+    have : 0 < sm * (xn - 3) := mul_pos hsm (by linarith)
+    omega
+  have hB : 0 < B_m_I unit m n := by
+    show 0 < sm * (yn - 9) / 2
+    have : 0 < sm * (yn - 9) := mul_pos hsm (by linarith)
+    omega
+  exact ⟨by simp only [A_m_I]; linarith [show (0 : ℤ) < (3 : ℤ) ^ (m + 1) from by positivity],
+         hB, hC,
+         by simp only [D_m_I]; linarith [show (0 : ℤ) < (3 : ℤ) ^ (m + 2) from by positivity]⟩
 
 theorem positivity_family_II (unit : Zsqrtd (3 : ℤ))
     (hunit_pell : unit.re ^ 2 - 3 * unit.im ^ 2 = 1)
     (hu_pos : 0 < unit.re) (hv_pos : 0 < unit.im) (m n : ℕ) (hn : 1 ≤ n) :
     0 < A_m_II unit m n ∧ 0 < B_m_II unit m n ∧
     0 < C_m_II unit m n ∧ 0 < D_m_II unit m n := by
-  sorry
+  have hu2 : 2 ≤ unit.re := by nlinarith [sq_nonneg unit.im]
+  have hbound : ∀ k : ℕ, 1 ≤ k →
+      3 < (familyII_element unit k).re ∧ 9 < (familyII_element unit k).im := by
+    intro k hk
+    induction k with
+    | zero => omega
+    | succ j ih =>
+      rcases Nat.eq_zero_or_pos j with rfl | hjpos
+      · -- base case k = 1: x₁ = 9u + 3v ≥ 21 > 3, y₁ = 9v + u ≥ 11 > 9
+        refine ⟨?_, ?_⟩
+        · show 3 < (seed_II * unit ^ 1).re
+          rw [pow_one, Zsqrtd.mul_re]
+          show 3 < (9 : ℤ) * unit.re + 3 * 1 * unit.im
+          linarith
+        · show 9 < (seed_II * unit ^ 1).im
+          rw [pow_one, Zsqrtd.mul_im]
+          show 9 < (9 : ℤ) * unit.im + 1 * unit.re
+          linarith
+      · obtain ⟨ihr, ihi⟩ := ih (by omega)
+        simp only [familyII_element] at ihr ihi ⊢
+        simp only [pow_succ, ← mul_assoc]
+        refine ⟨?_, ?_⟩
+        · rw [Zsqrtd.mul_re]
+          nlinarith [mul_nonneg (show (0 : ℤ) ≤ (seed_II * unit ^ j).re from by linarith)
+                                (show (0 : ℤ) ≤ unit.re - 2 from by linarith),
+                     mul_nonneg (show (0 : ℤ) ≤ (seed_II * unit ^ j).im from by linarith)
+                                hv_pos.le]
+        · rw [Zsqrtd.mul_im]
+          nlinarith [mul_nonneg (show (0 : ℤ) ≤ (seed_II * unit ^ j).im from by linarith)
+                                (show (0 : ℤ) ≤ unit.re - 2 from by linarith),
+                     mul_nonneg (show (0 : ℤ) ≤ (seed_II * unit ^ j).re from by linarith)
+                                hv_pos.le]
+  obtain ⟨hxn, hyn⟩ := hbound n hn
+  obtain ⟨hdiv_re, hdiv_im⟩ := integrality_family_II unit m n hunit_pell
+  obtain ⟨c_re, hc_re⟩ := hdiv_re
+  obtain ⟨c_im, hc_im⟩ := hdiv_im
+  set xn := (familyII_element unit n).re
+  set yn := (familyII_element unit n).im
+  set sm := (3 : ℤ) ^ m
+  have hsm : 0 < sm := by positivity
+  have hC : 0 < C_m_II unit m n := by
+    show 0 < sm * (xn - 3) / 2
+    have : 0 < sm * (xn - 3) := mul_pos hsm (by linarith)
+    omega
+  have hB : 0 < B_m_II unit m n := by
+    show 0 < sm * (yn - 9) / 2
+    have : 0 < sm * (yn - 9) := mul_pos hsm (by linarith)
+    omega
+  exact ⟨by simp only [A_m_II]; linarith [show (0 : ℤ) < (3 : ℤ) ^ (m + 1) from by positivity],
+         hB, hC,
+         by simp only [D_m_II]; linarith [show (0 : ℤ) < (3 : ℤ) ^ (m + 2) from by positivity]⟩
 
 -- ============================================================================
 -- §6.  Distinctness
