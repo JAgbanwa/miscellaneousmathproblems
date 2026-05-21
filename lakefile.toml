@@ -70,6 +70,11 @@ name = "DiophantineR4SqConstraint"
 srcDir = "diophantine-r4sq-constraint"
 roots = ["ConstraintProof"]
 
+[[lean_lib]]
+name = "TaxicabPell"
+srcDir = "taxicab-pell"
+roots = ["TaxicabPell"]
+
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
