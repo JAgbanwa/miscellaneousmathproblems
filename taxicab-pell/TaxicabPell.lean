@@ -27,7 +27,7 @@ This file formalizes the main results from:
 | `positivity_family_I`    | Theorem 6.1        | ✓ proved        |
 | `distinctness_family_I`  | Corollary 6.1      | ✓ proved        |
 | `hardy_ramanujan`        | Corollary 6.3      | ✓ norm_num      |
-| `recurrence_C_family_I`  | Theorem 7.1        | sorry           |
+| `recurrence_C_family_I`  | Theorem 7.1        | ✓ proved        |
 | `growth_monotone_re_I`   | Theorem 7.2(i)     | ✓ proved        |
 | `growth_exponential`     | Theorem 7.2(ii)    | sorry           |
 -/
@@ -517,7 +517,7 @@ example : D_m_I ε₁ 0 1 = 59  := by native_decide
 example : (96 : ℤ) ^ 3 + 50 ^ 3 = 93 ^ 3 + 59 ^ 3 := by norm_num
 
 -- ============================================================================
--- §7.  Recurrence relations (Theorem 7.1) — sorry for Cayley-Hamilton steps
+-- §7.  Recurrence relations (Theorem 7.1)
 -- ============================================================================
 
 theorem recurrence_C_family_I (unit : Zsqrtd (3 : ℤ))
@@ -525,7 +525,88 @@ theorem recurrence_C_family_I (unit : Zsqrtd (3 : ℤ))
     C_m_I unit m (n + 2) =
     2 * unit.re * C_m_I unit m (n + 1) - C_m_I unit m n +
     (3 : ℤ) ^ (m + 1) * (unit.re - 1) := by
-  sorry
+  set sm : ℤ := (3 : ℤ) ^ m
+  have h3m1 : (3 : ℤ) ^ (m + 1) = 3 * sm := by
+    calc
+      (3 : ℤ) ^ (m + 1) = (3 : ℤ) ^ m * 3 := by simp [pow_succ]
+      _ = 3 * (3 : ℤ) ^ m := by ring
+      _ = 3 * sm := by simp [sm]
+  have hx1 : (familyI_element unit (n + 1)).re =
+      (familyI_element unit n).re * unit.re + 3 * (familyI_element unit n).im * unit.im := by
+    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+  have hy1 : (familyI_element unit (n + 1)).im =
+      (familyI_element unit n).re * unit.im + (familyI_element unit n).im * unit.re := by
+    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im]
+  have hx2 : (familyI_element unit (n + 2)).re =
+      (familyI_element unit (n + 1)).re * unit.re +
+      3 * (familyI_element unit (n + 1)).im * unit.im := by
+    have hn2 : n + 2 = (n + 1) + 1 := by omega
+    rw [hn2]
+    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+  have hrec_re : (familyI_element unit (n + 2)).re =
+      2 * unit.re * (familyI_element unit (n + 1)).re - (familyI_element unit n).re := by
+    rw [hx2, hy1, hx1]
+    ring_nf
+    have hp : 1 - (unit.re ^ 2 - 3 * unit.im ^ 2) = 0 := by linarith [hunit_pell]
+    have hmul : 2 * (familyI_element unit n).re * (1 - (unit.re ^ 2 - 3 * unit.im ^ 2)) = 0 := by
+      rw [hp]
+      ring
+    nlinarith [hmul]
+
+  obtain ⟨hdiv0, _⟩ := integrality_family_I unit m n hunit_pell
+  obtain ⟨hdiv1, _⟩ := integrality_family_I unit m (n + 1) hunit_pell
+  obtain ⟨hdiv2, _⟩ := integrality_family_I unit m (n + 2) hunit_pell
+  obtain ⟨c0, hc0⟩ := hdiv0
+  obtain ⟨c1, hc1⟩ := hdiv1
+  obtain ⟨c2, hc2⟩ := hdiv2
+  have hc0' : sm * ((familyI_element unit n).re - 3) = 2 * c0 := by simpa [sm] using hc0
+  have hc1' : sm * ((familyI_element unit (n + 1)).re - 3) = 2 * c1 := by simpa [sm] using hc1
+  have hc2' : sm * ((familyI_element unit (n + 2)).re - 3) = 2 * c2 := by simpa [sm] using hc2
+
+  have hnum : sm * ((familyI_element unit (n + 2)).re - 3) =
+      2 * unit.re * (sm * ((familyI_element unit (n + 1)).re - 3)) -
+      sm * ((familyI_element unit n).re - 3) +
+      2 * ((3 : ℤ) ^ (m + 1) * (unit.re - 1)) := by
+    calc
+      sm * ((familyI_element unit (n + 2)).re - 3)
+          = sm * (2 * unit.re * (familyI_element unit (n + 1)).re - (familyI_element unit n).re - 3) := by
+              rw [hrec_re]
+      _ = 2 * unit.re * (sm * ((familyI_element unit (n + 1)).re - 3)) -
+          sm * ((familyI_element unit n).re - 3) +
+          sm * (6 * (unit.re - 1)) := by ring
+      _ = 2 * unit.re * (sm * ((familyI_element unit (n + 1)).re - 3)) -
+          sm * ((familyI_element unit n).re - 3) +
+          2 * ((3 : ℤ) ^ (m + 1) * (unit.re - 1)) := by
+            rw [h3m1]
+            ring
+
+  have hc_rec : c2 = 2 * unit.re * c1 - c0 + (3 : ℤ) ^ (m + 1) * (unit.re - 1) := by
+    have h2 : 2 * c2 = 2 * (2 * unit.re * c1 - c0 + (3 : ℤ) ^ (m + 1) * (unit.re - 1)) := by
+      calc
+        2 * c2 = sm * ((familyI_element unit (n + 2)).re - 3) := by simpa [sm] using hc2.symm
+        _ = 2 * unit.re * (sm * ((familyI_element unit (n + 1)).re - 3)) -
+            sm * ((familyI_element unit n).re - 3) +
+            2 * ((3 : ℤ) ^ (m + 1) * (unit.re - 1)) := hnum
+        _ = 2 * unit.re * (2 * c1) - (2 * c0) +
+          2 * ((3 : ℤ) ^ (m + 1) * (unit.re - 1)) := by rw [hc1', hc0']
+        _ = 2 * (2 * unit.re * c1 - c0 + (3 : ℤ) ^ (m + 1) * (unit.re - 1)) := by ring
+    omega
+
+  have hC0 : C_m_I unit m n = c0 := by
+    show sm * ((familyI_element unit n).re - 3) / 2 = c0
+    have : sm * ((familyI_element unit n).re - 3) = 2 * c0 := hc0'
+    omega
+  have hC1 : C_m_I unit m (n + 1) = c1 := by
+    show sm * ((familyI_element unit (n + 1)).re - 3) / 2 = c1
+    have : sm * ((familyI_element unit (n + 1)).re - 3) = 2 * c1 := hc1'
+    omega
+  have hC2 : C_m_I unit m (n + 2) = c2 := by
+    show sm * ((familyI_element unit (n + 2)).re - 3) / 2 = c2
+    have : sm * ((familyI_element unit (n + 2)).re - 3) = 2 * c2 := hc2'
+    omega
+
+  rw [hC2, hC1, hC0]
+  exact hc_rec
 
 theorem recurrence_A_family_I (unit : Zsqrtd (3 : ℤ))
     (hunit_pell : unit.re ^ 2 - 3 * unit.im ^ 2 = 1) (m n : ℕ) :
@@ -539,7 +620,89 @@ theorem recurrence_B_family_I (unit : Zsqrtd (3 : ℤ))
     B_m_I unit m (n + 2) =
     2 * unit.re * B_m_I unit m (n + 1) - B_m_I unit m n +
     (3 : ℤ) ^ (m + 2) * (unit.re - 1) := by
-  sorry
+  set sm : ℤ := (3 : ℤ) ^ m
+  have h3m2 : (3 : ℤ) ^ (m + 2) = 9 * sm := by
+    calc
+      (3 : ℤ) ^ (m + 2) = 9 * (3 : ℤ) ^ m := by
+        rw [show m + 2 = (m + 1) + 1 by omega, pow_succ, pow_succ]
+        ring
+      _ = 9 * sm := by simp [sm]
+  have hx1 : (familyI_element unit (n + 1)).re =
+      (familyI_element unit n).re * unit.re + 3 * (familyI_element unit n).im * unit.im := by
+    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+  have hy1 : (familyI_element unit (n + 1)).im =
+      (familyI_element unit n).re * unit.im + (familyI_element unit n).im * unit.re := by
+    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im]
+  have hy2 : (familyI_element unit (n + 2)).im =
+      (familyI_element unit (n + 1)).re * unit.im +
+      (familyI_element unit (n + 1)).im * unit.re := by
+    have hn2 : n + 2 = (n + 1) + 1 := by omega
+    rw [hn2]
+    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im]
+  have hrec_im : (familyI_element unit (n + 2)).im =
+      2 * unit.re * (familyI_element unit (n + 1)).im - (familyI_element unit n).im := by
+    rw [hy2, hx1, hy1]
+    ring_nf
+    have hp : 1 - (unit.re ^ 2 - 3 * unit.im ^ 2) = 0 := by linarith [hunit_pell]
+    have hmul : 2 * (familyI_element unit n).im * (1 - (unit.re ^ 2 - 3 * unit.im ^ 2)) = 0 := by
+      rw [hp]
+      ring
+    nlinarith [hmul]
+
+  obtain ⟨_, hdiv0⟩ := integrality_family_I unit m n hunit_pell
+  obtain ⟨_, hdiv1⟩ := integrality_family_I unit m (n + 1) hunit_pell
+  obtain ⟨_, hdiv2⟩ := integrality_family_I unit m (n + 2) hunit_pell
+  obtain ⟨b0, hb0⟩ := hdiv0
+  obtain ⟨b1, hb1⟩ := hdiv1
+  obtain ⟨b2, hb2⟩ := hdiv2
+  have hb0' : sm * ((familyI_element unit n).im - 9) = 2 * b0 := by simpa [sm] using hb0
+  have hb1' : sm * ((familyI_element unit (n + 1)).im - 9) = 2 * b1 := by simpa [sm] using hb1
+  have hb2' : sm * ((familyI_element unit (n + 2)).im - 9) = 2 * b2 := by simpa [sm] using hb2
+
+  have hnum : sm * ((familyI_element unit (n + 2)).im - 9) =
+      2 * unit.re * (sm * ((familyI_element unit (n + 1)).im - 9)) -
+      sm * ((familyI_element unit n).im - 9) +
+      2 * ((3 : ℤ) ^ (m + 2) * (unit.re - 1)) := by
+    calc
+      sm * ((familyI_element unit (n + 2)).im - 9)
+          = sm * (2 * unit.re * (familyI_element unit (n + 1)).im - (familyI_element unit n).im - 9) := by
+              rw [hrec_im]
+      _ = 2 * unit.re * (sm * ((familyI_element unit (n + 1)).im - 9)) -
+          sm * ((familyI_element unit n).im - 9) +
+          sm * (18 * (unit.re - 1)) := by ring
+      _ = 2 * unit.re * (sm * ((familyI_element unit (n + 1)).im - 9)) -
+          sm * ((familyI_element unit n).im - 9) +
+          2 * ((3 : ℤ) ^ (m + 2) * (unit.re - 1)) := by
+            rw [h3m2]
+            ring
+
+  have hb_rec : b2 = 2 * unit.re * b1 - b0 + (3 : ℤ) ^ (m + 2) * (unit.re - 1) := by
+    have h2 : 2 * b2 = 2 * (2 * unit.re * b1 - b0 + (3 : ℤ) ^ (m + 2) * (unit.re - 1)) := by
+      calc
+        2 * b2 = sm * ((familyI_element unit (n + 2)).im - 9) := by simpa [sm] using hb2.symm
+        _ = 2 * unit.re * (sm * ((familyI_element unit (n + 1)).im - 9)) -
+            sm * ((familyI_element unit n).im - 9) +
+            2 * ((3 : ℤ) ^ (m + 2) * (unit.re - 1)) := hnum
+        _ = 2 * unit.re * (2 * b1) - (2 * b0) +
+          2 * ((3 : ℤ) ^ (m + 2) * (unit.re - 1)) := by rw [hb1', hb0']
+        _ = 2 * (2 * unit.re * b1 - b0 + (3 : ℤ) ^ (m + 2) * (unit.re - 1)) := by ring
+    omega
+
+  have hB0 : B_m_I unit m n = b0 := by
+    show sm * ((familyI_element unit n).im - 9) / 2 = b0
+    have : sm * ((familyI_element unit n).im - 9) = 2 * b0 := hb0'
+    omega
+  have hB1 : B_m_I unit m (n + 1) = b1 := by
+    show sm * ((familyI_element unit (n + 1)).im - 9) / 2 = b1
+    have : sm * ((familyI_element unit (n + 1)).im - 9) = 2 * b1 := hb1'
+    omega
+  have hB2 : B_m_I unit m (n + 2) = b2 := by
+    show sm * ((familyI_element unit (n + 2)).im - 9) / 2 = b2
+    have : sm * ((familyI_element unit (n + 2)).im - 9) = 2 * b2 := hb2'
+    omega
+
+  rw [hB2, hB1, hB0]
+  exact hb_rec
 
 theorem recurrence_D_family_I (unit : Zsqrtd (3 : ℤ))
     (hunit_pell : unit.re ^ 2 - 3 * unit.im ^ 2 = 1) (m n : ℕ) :
