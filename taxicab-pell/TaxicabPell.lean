@@ -21,7 +21,7 @@ This file formalizes the main results from:
 | `unit_sum_odd`           | integrality helper | ✓ proved        |
 | `family_I_pell_eq`       | Proposition 5.2    | ✓ proved        |
 | `family_II_pell_eq`      | Proposition 5.3    | ✓ proved        |
-| `completeness`           | Theorem 5.4        | axiom           |
+| `completeness`           | Theorem 5.4        | ✓ proved        |
 | `integrality_family_I`   | Theorem 6.1        | ✓ proved        |
 | `main_identity_family_I` | Theorem 6.1        | ✓ proved        |
 | `positivity_family_I`    | Theorem 6.1        | ✓ proved        |
@@ -200,10 +200,154 @@ lemma exactly_two_reduced_solutions :
   have hx_bound : x ≤ 16 := by nlinarith [sq_nonneg y]
   interval_cases x <;> interval_cases y <;> omega
 
-axiom completeness :
+lemma completeness_nat :
+    ∀ y : ℕ, 0 < y →
+    ∀ x : ℤ, 0 < x → x ^ 2 - 3 * (y : ℤ) ^ 2 = 78 →
+    (∃ n : ℕ, (familyI_element ε₀ n).re = x ∧ (familyI_element ε₀ n).im = (y : ℤ)) ∨
+    (∃ n : ℕ, (familyII_element ε₀ n).re = x ∧ (familyII_element ε₀ n).im = (y : ℤ)) := by
+  intro y
+  refine Nat.strong_induction_on y ?_
+  intro y ih hy x hx heq
+  by_cases hred : 2 * (y : ℤ) ≤ x
+  · have hyz : 0 < (y : ℤ) := by exact_mod_cast hy
+    have hcls := exactly_two_reduced_solutions x (y : ℤ) hx hyz heq hred
+    rcases hcls with hII | hI
+    · rcases hII with ⟨hx9, hy1z⟩
+      have hy1 : y = 1 := by exact_mod_cast hy1z
+      right
+      refine ⟨0, ?_, ?_⟩
+      · rw [hx9]
+        simp [familyII_element, seed_II]
+      · rw [hy1]
+        simp [familyII_element, seed_II]
+    · rcases hI with ⟨hx15, hy7z⟩
+      have hy7 : y = 7 := by exact_mod_cast hy7z
+      left
+      refine ⟨0, ?_, ?_⟩
+      · rw [hx15]
+        simp [familyI_element, seed_I]
+      · rw [hy7]
+        simp [familyI_element, seed_I]
+  · have hnotred : x < 2 * (y : ℤ) := lt_of_not_ge hred
+    set x' : ℤ := 2 * x - 3 * (y : ℤ)
+    set y' : ℤ := 2 * (y : ℤ) - x
+    have hy'_pos : 0 < y' := by
+      dsimp [y']
+      linarith
+    have hxy : (y : ℤ) < x := by
+      nlinarith [heq]
+    have hy'_lt : y' < (y : ℤ) := by
+      dsimp [y']
+      linarith
+    have hx'_pos : 0 < x' := by
+      have hsq : (2 * x) ^ 2 > (3 * (y : ℤ)) ^ 2 := by
+        nlinarith [heq, hy]
+      have h2x3y : 3 * (y : ℤ) < 2 * x := by
+        nlinarith [hsq, hx, hy]
+      dsimp [x']
+      linarith
+    have heq' : x' ^ 2 - 3 * y' ^ 2 = 78 := by
+      dsimp [x', y']
+      nlinarith [heq]
+    set k : ℕ := Int.toNat y'
+    have hy'_nonneg : 0 ≤ y' := le_of_lt hy'_pos
+    have hk_eq : (k : ℤ) = y' := by
+      simp [k, Int.toNat_of_nonneg hy'_nonneg]
+    have hk_pos : 0 < k := by
+      have : (0 : ℤ) < (k : ℤ) := by simpa [hk_eq] using hy'_pos
+      exact_mod_cast this
+    have hk_lt : k < y := by
+      have : (k : ℤ) < (y : ℤ) := by simpa [hk_eq] using hy'_lt
+      exact_mod_cast this
+    have heqk : x' ^ 2 - 3 * (k : ℤ) ^ 2 = 78 := by
+      simpa [hk_eq] using heq'
+    have hrec := ih k hk_lt hk_pos x' hx'_pos heqk
+    rcases hrec with hI | hII
+    · rcases hI with ⟨n, hxn, hyn⟩
+      left
+      refine ⟨n + 1, ?_, ?_⟩
+      · have hstep : (familyI_element ε₀ (n + 1)).re =
+            2 * (familyI_element ε₀ n).re + 3 * (familyI_element ε₀ n).im := by
+          simp [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re, ε₀]
+          ring
+        have hyn' : (familyI_element ε₀ n).im = y' := by
+          calc
+            (familyI_element ε₀ n).im = (k : ℤ) := hyn
+            _ = y' := hk_eq
+        have hxback : x = 2 * x' + 3 * y' := by
+          dsimp [x', y']
+          ring
+        calc
+          (familyI_element ε₀ (n + 1)).re
+              = 2 * (familyI_element ε₀ n).re + 3 * (familyI_element ε₀ n).im := hstep
+          _ = 2 * x' + 3 * y' := by rw [hxn, hyn']
+          _ = x := by linarith [hxback]
+      · have hstep : (familyI_element ε₀ (n + 1)).im =
+            (familyI_element ε₀ n).re + 2 * (familyI_element ε₀ n).im := by
+          simp [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im, ε₀]
+          ring
+        have hyn' : (familyI_element ε₀ n).im = y' := by
+          calc
+            (familyI_element ε₀ n).im = (k : ℤ) := hyn
+            _ = y' := hk_eq
+        have hyback : (y : ℤ) = x' + 2 * y' := by
+          dsimp [x', y']
+          ring
+        calc
+          (familyI_element ε₀ (n + 1)).im
+              = (familyI_element ε₀ n).re + 2 * (familyI_element ε₀ n).im := hstep
+          _ = x' + 2 * y' := by rw [hxn, hyn']
+          _ = (y : ℤ) := by linarith [hyback]
+    · rcases hII with ⟨n, hxn, hyn⟩
+      right
+      refine ⟨n + 1, ?_, ?_⟩
+      · have hstep : (familyII_element ε₀ (n + 1)).re =
+            2 * (familyII_element ε₀ n).re + 3 * (familyII_element ε₀ n).im := by
+          simp [familyII_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re, ε₀]
+          ring
+        have hyn' : (familyII_element ε₀ n).im = y' := by
+          calc
+            (familyII_element ε₀ n).im = (k : ℤ) := hyn
+            _ = y' := hk_eq
+        have hxback : x = 2 * x' + 3 * y' := by
+          dsimp [x', y']
+          ring
+        calc
+          (familyII_element ε₀ (n + 1)).re
+              = 2 * (familyII_element ε₀ n).re + 3 * (familyII_element ε₀ n).im := hstep
+          _ = 2 * x' + 3 * y' := by rw [hxn, hyn']
+          _ = x := by linarith [hxback]
+      · have hstep : (familyII_element ε₀ (n + 1)).im =
+            (familyII_element ε₀ n).re + 2 * (familyII_element ε₀ n).im := by
+          simp [familyII_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im, ε₀]
+          ring
+        have hyn' : (familyII_element ε₀ n).im = y' := by
+          calc
+            (familyII_element ε₀ n).im = (k : ℤ) := hyn
+            _ = y' := hk_eq
+        have hyback : (y : ℤ) = x' + 2 * y' := by
+          dsimp [x', y']
+          ring
+        calc
+          (familyII_element ε₀ (n + 1)).im
+              = (familyII_element ε₀ n).re + 2 * (familyII_element ε₀ n).im := hstep
+          _ = x' + 2 * y' := by rw [hxn, hyn']
+          _ = (y : ℤ) := by linarith [hyback]
+
+theorem completeness :
     ∀ x y : ℤ, 0 < x → 0 < y → x ^ 2 - 3 * y ^ 2 = 78 →
     (∃ n : ℕ, (familyI_element ε₀ n).re = x ∧ (familyI_element ε₀ n).im = y) ∨
-    (∃ n : ℕ, (familyII_element ε₀ n).re = x ∧ (familyII_element ε₀ n).im = y)
+    (∃ n : ℕ, (familyII_element ε₀ n).re = x ∧ (familyII_element ε₀ n).im = y) := by
+  intro x y hx hy heq
+  set yn : ℕ := Int.toNat y
+  have hy_eq : (yn : ℤ) = y := by
+    simp [yn, Int.toNat_of_nonneg (le_of_lt hy)]
+  have hy_nat_pos : 0 < yn := by
+    have : (0 : ℤ) < (yn : ℤ) := by simpa [hy_eq] using hy
+    exact_mod_cast this
+  have heqn : x ^ 2 - 3 * (yn : ℤ) ^ 2 = 78 := by simpa [hy_eq] using heq
+  have h := completeness_nat yn hy_nat_pos x hx heqn
+  simpa [hy_eq] using h
 
 -- ============================================================================
 -- §6.  Integrality
