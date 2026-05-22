@@ -488,7 +488,7 @@ theorem distinctness_family_I (unit : Zsqrtd (3 : ℤ)) (m n : ℕ) :
   linarith
 
 theorem distinctness_no_swap_family_I (unit : Zsqrtd (3 : ℤ))
-    (hunit_norm : Zsqrtd.norm unit = 1) (m n : ℕ) :
+    (_hunit_norm : Zsqrtd.norm unit = 1) (m n : ℕ) :
     ¬ (A_m_I unit m n = D_m_I unit m n ∧ B_m_I unit m n = C_m_I unit m n) := by
   intro ⟨hAD, hBC⟩
   simp only [A_m_I, D_m_I, B_m_I, C_m_I] at hAD hBC
@@ -558,7 +558,7 @@ example : B_m_II ε₀ 0 3 =
 -- ============================================================================
 
 theorem growth_monotone_re_I (unit : Zsqrtd (3 : ℤ))
-    (hunit_pell : unit.re ^ 2 - 3 * unit.im ^ 2 = 1)
+    (_hunit_pell : unit.re ^ 2 - 3 * unit.im ^ 2 = 1)
     (hu : 2 ≤ unit.re) (hv : 1 ≤ unit.im) (n : ℕ) :
     (familyI_element unit n).re < (familyI_element unit (n + 1)).re := by
   simp only [familyI_element, pow_succ, ← mul_assoc]
@@ -623,7 +623,7 @@ example : A_m_I ε₁ 0 2 = 1317 ∧ B_m_I ε₁ 0 2 = 755 ∧ C_m_I ε₁ 0 2 =
 lemma pascal_n2 (C r : ℤ) : (C + r) ^ 2 - C ^ 2 = 2 * r * C + r ^ 2 := by ring
 lemma pascal_n3 (C r : ℤ) : (C + r) ^ 3 - C ^ 3 = 3 * r * C ^ 2 + 3 * r ^ 2 * C + r ^ 3 := by ring
 
-lemma radicand_nonneg_bound (Δ r : ℝ) (hΔ : 0 < Δ) (hr : 0 < r) (hbnd : r ^ 3 ≤ 4 * Δ) :
-    12 * Δ * r - 3 * r ^ 4 ≥ 0 := by nlinarith [sq_nonneg r, mul_pos hΔ hr]
+lemma radicand_nonneg_bound (Δ r : ℝ) (_hΔ : 0 < Δ) (hr : 0 < r) (hbnd : r ^ 3 ≤ 4 * Δ) :
+    12 * Δ * r - 3 * r ^ 4 ≥ 0 := by nlinarith [sq_nonneg r, mul_nonneg hr.le (by linarith : (0:ℝ) ≤ 4 * Δ - r ^ 3)]
 
 end TaxicabPell
