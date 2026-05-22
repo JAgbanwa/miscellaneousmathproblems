@@ -29,7 +29,7 @@ This file formalizes the main results from:
 | `hardy_ramanujan`        | Corollary 6.3      | ✓ norm_num      |
 | `recurrence_C_family_I`  | Theorem 7.1        | ✓ proved        |
 | `growth_monotone_re_I`   | Theorem 7.2(i)     | ✓ proved        |
-| `growth_exponential`     | Theorem 7.2(ii)    | sorry           |
+| `growth_exponential`     | Theorem 7.2(ii)    | ✓ proved        |
 -/
 
 open Int Zsqrtd
@@ -892,6 +892,51 @@ theorem growth_monotone_re_I (unit : Zsqrtd (3 : ℤ))
   have h3 : 0 < 3 * (seed_I * unit ^ n).im * unit.im :=
     mul_pos (by linarith [hxy_pos.2]) hv'
   linarith [h_bound, hxy_pos.1, h3]
+
+/-- **Theorem 7.2(ii)** (Exponential growth): For n ≥ 1, the .re-component of
+    `familyI_element` grows with multiplicative ratio at least `2·unit.re − 1`:
+      (2·unit.re − 1) · xₙ < xₙ₊₁.
+    Since `unit.re ≥ 2` gives `2·unit.re − 1 ≥ 3`, the sequence grows at least
+    geometrically with ratio 3, establishing exponential growth. -/
+theorem growth_exponential (unit : Zsqrtd (3 : ℤ))
+    (hunit_pell : unit.re ^ 2 - 3 * unit.im ^ 2 = 1)
+    (hu : 2 ≤ unit.re) (hv : 1 ≤ unit.im) (n : ℕ) (hn : 1 ≤ n) :
+    (2 * unit.re - 1) * (familyI_element unit n).re <
+    (familyI_element unit (n + 1)).re := by
+  cases n with
+  | zero => omega
+  | succ k =>
+    -- n = k + 1.  Derive the Pell 2-step recurrence x_{k+2} = 2u·x_{k+1} − x_k.
+    have hrec : (familyI_element unit (k + 2)).re =
+        2 * unit.re * (familyI_element unit (k + 1)).re -
+        (familyI_element unit k).re := by
+      have hx1 : (familyI_element unit (k + 1)).re =
+          (familyI_element unit k).re * unit.re +
+          3 * (familyI_element unit k).im * unit.im := by
+        simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+      have hy1 : (familyI_element unit (k + 1)).im =
+          (familyI_element unit k).re * unit.im +
+          (familyI_element unit k).im * unit.re := by
+        simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im]
+      have hx2 : (familyI_element unit (k + 2)).re =
+          (familyI_element unit (k + 1)).re * unit.re +
+          3 * (familyI_element unit (k + 1)).im * unit.im := by
+        simp only [show k + 2 = k + 1 + 1 from rfl,
+                   familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+      rw [hx2, hy1, hx1]
+      ring_nf
+      have hp : 1 - (unit.re ^ 2 - 3 * unit.im ^ 2) = 0 := by linarith
+      have hmul : 2 * (familyI_element unit k).re *
+          (1 - (unit.re ^ 2 - 3 * unit.im ^ 2)) = 0 := by rw [hp]; ring
+      nlinarith [hmul]
+    -- Strict monotonicity: x_k < x_{k+1}
+    have hmon : (familyI_element unit k).re < (familyI_element unit (k + 1)).re :=
+      growth_monotone_re_I unit hunit_pell hu hv k
+    -- x_{k+2} = 2u·x_{k+1} − x_k > 2u·x_{k+1} − x_{k+1} = (2u−1)·x_{k+1}
+    show (2 * unit.re - 1) * (familyI_element unit (k + 1)).re <
+        (familyI_element unit (k + 1 + 1)).re
+    rw [show k + 1 + 1 = k + 2 from by omega]
+    linarith
 
 -- ============================================================================
 -- §8.  Numerical table verifications
