@@ -292,7 +292,7 @@ lemma completeness_nat :
           _ = x := by linarith [hxback]
       · have hstep : (familyI_element ε₀ (n + 1)).im =
             (familyI_element ε₀ n).re + 2 * (familyI_element ε₀ n).im := by
-          simp [familyI_element, pow_succ, ← mul_assoc, zs_mul_im, ε₀]
+          simp [familyI_element, pow_succ, ← mul_assoc, ε₀]
           ring
         have hyn' : (familyI_element ε₀ n).im = y' := by
           calc
