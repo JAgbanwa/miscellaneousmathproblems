@@ -276,7 +276,7 @@ lemma completeness_nat :
       refine ⟨n + 1, ?_, ?_⟩
       · have hstep : (familyI_element ε₀ (n + 1)).re =
             2 * (familyI_element ε₀ n).re + 3 * (familyI_element ε₀ n).im := by
-          simp [familyI_element, pow_succ, ← mul_assoc, zs_mul_re, ε₀]
+          simp [familyI_element, pow_succ, ← mul_assoc, ε₀]
           ring
         have hyn' : (familyI_element ε₀ n).im = y' := by
           calc
@@ -311,7 +311,7 @@ lemma completeness_nat :
       refine ⟨n + 1, ?_, ?_⟩
       · have hstep : (familyII_element ε₀ (n + 1)).re =
             2 * (familyII_element ε₀ n).re + 3 * (familyII_element ε₀ n).im := by
-          simp [familyII_element, pow_succ, ← mul_assoc, zs_mul_re, ε₀]
+          simp [familyII_element, pow_succ, ← mul_assoc, ε₀]
           ring
         have hyn' : (familyII_element ε₀ n).im = y' := by
           calc
@@ -327,7 +327,7 @@ lemma completeness_nat :
           _ = x := by linarith [hxback]
       · have hstep : (familyII_element ε₀ (n + 1)).im =
             (familyII_element ε₀ n).re + 2 * (familyII_element ε₀ n).im := by
-          simp [familyII_element, pow_succ, ← mul_assoc, zs_mul_im, ε₀]
+          simp [familyII_element, pow_succ, ← mul_assoc, ε₀]
           ring
         have hyn' : (familyII_element ε₀ n).im = y' := by
           calc
