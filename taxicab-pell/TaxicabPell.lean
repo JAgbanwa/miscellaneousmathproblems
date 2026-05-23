@@ -36,6 +36,14 @@ open Int Zsqrtd
 
 namespace TaxicabPell
 
+-- Multiplication component lemmas for ℤ[√3].
+-- `zs_mul_re` / `zs_mul_im` are not present in all Mathlib versions;
+-- these local aliases prove the same facts by definitional reduction (rfl).
+private theorem zs_mul_re (a b : Zsqrtd (3 : ℤ)) :
+    (a * b).re = a.re * b.re + 3 * a.im * b.im := rfl
+private theorem zs_mul_im (a b : Zsqrtd (3 : ℤ)) :
+    (a * b).im = a.re * b.im + a.im * b.re := rfl
+
 -- ============================================================================
 -- §1.  The ring ℤ[√3]
 -- ============================================================================
@@ -268,7 +276,7 @@ lemma completeness_nat :
       refine ⟨n + 1, ?_, ?_⟩
       · have hstep : (familyI_element ε₀ (n + 1)).re =
             2 * (familyI_element ε₀ n).re + 3 * (familyI_element ε₀ n).im := by
-          simp [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re, ε₀]
+          simp [familyI_element, pow_succ, ← mul_assoc, zs_mul_re, ε₀]
           ring
         have hyn' : (familyI_element ε₀ n).im = y' := by
           calc
@@ -284,7 +292,7 @@ lemma completeness_nat :
           _ = x := by linarith [hxback]
       · have hstep : (familyI_element ε₀ (n + 1)).im =
             (familyI_element ε₀ n).re + 2 * (familyI_element ε₀ n).im := by
-          simp [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im, ε₀]
+          simp [familyI_element, pow_succ, ← mul_assoc, zs_mul_im, ε₀]
           ring
         have hyn' : (familyI_element ε₀ n).im = y' := by
           calc
@@ -303,7 +311,7 @@ lemma completeness_nat :
       refine ⟨n + 1, ?_, ?_⟩
       · have hstep : (familyII_element ε₀ (n + 1)).re =
             2 * (familyII_element ε₀ n).re + 3 * (familyII_element ε₀ n).im := by
-          simp [familyII_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re, ε₀]
+          simp [familyII_element, pow_succ, ← mul_assoc, zs_mul_re, ε₀]
           ring
         have hyn' : (familyII_element ε₀ n).im = y' := by
           calc
@@ -319,7 +327,7 @@ lemma completeness_nat :
           _ = x := by linarith [hxback]
       · have hstep : (familyII_element ε₀ (n + 1)).im =
             (familyII_element ε₀ n).re + 2 * (familyII_element ε₀ n).im := by
-          simp [familyII_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im, ε₀]
+          simp [familyII_element, pow_succ, ← mul_assoc, zs_mul_im, ε₀]
           ring
         have hyn' : (familyII_element ε₀ n).im = y' := by
           calc
@@ -519,11 +527,11 @@ theorem positivity_family_I (unit : Zsqrtd (3 : ℤ))
       · -- base case k = 1: x₁ = 15u + 21v ≥ 51 > 3, y₁ = 15v + 7u ≥ 29 > 9
         refine ⟨?_, ?_⟩
         · show 3 < (seed_I * unit ^ 1).re
-          rw [pow_one, Zsqrtd.mul_re]
+          rw [pow_one, zs_mul_re]
           show 3 < (15 : ℤ) * unit.re + 3 * 7 * unit.im
           linarith
         · show 9 < (seed_I * unit ^ 1).im
-          rw [pow_one, Zsqrtd.mul_im]
+          rw [pow_one, zs_mul_im]
           show 9 < (15 : ℤ) * unit.im + 7 * unit.re
           linarith
       · -- inductive step: use IH
@@ -531,13 +539,13 @@ theorem positivity_family_I (unit : Zsqrtd (3 : ℤ))
         simp only [familyI_element] at ihr ihi ⊢
         simp only [pow_succ, ← mul_assoc]
         refine ⟨?_, ?_⟩
-        · rw [Zsqrtd.mul_re]
+        · rw [zs_mul_re]
           -- re·u + 3·im·v ≥ 4·2 + 0 > 3
           nlinarith [mul_nonneg (show (0 : ℤ) ≤ (seed_I * unit ^ j).re from by linarith)
                                 (show (0 : ℤ) ≤ unit.re - 2 from by linarith),
                      mul_nonneg (show (0 : ℤ) ≤ (seed_I * unit ^ j).im from by linarith)
                                 hv_pos.le]
-        · rw [Zsqrtd.mul_im]
+        · rw [zs_mul_im]
           -- re·v + im·u ≥ 0 + 10·2 > 9
           nlinarith [mul_nonneg (show (0 : ℤ) ≤ (seed_I * unit ^ j).im from by linarith)
                                 (show (0 : ℤ) ≤ unit.re - 2 from by linarith),
@@ -580,23 +588,23 @@ theorem positivity_family_II (unit : Zsqrtd (3 : ℤ))
       · -- base case k = 1: x₁ = 9u + 3v ≥ 21 > 3, y₁ = 9v + u ≥ 11 > 9
         refine ⟨?_, ?_⟩
         · show 3 < (seed_II * unit ^ 1).re
-          rw [pow_one, Zsqrtd.mul_re]
+          rw [pow_one, zs_mul_re]
           show 3 < (9 : ℤ) * unit.re + 3 * 1 * unit.im
           linarith
         · show 9 < (seed_II * unit ^ 1).im
-          rw [pow_one, Zsqrtd.mul_im]
+          rw [pow_one, zs_mul_im]
           show 9 < (9 : ℤ) * unit.im + 1 * unit.re
           linarith
       · obtain ⟨ihr, ihi⟩ := ih (by omega)
         simp only [familyII_element] at ihr ihi ⊢
         simp only [pow_succ, ← mul_assoc]
         refine ⟨?_, ?_⟩
-        · rw [Zsqrtd.mul_re]
+        · rw [zs_mul_re]
           nlinarith [mul_nonneg (show (0 : ℤ) ≤ (seed_II * unit ^ j).re from by linarith)
                                 (show (0 : ℤ) ≤ unit.re - 2 from by linarith),
                      mul_nonneg (show (0 : ℤ) ≤ (seed_II * unit ^ j).im from by linarith)
                                 hv_pos.le]
-        · rw [Zsqrtd.mul_im]
+        · rw [zs_mul_im]
           nlinarith [mul_nonneg (show (0 : ℤ) ≤ (seed_II * unit ^ j).im from by linarith)
                                 (show (0 : ℤ) ≤ unit.re - 2 from by linarith),
                      mul_nonneg (show (0 : ℤ) ≤ (seed_II * unit ^ j).re from by linarith)
@@ -677,16 +685,16 @@ theorem recurrence_C_family_I (unit : Zsqrtd (3 : ℤ))
       _ = 3 * sm := by simp [sm]
   have hx1 : (familyI_element unit (n + 1)).re =
       (familyI_element unit n).re * unit.re + 3 * (familyI_element unit n).im * unit.im := by
-    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+    simp only [familyI_element, pow_succ, ← mul_assoc, zs_mul_re]
   have hy1 : (familyI_element unit (n + 1)).im =
       (familyI_element unit n).re * unit.im + (familyI_element unit n).im * unit.re := by
-    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im]
+    simp only [familyI_element, pow_succ, ← mul_assoc, zs_mul_im]
   have hx2 : (familyI_element unit (n + 2)).re =
       (familyI_element unit (n + 1)).re * unit.re +
       3 * (familyI_element unit (n + 1)).im * unit.im := by
     have hn2 : n + 2 = (n + 1) + 1 := by omega
     rw [hn2]
-    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+    simp only [familyI_element, pow_succ, ← mul_assoc, zs_mul_re]
   have hrec_re : (familyI_element unit (n + 2)).re =
       2 * unit.re * (familyI_element unit (n + 1)).re - (familyI_element unit n).re := by
     rw [hx2, hy1, hx1]
@@ -773,16 +781,16 @@ theorem recurrence_B_family_I (unit : Zsqrtd (3 : ℤ))
       _ = 9 * sm := by simp [sm]
   have hx1 : (familyI_element unit (n + 1)).re =
       (familyI_element unit n).re * unit.re + 3 * (familyI_element unit n).im * unit.im := by
-    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+    simp only [familyI_element, pow_succ, ← mul_assoc, zs_mul_re]
   have hy1 : (familyI_element unit (n + 1)).im =
       (familyI_element unit n).re * unit.im + (familyI_element unit n).im * unit.re := by
-    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im]
+    simp only [familyI_element, pow_succ, ← mul_assoc, zs_mul_im]
   have hy2 : (familyI_element unit (n + 2)).im =
       (familyI_element unit (n + 1)).re * unit.im +
       (familyI_element unit (n + 1)).im * unit.re := by
     have hn2 : n + 2 = (n + 1) + 1 := by omega
     rw [hn2]
-    simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im]
+    simp only [familyI_element, pow_succ, ← mul_assoc, zs_mul_im]
   have hrec_im : (familyI_element unit (n + 2)).im =
       2 * unit.re * (familyI_element unit (n + 1)).im - (familyI_element unit n).im := by
     rw [hy2, hx1, hy1]
@@ -878,11 +886,11 @@ theorem growth_monotone_re_I (unit : Zsqrtd (3 : ℤ))
       obtain ⟨ihx, ihy⟩ := ih
       simp only [pow_succ, ← mul_assoc]
       constructor
-      · rw [Zsqrtd.mul_re]; linarith [mul_pos ihx hu', mul_pos ihy hv']
-      · rw [Zsqrtd.mul_im]; linarith [mul_pos ihx hv', mul_pos ihy hu']
+      · rw [zs_mul_re]; linarith [mul_pos ihx hu', mul_pos ihy hv']
+      · rw [zs_mul_im]; linarith [mul_pos ihx hv', mul_pos ihy hu']
   have hre_expand : (seed_I * unit ^ n * unit).re =
       (seed_I * unit ^ n).re * unit.re + 3 * (seed_I * unit ^ n).im * unit.im :=
-    Zsqrtd.mul_re _ _
+    zs_mul_re _ _
   rw [hre_expand]
   have h_bound : (seed_I * unit ^ n).re * unit.re ≥ 2 * (seed_I * unit ^ n).re := by
     have hmul := mul_nonneg (show (0 : ℤ) ≤ unit.re - 2 from by linarith)
@@ -913,16 +921,16 @@ theorem growth_exponential (unit : Zsqrtd (3 : ℤ))
       have hx1 : (familyI_element unit (k + 1)).re =
           (familyI_element unit k).re * unit.re +
           3 * (familyI_element unit k).im * unit.im := by
-        simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+        simp only [familyI_element, pow_succ, ← mul_assoc, zs_mul_re]
       have hy1 : (familyI_element unit (k + 1)).im =
           (familyI_element unit k).re * unit.im +
           (familyI_element unit k).im * unit.re := by
-        simp only [familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_im]
+        simp only [familyI_element, pow_succ, ← mul_assoc, zs_mul_im]
       have hx2 : (familyI_element unit (k + 2)).re =
           (familyI_element unit (k + 1)).re * unit.re +
           3 * (familyI_element unit (k + 1)).im * unit.im := by
         simp only [show k + 2 = k + 1 + 1 from rfl,
-                   familyI_element, pow_succ, ← mul_assoc, Zsqrtd.mul_re]
+                   familyI_element, pow_succ, ← mul_assoc, zs_mul_re]
       rw [hx2, hy1, hx1]
       ring_nf
       have hp : 1 - (unit.re ^ 2 - 3 * unit.im ^ 2) = 0 := by linarith
