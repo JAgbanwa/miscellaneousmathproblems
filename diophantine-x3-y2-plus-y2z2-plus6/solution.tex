@@ -1,0 +1,170 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{enumitem}
+
+\title{On the Integer Equation $6+x^3-y^2+y^2z^2=0$}
+\author{}
+\date{}
+
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}
+\newtheorem{remark}{Remark}
+
+\begin{document}
+\maketitle
+
+\section*{Problem}
+Determine the integer solutions of
+\[
+6+x^3-y^2+y^2z^2=0.
+\]
+Equivalently,
+\[
+x^3+y^2(z^2-1)=-6
+\quad\text{or}\quad
+y^2(1-z^2)=x^3+6.
+\]
+
+\section*{Step 1: Immediate special cases}
+
+\begin{prop}
+If $y=0$, there is no integer solution.
+\end{prop}
+\begin{proof}
+Then $x^3=-6$, impossible in $\mathbb Z$.
+\end{proof}
+
+\begin{prop}
+If $z=\pm1$, there is no integer solution.
+\end{prop}
+\begin{proof}
+If $z^2=1$, the equation becomes again $x^3=-6$, impossible.
+\end{proof}
+
+\section*{Step 2: Parity and modular restrictions}
+
+\begin{prop}
+$z$ cannot be odd.
+\end{prop}
+\begin{proof}
+Assume $z$ odd. Then $z^2\equiv1\pmod 8$, hence $z^2-1\equiv0\pmod 8$.
+Reducing
+\[
+x^3+y^2(z^2-1)=-6
+\]
+modulo $8$ gives $x^3\equiv-6\equiv2\pmod 8$.
+But cube residues mod $8$ are only $0,1,3,5,7$. Contradiction.
+\end{proof}
+
+\begin{prop}
+If a solution exists, then $z$ is even, $y$ is odd, and $x\equiv3\pmod 4$.
+\end{prop}
+\begin{proof}
+By the previous proposition, $z$ is even.
+Then $z^2\equiv0\pmod4$, so $z^2-1\equiv3\pmod4$. Reduce
+\[
+x^3+y^2(z^2-1)=-6
+\]
+modulo $4$:
+\[
+x^3+3y^2\equiv2\pmod4.
+\]
+If $y$ were even, then $3y^2\equiv0\pmod4$, so $x^3\equiv2\pmod4$, impossible.
+Hence $y$ is odd, so $y^2\equiv1\pmod4$, giving $x^3\equiv3\pmod4$, thus $x\equiv3\pmod4$.
+\end{proof}
+
+\section*{Step 3: The case $z=0$}
+
+\begin{prop}
+There is no integer solution with $z=0$.
+\end{prop}
+\begin{proof}
+If $z=0$, the equation is
+\[
+y^2=x^3+6.
+\]
+This is the Mordell curve $E:\ y^2=x^3+6$.
+
+To determine all integral points on $E$, one may use the standard
+elliptic-curve integral-point algorithm (Baker bounds + elliptic logarithms),
+implemented in SageMath:
+\[
+\texttt{EllipticCurve([0,0,0,0,6]).integral\_points()}.
+\]
+Running this computation returns the empty set:
+\[
+E(\mathbb Z)=\varnothing.
+\]
+Hence no integer pair $(x,y)$ satisfies $y^2=x^3+6$, so no solution exists with $z=0$.
+\end{proof}
+
+\section*{What is fully proved, and what remains}
+
+All of the following are now proved:
+\begin{itemize}[leftmargin=2em]
+\item no solutions with $y=0$;
+\item no solutions with $z=\pm1$;
+\item no solutions with odd $z$;
+\item no solutions with $z=0$.
+\end{itemize}
+
+Therefore any possible solution would have to satisfy
+\[
+z\in2\mathbb Z\setminus\{0\},\qquad y\equiv1\pmod2,\qquad x\equiv3\pmod4.
+\]
+
+\begin{remark}
+At this stage, a complete elimination of the remaining branch
+$z\in2\mathbb Z\setminus\{0\}$ has not been established in this write-up.
+So this document gives a fully rigorous reduction plus complete resolution
+of all listed special cases, but not yet a full global classification.
+\end{remark}
+
+\section*{Sanity checks}
+
+\subsection*{(A) Substitution checks for all candidate special cases}
+\begin{itemize}[leftmargin=2em]
+\item $y=0$ forces $x^3=-6$ (not an integer cube), so no candidate survives.
+\item $z=\pm1$ forces $x^3=-6$, so no candidate survives.
+\item $z=0$ reduces to $y^2=x^3+6$, and the integral-point computation gives no candidate.
+\end{itemize}
+
+\subsection*{(B) Wide bounded search (evidence only)}
+A direct search over
+\[
+|x|\le 200,\quad |y|\le 200,\quad |z|\le 50
+\]
+finds no solution. Extending to
+\[
+|y|\le 3000,\quad |z|\le 3000
+\]
+with exact-cube checking for $x^3=-6-y^2(z^2-1)$ also finds none.
+This supports nonexistence but is not a proof for all integers.
+
+\section*{Concise theorem statement and summary}
+
+\begin{thm}[Proved nonexistence in all listed special branches]
+For
+\[
+6+x^3-y^2+y^2z^2=0,\qquad x,y,z\in\mathbb Z,
+\]
+there are no solutions in each of the branches
+\[
+y=0,\quad z=\pm1,\quad z\ \text{odd},\quad z=0.
+\]
+Hence any hypothetical solution must satisfy
+\[
+z\in2\mathbb Z\setminus\{0\},\ y\ \text{odd},\ x\equiv3\pmod4.
+\]
+\end{thm}
+
+\noindent\textbf{Proof summary.}
+Rewrite as $x^3+y^2(z^2-1)=-6$. Immediate substitutions eliminate
+$y=0$ and $z=\pm1$. Modulo $8$, odd $z$ is impossible since it would force
+$x^3\equiv2\pmod8$. For even $z$, modulo $4$ forces $y$ odd and $x\equiv3\pmod4$.
+Finally, $z=0$ gives the Mordell curve $y^2=x^3+6$, whose integral points are empty.
+Therefore all these branches are impossible.
+
+\end{document}
