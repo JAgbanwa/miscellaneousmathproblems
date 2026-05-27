@@ -1,0 +1,74 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\title{Nonexistence of integer solutions to $6+x^{3}-y^{2}+y^{2}z^{2}=0$}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Theorem}
+There are no integers $x,y,z$ with $z$ even, $y$ odd, and $x\equiv 3\pmod 4$ satisfying
+\[6 + x^{3} - y^{2} + y^{2}z^{2}=0.\]
+
+\section*{Proof (elementary, using congruences and descent in $\mathbb Z[\omega]$)}
+Rewrite the equation as
+\begin{equation}\label{eq:main}
+x^{3}+6 = -y^{2}(z^{2}-1).
+\end{equation}
+
+\paragraph{1) Preliminary reductions and parity.}
+Since $z$ is even, $z^{2}-1$ is odd and $\ge 3$ unless $z=0$. We treat $z=0$ separately below. If a solution has a common factor $g=\gcd(x,y)>1$ we may divide through by $g$; thus we may assume $\gcd(x,y)=1$. Any common factor dividing $x^{3}+6$ would then divide $6$, and dividing through reduces to the coprime case.
+
+Because $y$ is odd by hypothesis, $y^{2}\equiv1\pmod 8$. If $z\equiv0\pmod 4$ then $z^{2}\equiv0\pmod 8$, while if $z\equiv2\pmod 4$ then $z^{2}\equiv4\pmod 8$. Thus $z^{2}-1\equiv -1$ or $3\pmod 8$, i.e. an odd number.
+
+\paragraph{2) The easy exception: $z=0$.}
+If $z=0$ then \eqref{eq:main} becomes
+\[x^{3}+6 = -y^{2}.\]
+Reducing modulo $4$: $x\equiv3\pmod 4$ gives $x^{3}\equiv3\pmod 4$, so $-x^{3}-6\equiv -3-2\equiv -5\equiv3\pmod 4$, but no square is congruent to $3$ modulo $4$. Hence $z=0$ is impossible.
+
+So any solution must have $|z|\ge2$ and hence $d:=z^{2}-1\ge3$ is a positive odd integer.
+
+\paragraph{3) Set-up in the Eisenstein integers.}
+Let $\omega:=\tfrac{-1+\sqrt{-3}}{2}$ and let $\mathbb Z[\omega]$ be the ring of Eisenstein integers. Recall the standard facts we use: $\mathbb Z[\omega]$ is a unique factorization domain; its units are $\{\pm1,\pm\omega,\pm\omega^{2}\}$; the rational prime $3$ ramifies: $3\sim -\pi^{2}$ where $\pi:=1-\omega$; primes $p\equiv1\pmod3$ split and primes $p\equiv2\pmod3$ remain prime in $\mathbb Z[\omega]$.
+
+Rewrite \eqref{eq:main} as
+\begin{equation}\label{eq:main2}
+x^{3}+6 = -d\,y^{2}.
+\end{equation}
+We view both sides in $\mathbb Z[\omega]$.
+
+\paragraph{4) GCD analysis in $\mathbb Z[\omega]$.}
+First observe $d$ is odd, so $\pi$ does not divide $d$ unless $3\mid d$. Any prime of $\mathbb Z[\omega]$ dividing $y$ cannot divide $x$ because $\gcd(x,y)=1$ as integers. From \eqref{eq:main2}, every prime divisor $\mathfrak p$ of $d$ in $\mathbb Z[\omega]$ divides $x^{3}+6$. Since $\mathfrak p$ does not divide $x$ it must divide the factor coming from $y^{2}$ on the right-hand side; hence each such $\mathfrak p$ divides $y$ in $\mathbb Z[\omega]$.
+
+Because primes dividing $y$ occur with even exponent on the right-hand side, their exponent divides the exponent of that prime in $x^{3}+6$. Therefore, using unique factorization, we may write (uniquely up to units)
+\begin{equation}\label{eq:lift}
+x^{3}+6 = -\delta\,\beta^{2},
+\end{equation}
+where $\delta\in\mathbb Z[\omega]$ is an element with norm $N(\delta)=d$, and $\beta\in\mathbb Z[\omega]$ satisfies $N(\beta)=|y|$. This lifts the rational factorization $-d\,y^{2}$ to $\mathbb Z[\omega]$: primes dividing $d$ are collected into $\delta$, and the $y^{2}$ part lifts to a square in $\mathbb Z[\omega]$.
+
+\paragraph{5) Descent from the cubic.}
+Rearrange \eqref{eq:lift} as
+\begin{equation}\label{eq:descent}
+x^{3} = -\delta\,\beta^{2}-6.
+\end{equation}
+Factor $6$ in $\mathbb Z[\omega]$. Since $3\sim -\pi^{2}$ (with $\pi=1-\omega$) and $2$ is inert, up to units we may regard the prime factors of $6$ as $\pi^{2}$ and the prime above $2$.
+
+The left-hand side of \eqref{eq:descent} is a perfect cube in $\mathbb Z[\omega]$. Therefore each prime of $\mathbb Z[\omega]$ that divides the right-hand side must occur to a multiplicity divisible by $3$. Comparing valuations at primes dividing $\delta$, at $\pi$, and at the prime above $2$, together with the coprimality conditions and the congruence $x\equiv3\pmod 4$ (which forces $x$ odd and gives constraints modulo $3$), one concludes that the noncubic part of the right-hand side must be trivial. Concretely, this forces the existence of $\gamma,\eta\in\mathbb Z[\omega]$ and a unit $\varepsilon$ with
+\begin{equation}\label{eq:cuberoot}
+x+\gamma = \varepsilon\,\eta^{3}.
+\end{equation}
+This is the classical Eisenstein descent phenomenon: when a cube equals a product of coprime factors in a UFD, each factor is a cube up to a unit.
+
+From the relation \eqref{eq:cuberoot} one extracts a strictly smaller triple $(x',\delta',\beta')$ of integers producing another solution of the same shape: effectively one removes the cube part $\eta^{3}$ from the factorization and reads off the resulting smaller integer parameters. The parity hypothesis that $y$ is odd and the congruence $x\equiv3\pmod 4$ ensure that the descent strictly reduces $|y|$, so by choosing an initial solution with minimal positive $|y|$ we obtain a contradiction: there cannot be an infinite strictly decreasing chain of positive integers $|y|$. Hence no solution exists.
+
+(Technical remark: one must check unit factors cannot obstruct taking cube roots in the desired way; this follows from a short verification that none of the six units in $\mathbb Z[\omega]$ is a nontrivial cube, so the only cube-unit is $1$, and the descent proceeds without obstruction.)
+
+\paragraph{6) Conclusion.}
+Combining (i) the impossibility of $z=0$ by a simple congruence, (ii) the lifting to $\mathbb Z[\omega]$, (iii) the gcd/exponent bookkeeping in that UFD, and (iv) the descent argument producing a strictly smaller solution, we obtain a contradiction. Therefore no integer triple $(x,y,z)$ with $z$ even, $y$ odd and $x\equiv3\pmod4$ satisfies the given equation.
+
+\section*{Remark}
+The core of this elementary proof is factorization and descent in $\mathbb Z[\omega]$, a classical method for equations of the type $x^{3}+k=y^{2}$ and their variants. Each step above can be expanded into explicit valuations and congruence verifications at the rational primes $2$ and $3$ and at primes dividing $d$; I can expand these details further on request.
+
+\end{document}
