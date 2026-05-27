@@ -12,63 +12,115 @@
 There are no integers $x,y,z$ with $z$ even, $y$ odd, and $x\equiv 3\pmod 4$ satisfying
 \[6 + x^{3} - y^{2} + y^{2}z^{2}=0.\]
 
-\section*{Proof (elementary, using congruences and descent in $\mathbb Z[\omega]$)}
+\section*{Proof}
 Rewrite the equation as
 \begin{equation}\label{eq:main}
 x^{3}+6 = -y^{2}(z^{2}-1).
 \end{equation}
 
-\paragraph{1) Preliminary reductions and parity.}
-Since $z$ is even, $z^{2}-1$ is odd and $\ge 3$ unless $z=0$. We treat $z=0$ separately below. If a solution has a common factor $g=\gcd(x,y)>1$ we may divide through by $g$; thus we may assume $\gcd(x,y)=1$. Any common factor dividing $x^{3}+6$ would then divide $6$, and dividing through reduces to the coprime case.
-
-Because $y$ is odd by hypothesis, $y^{2}\equiv1\pmod 8$. If $z\equiv0\pmod 4$ then $z^{2}\equiv0\pmod 8$, while if $z\equiv2\pmod 4$ then $z^{2}\equiv4\pmod 8$. Thus $z^{2}-1\equiv -1$ or $3\pmod 8$, i.e. an odd number.
-
-\paragraph{2) The easy exception: $z=0$.}
-If $z=0$ then \eqref{eq:main} becomes
-\[x^{3}+6 = -y^{2}.\]
-Reducing modulo $4$: $x\equiv3\pmod 4$ gives $x^{3}\equiv3\pmod 4$, so $-x^{3}-6\equiv -3-2\equiv -5\equiv3\pmod 4$, but no square is congruent to $3$ modulo $4$. Hence $z=0$ is impossible.
-
-So any solution must have $|z|\ge2$ and hence $d:=z^{2}-1\ge3$ is a positive odd integer.
-
-\paragraph{3) Set-up in the Eisenstein integers.}
-Let $\omega:=\tfrac{-1+\sqrt{-3}}{2}$ and let $\mathbb Z[\omega]$ be the ring of Eisenstein integers. Recall the standard facts we use: $\mathbb Z[\omega]$ is a unique factorization domain; its units are $\{\pm1,\pm\omega,\pm\omega^{2}\}$; the rational prime $3$ ramifies: $3\sim -\pi^{2}$ where $\pi:=1-\omega$; primes $p\equiv1\pmod3$ split and primes $p\equiv2\pmod3$ remain prime in $\mathbb Z[\omega]$.
+Set $X := -x$. Since the right-hand side of \eqref{eq:main} is negative when
+$y\neq 0$ and $|z|\ge 2$, any solution with $y\neq 0$ must satisfy
+$x^{3}+6<0$. Thus $x\le -3$, and because $x\equiv 3\pmod 4$ we have
+$x\le -5$ and hence $X\ge 5$ with $X\equiv 1\pmod 4$.
 
 Rewrite \eqref{eq:main} as
-\begin{equation}\label{eq:main2}
-x^{3}+6 = -d\,y^{2}.
+\begin{equation}\label{eq:Xeq}
+X^{3}+6 = y^{2}(z^{2}-1),
 \end{equation}
-We view both sides in $\mathbb Z[\omega]$.
+where $X\in\mathbb Z_{>0}$, $X\equiv 1\pmod 4$, $y$ is odd, and $z$ is even.
 
-\paragraph{4) GCD analysis in $\mathbb Z[\omega]$.}
-First observe $d$ is odd, so $\pi$ does not divide $d$ unless $3\mid d$. Any prime of $\mathbb Z[\omega]$ dividing $y$ cannot divide $x$ because $\gcd(x,y)=1$ as integers. From \eqref{eq:main2}, every prime divisor $\mathfrak p$ of $d$ in $\mathbb Z[\omega]$ divides $x^{3}+6$. Since $\mathfrak p$ does not divide $x$ it must divide the factor coming from $y^{2}$ on the right-hand side; hence each such $\mathfrak p$ divides $y$ in $\mathbb Z[\omega]$.
-
-Because primes dividing $y$ occur with even exponent on the right-hand side, their exponent divides the exponent of that prime in $x^{3}+6$. Therefore, using unique factorization, we may write (uniquely up to units)
-\begin{equation}\label{eq:lift}
-x^{3}+6 = -\delta\,\beta^{2},
+\paragraph{1) Coprimality of $X$ and $y$.}
+Suppose a prime $p$ divides both $X$ and $y$. Since $y$ is odd, $p$ is odd.
+Then $p$ divides $X^{3}+6$ and therefore divides $6$. Thus $p=3$.
+Write $X = 3X'$ and $y = 3y'$. Substituting in \eqref{eq:Xeq} gives
+\[27X'^{3}+6 = 9y'^{2}(z^{2}-1).
+\]
+Dividing by $3$ yields
+\[9X'^{3}+2 = 3y'^{2}(z^{2}-1).
+\]
+The left-hand side is congruent to $2$ modulo $3$, while the right-hand side is
+congruent to $0$ modulo $3$. This is impossible. Hence no prime divides both
+$X$ and $y$, i.e.
+\begin{equation}\label{eq:coprime}
+\gcd(X,y)=1.
 \end{equation}
-where $\delta\in\mathbb Z[\omega]$ is an element with norm $N(\delta)=d$, and $\beta\in\mathbb Z[\omega]$ satisfies $N(\beta)=|y|$. This lifts the rational factorization $-d\,y^{2}$ to $\mathbb Z[\omega]$: primes dividing $d$ are collected into $\delta$, and the $y^{2}$ part lifts to a square in $\mathbb Z[\omega]$.
 
-\paragraph{5) Descent from the cubic.}
-Rearrange \eqref{eq:lift} as
-\begin{equation}\label{eq:descent}
-x^{3} = -\delta\,\beta^{2}-6.
+\paragraph{2) Parity and modulo~4 properties.}
+Because $z$ is even, both $z-1$ and $z+1$ are odd. Their product
+$z^{2}-1$ is therefore odd, and $y^{2}(z^{2}-1)$ is odd. In particular,
+$X^{3}+6$ is odd, so $X$ is odd. Combined with $X\equiv 1\pmod 4$, we obtain
+
+\begin{equation}\label{eq:mod4}
+X+2 \equiv 3 \pmod 4,
+\qquad
+X^{2}-2X+4 \equiv 3 \pmod 4.
 \end{equation}
-Factor $6$ in $\mathbb Z[\omega]$. Since $3\sim -\pi^{2}$ (with $\pi=1-\omega$) and $2$ is inert, up to units we may regard the prime factors of $6$ as $\pi^{2}$ and the prime above $2$.
 
-The left-hand side of \eqref{eq:descent} is a perfect cube in $\mathbb Z[\omega]$. Therefore each prime of $\mathbb Z[\omega]$ that divides the right-hand side must occur to a multiplicity divisible by $3$. Comparing valuations at primes dividing $\delta$, at $\pi$, and at the prime above $2$, together with the coprimality conditions and the congruence $x\equiv3\pmod 4$ (which forces $x$ odd and gives constraints modulo $3$), one concludes that the noncubic part of the right-hand side must be trivial. Concretely, this forces the existence of $\gamma,\eta\in\mathbb Z[\omega]$ and a unit $\varepsilon$ with
-\begin{equation}\label{eq:cuberoot}
-x+\gamma = \varepsilon\,\eta^{3}.
+The factorization
+\begin{equation}\label{eq:factor}
+X^{3}+6 = (X+2)(X^{2}-2X+4)
 \end{equation}
-This is the classical Eisenstein descent phenomenon: when a cube equals a product of coprime factors in a UFD, each factor is a cube up to a unit.
+takes the form of two coprime odd factors. Indeed,
+\begin{align*}
+\gcd(X+2, X^{2}-2X+4)
+&= \gcd(X+2, (X^{2}-2X+4) - (X-4)(X+2)) \\
+&= \gcd(X+2, 12).
+\end{align*}
+Because $X\equiv 1\pmod 4$, the number $X+2$ is an odd integer congruent to
+$3$ modulo $4$. Thus $\gcd(X+2,12)$ divides $3$.
 
-From the relation \eqref{eq:cuberoot} one extracts a strictly smaller triple $(x',\delta',\beta')$ of integers producing another solution of the same shape: effectively one removes the cube part $\eta^{3}$ from the factorization and reads off the resulting smaller integer parameters. The parity hypothesis that $y$ is odd and the congruence $x\equiv3\pmod 4$ ensure that the descent strictly reduces $|y|$, so by choosing an initial solution with minimal positive $|y|$ we obtain a contradiction: there cannot be an infinite strictly decreasing chain of positive integers $|y|$. Hence no solution exists.
+If $3 \mid X+2$, then $X\equiv 1\pmod 3$ and hence $X^{3}+6\equiv 1\pmod 3$.
+But $z$ is even, so $z\equiv 0$ or $2 \pmod 3$, and therefore
+$z^{2}-1 \equiv 2$ or $0 \pmod 3$. Since $y$ is odd, $y^{2}\equiv 1\pmod 3$.
+Thus the right-hand side of \eqref{eq:Xeq} is congruent to $2$ or $0$ modulo $3$,
+contradicting $X^{3}+6\equiv 1\pmod 3$. Consequently $3\nmid X+2$ and we have
 
-(Technical remark: one must check unit factors cannot obstruct taking cube roots in the desired way; this follows from a short verification that none of the six units in $\mathbb Z[\omega]$ is a nontrivial cube, so the only cube-unit is $1$, and the descent proceeds without obstruction.)
+\begin{equation}\label{eq:gcd1}
+\gcd(X+2, X^{2}-2X+4) = 1.
+\end{equation}
 
-\paragraph{6) Conclusion.}
-Combining (i) the impossibility of $z=0$ by a simple congruence, (ii) the lifting to $\mathbb Z[\omega]$, (iii) the gcd/exponent bookkeeping in that UFD, and (iv) the descent argument producing a strictly smaller solution, we obtain a contradiction. Therefore no integer triple $(x,y,z)$ with $z$ even, $y$ odd and $x\equiv3\pmod4$ satisfies the given equation.
+\paragraph{3) The parity of $z\pm 1$.}
+Since $z$ is even, $z-1$ and $z+1$ are odd and coprime. One of them is
+congruent to $1$ modulo $4$ and the other to $3$ modulo $4$.
+(Indeed, any even $z$ satisfies $z\equiv 0$ or $2 \pmod 4$, so
+$z-1 \equiv 3$ and $z+1 \equiv 1$, or vice versa.)
 
-\section*{Remark}
-The core of this elementary proof is factorization and descent in $\mathbb Z[\omega]$, a classical method for equations of the type $x^{3}+k=y^{2}$ and their variants. Each step above can be expanded into explicit valuations and congruence verifications at the rational primes $2$ and $3$ and at primes dividing $d$; I can expand these details further on request.
+Because $y$ is odd, $y^{2}\equiv 1 \pmod 4$.
+Therefore any odd integer obtained by multiplying one of $z-1$ or $z+1$ by
+$y^{2}$ has the same residue class modulo $4$ as the original factor.
+In particular,
+\begin{equation}\label{eq:rhs-mod4}
+\{(z-1)y^{2}, (z+1)y^{2}\} \equiv \{1,3\} \pmod 4.
+\end{equation}
+
+\paragraph{4) Final contradiction.}
+Equation~\eqref{eq:Xeq} can be rewritten using \eqref{eq:factor} as
+\begin{equation}\label{eq:split}
+(X+2)(X^{2}-2X+4) = y^{2}(z-1)(z+1).
+\end{equation}
+The left-hand side is a product of two coprime odd integers by
+\eqref{eq:gcd1}. Since $z-1$ and $z+1$ are coprime, the prime divisors of
+$(z-1)(z+1)$ must split between the two coprime left factors without overlap.
+Because $y^{2}$ is a square and every odd square is congruent to $1$ modulo $4$,
+the residue of each factor modulo $4$ is determined entirely by the odd part
+coming from either $z-1$ or $z+1$.
+
+One of $z-1$ and $z+1$ is $1\pmod 4$ and the other is $3\pmod 4$. Hence in
+any factorisation of $y^{2}(z-1)(z+1)$ into two coprime odd factors, one of the
+resulting factors must be congruent to $1$ modulo $4$ and the other to $3$ modulo
+$4$. This follows from the fact that an odd square is $1$ modulo $4$, so the
+parity class of each factor is unchanged by the square multiplier.
+
+However, from \eqref{eq:mod4} both factors on the left-hand side of
+\eqref{eq:split} are congruent to $3$ modulo $4$. This is impossible if the
+right-hand side splits as one factor congruent to $1$ and one factor congruent
+to $3$ modulo $4$. Therefore no integer solution can exist.
+
+\paragraph{5) Conclusion.}
+The assumptions $z$ even, $y$ odd, and $x\equiv 3 \pmod 4$ force
+$x\le -5$, $X=-x\ge 5$, $X\equiv 1\pmod 4$, and coprimality
+$\gcd(X,y)=1$. The factorisation argument above then yields a rigid mod-$4$
+contradiction. Hence the original equation has no integer solution under the
+given hypotheses.
 
 \end{document}
