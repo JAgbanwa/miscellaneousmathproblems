@@ -93,11 +93,9 @@ theorem derive_product_identity
       (4 : ℚ) * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2 =
         (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
           (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 := by
-    have htmp := hgeom
-    field_simp [hr2qz, hr3qz] at htmp
-    ring_nf at htmp
-    ring_nf
-    nlinarith [htmp]
+    have hgeom' := hgeom
+    field_simp [hr2qz, hr3qz] at hgeom'
+    nlinarith [hgeom']
 
   have hexpQ :
       (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
@@ -204,7 +202,7 @@ lemma even_valuation_four_mul_square
     (p : ℕ) (hpprime : Nat.Prime p) (hpodd : p ≠ 2) (d : ℤ) :
     Even (padicValNat p (Int.natAbs (4 * d ^ 2))) := by
   by_cases hd0 : d = 0
-  · simp [hd0, padicValNat.zero]
+  · simp [hd0]
   · have hfact : Fact (Nat.Prime p) := ⟨hpprime⟩
     have hpdvd4 : ¬ p ∣ 4 := by
       intro h4
