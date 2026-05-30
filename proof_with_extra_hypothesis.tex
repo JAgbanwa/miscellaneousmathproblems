@@ -1,0 +1,92 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+
+\newtheorem{proposition}{Proposition}
+
+\begin{document}
+
+\begin{proposition}[with extra hypothesis]
+Assume
+\[
+\left(\frac{a^{2}-r_{2}^{2}}{2r_{2}}\right)^{2}
++
+\left(\frac{a^{2}-r_{3}^{2}}{2r_{3}}\right)^{2}
+=
+g^{2},
+\]
+with \(r_2\mid a,\ r_3\mid a\), and suppose additionally:
+\[
+\exists\ \text{prime }p\equiv 3\pmod 4\ \text{such that }v_p(r_2^2+r_3^2)\ \text{is odd}.
+\]
+Then \(a^2+g^2=d^2\) has no integer solution \(d\).
+\end{proposition}
+
+\begin{proof}
+Define
+\[
+x:=\frac{a^2-r_2^2}{2r_2},\qquad
+y:=\frac{a^2-r_3^2}{2r_3},
+\]
+so \(x^2+y^2=g^2\).
+
+Now compute \(a^2+g^2=a^2+x^2+y^2\):
+\[
+a^2+x^2+y^2
+=
+a^2+\frac{(a^2-r_2^2)^2}{4r_2^2}+\frac{(a^2-r_3^2)^2}{4r_3^2}.
+\]
+Put over denominator \(4r_2^2r_3^2\):
+\[
+a^2+g^2
+=
+\frac{
+4a^2r_2^2r_3^2+r_3^2(a^2-r_2^2)^2+r_2^2(a^2-r_3^2)^2
+}{
+4r_2^2r_3^2
+}.
+\]
+Expanding the numerator:
+\[
+r_3^2(a^2-r_2^2)^2+r_2^2(a^2-r_3^2)^2
+=
+(r_2^2+r_3^2)(a^4+r_2^2r_3^2)-4a^2r_2^2r_3^2.
+\]
+Hence
+\[
+a^2+g^2
+=
+\frac{(r_2^2+r_3^2)(a^4+r_2^2r_3^2)}{4r_2^2r_3^2}
+=
+\frac{r_2^2+r_3^2}{4}\left(\frac{a^4}{r_2^2r_3^2}+1\right).
+\]
+Since \(r_2\mid a,\ r_3\mid a\), the integer
+\[
+t:=\frac{a^2}{r_2r_3}\in\mathbb Z,
+\]
+so
+\[
+4(a^2+g^2)=(r_2^2+r_3^2)(t^2+1).
+\]
+If \(a^2+g^2=d^2\), then
+\[
+4d^2=(r_2^2+r_3^2)(t^2+1). \tag{*}
+\]
+
+Take the prime \(p\equiv 3\pmod 4\) with odd \(v_p(r_2^2+r_3^2)\).
+
+\begin{itemize}
+\item For such \(p\), \(p\nmid t^2+1\): otherwise \(t^2\equiv -1\pmod p\), impossible since \(-1\) is not a quadratic residue mod primes \(3\bmod4\).
+\item Therefore from \((*)\):
+\[
+v_p\big((r_2^2+r_3^2)(t^2+1)\big)=v_p(r_2^2+r_3^2),
+\]
+which is odd.
+\item But left side \((*)\) is \(4d^2\), and for odd \(p\), \(v_p(4d^2)=2v_p(d)\), even.
+\end{itemize}
+
+Contradiction.
+
+So no integer \(d\) can satisfy \(a^2+g^2=d^2\).
+\end{proof}
+
+\end{document}
