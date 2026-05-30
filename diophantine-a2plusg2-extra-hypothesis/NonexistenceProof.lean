@@ -99,7 +99,9 @@ theorem derive_product_identity
         (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
             (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 =
           (r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2 * 4 := by
-      nlinarith [hgeom']
+      have htmp := hgeom'
+      ring_nf at htmp
+      nlinarith [htmp]
     calc
       (4 : ℚ) * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2
           = (r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2 * 4 := by ring
