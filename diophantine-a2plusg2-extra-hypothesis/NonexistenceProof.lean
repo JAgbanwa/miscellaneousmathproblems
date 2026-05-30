@@ -49,8 +49,14 @@ theorem derive_product_identity
         · simp [hr3q]
         · field_simp [hr3q]
           ring
-      linarith [h0, hsq]
-    have h4gq : (4 : ℚ) * (g : ℚ) ^ 2 = (r3 : ℚ) ^ 2 := by nlinarith [hgq]
+      calc
+        (g : ℚ) ^ 2 = ((-(r3 : ℚ) ^ 2) / (2 * (r3 : ℚ))) ^ 2 := by
+          simpa using h0.symm
+        _ = ((r3 : ℚ) ^ 2) / 4 := hsq
+    have h4gq : (4 : ℚ) * (g : ℚ) ^ 2 = (r3 : ℚ) ^ 2 := by
+      calc
+        (4 : ℚ) * (g : ℚ) ^ 2 = (4 : ℚ) * (((r3 : ℚ) ^ 2) / 4) := by simp [hgq]
+        _ = (r3 : ℚ) ^ 2 := by ring
     have h4g : 4 * g ^ 2 = r3 ^ 2 := by exact_mod_cast h4gq
     refine ⟨0, ?_⟩
     calc
@@ -70,8 +76,14 @@ theorem derive_product_identity
         · simp [hr2q]
         · field_simp [hr2q]
           ring
-      linarith [h0, hsq]
-    have h4gq : (4 : ℚ) * (g : ℚ) ^ 2 = (r2 : ℚ) ^ 2 := by nlinarith [hgq]
+      calc
+        (g : ℚ) ^ 2 = ((-(r2 : ℚ) ^ 2) / (2 * (r2 : ℚ))) ^ 2 := by
+          simpa using h0.symm
+        _ = ((r2 : ℚ) ^ 2) / 4 := hsq
+    have h4gq : (4 : ℚ) * (g : ℚ) ^ 2 = (r2 : ℚ) ^ 2 := by
+      calc
+        (4 : ℚ) * (g : ℚ) ^ 2 = (4 : ℚ) * (((r2 : ℚ) ^ 2) / 4) := by simp [hgq]
+        _ = (r2 : ℚ) ^ 2 := by ring
     have h4g : 4 * g ^ 2 = r2 ^ 2 := by exact_mod_cast h4gq
     refine ⟨0, ?_⟩
     calc
@@ -95,19 +107,35 @@ theorem derive_product_identity
           (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 := by
     have hgeom' := hgeom
     field_simp [hr2qz, hr3qz] at hgeom'
-    have hgeom'' :
-        (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
-            (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 =
+    have h16 :
+        ((((a ^ 2 - r2 ^ 2 : ℤ) : ℚ) ^ 2) * (r3 : ℚ) ^ 2 +
+            (((a ^ 2 - r3 ^ 2 : ℤ) : ℚ) ^ 2) * (r2 : ℚ) ^ 2) * 4 =
+          ((r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2) * 16 := by
+      calc
+        ((((a ^ 2 - r2 ^ 2 : ℤ) : ℚ) ^ 2) * (r3 : ℚ) ^ 2 +
+            (((a ^ 2 - r3 ^ 2 : ℤ) : ℚ) ^ 2) * (r2 : ℚ) ^ 2) * 4
+            = ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 * (2 * (r3 : ℚ)) ^ 2 +
+                ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 * (2 * (r2 : ℚ)) ^ 2 := by
+                simp [Int.cast_sub, Int.cast_pow]
+                ring
+        _ = (g : ℚ) ^ 2 * ((2 * (r2 : ℚ)) ^ 2 * (2 * (r3 : ℚ)) ^ 2) := by
+              simpa [mul_assoc, mul_comm, mul_left_comm] using hgeom'
+        _ = ((r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2) * 16 := by ring
+    have hdiv :
+        ((((a ^ 2 - r2 ^ 2 : ℤ) : ℚ) ^ 2) * (r3 : ℚ) ^ 2 +
+            (((a ^ 2 - r3 ^ 2 : ℤ) : ℚ) ^ 2) * (r2 : ℚ) ^ 2) =
           (r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2 * 4 := by
-      have htmp := hgeom'
-      ring_nf at htmp
-      nlinarith [htmp]
+      have := congrArg (fun x : ℚ => x / 4) h16
+      ring_nf at this ⊢
+      exact this
     calc
       (4 : ℚ) * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2
           = (r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2 * 4 := by ring
+      _ = (((a ^ 2 - r2 ^ 2 : ℤ) : ℚ) ^ 2) * (r3 : ℚ) ^ 2 +
+            (((a ^ 2 - r3 ^ 2 : ℤ) : ℚ) ^ 2) * (r2 : ℚ) ^ 2 := hdiv.symm
       _ = (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
             (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 := by
-            exact hgeom''.symm
+            simp [Int.cast_sub, Int.cast_pow, mul_assoc, mul_comm, mul_left_comm]
 
   have hexpQ :
       (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
@@ -121,7 +149,18 @@ theorem derive_product_identity
       (4 : ℚ) * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 + (g : ℚ) ^ 2) =
         ((r2 : ℚ) ^ 2 + (r3 : ℚ) ^ 2) *
           ((a : ℚ) ^ 4 + (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2) := by
-    nlinarith [hclear, hexpQ]
+    calc
+      (4 : ℚ) * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 + (g : ℚ) ^ 2)
+          = 4 * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (a : ℚ) ^ 2 +
+              4 * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2 := by ring
+      _ = 4 * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (a : ℚ) ^ 2 +
+            ((r2 : ℚ) ^ 2 + (r3 : ℚ) ^ 2) *
+                ((a : ℚ) ^ 4 + (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2) -
+              4 * (a : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 := by
+            rw [hclear, hexpQ]
+            ring
+      _ = ((r2 : ℚ) ^ 2 + (r3 : ℚ) ^ 2) *
+            ((a : ℚ) ^ 4 + (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2) := by ring
 
   have ha4 : a ^ 4 = r2 ^ 2 * r3 ^ 2 * t ^ 2 := by
     calc
@@ -267,7 +306,7 @@ theorem no_integer_hypotenuse
 
   have hstar : 4 * d ^ 2 = (r2 ^ 2 + r3 ^ 2) * (t ^ 2 + 1) := by
     calc
-      4 * d ^ 2 = 4 * (a ^ 2 + g ^ 2) := by nlinarith [hd]
+      4 * d ^ 2 = 4 * (a ^ 2 + g ^ 2) := by simp [hd]
       _ = (r2 ^ 2 + r3 ^ 2) * (t ^ 2 + 1) := ht
 
   rcases hextra with ⟨p, hpprime, hpmod4, hodd_rsum⟩
