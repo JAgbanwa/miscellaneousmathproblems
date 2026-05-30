@@ -187,77 +187,92 @@ section DivisorSystemCompleteness
 
 theorem divisor_system_sound_rational
     (a r₂ r₃ : ℚ) (hr₂ : r₂ ≠ 0) (hr₃ : r₃ ≠ 0) :
-    let b₂ : ℚ := (a ^ 2 - r₂ ^ 2) / (2 * r₂)
-    let c₂ : ℚ := (a ^ 2 + r₂ ^ 2) / (2 * r₂)
-    let b₃ : ℚ := (a ^ 2 - r₃ ^ 2) / (2 * r₃)
-    let c₃ : ℚ := (a ^ 2 + r₃ ^ 2) / (2 * r₃)
-    a ^ 2 + b₂ ^ 2 = c₂ ^ 2 ∧ a ^ 2 + b₃ ^ 2 = c₃ ^ 2 := by
-  intro b₂ c₂ b₃ c₃
+    let b : ℚ := (a ^ 2 - r₂ ^ 2) / (2 * r₂)
+    let e : ℚ := (a ^ 2 + r₂ ^ 2) / (2 * r₂)
+    let c : ℚ := (a ^ 2 - r₃ ^ 2) / (2 * r₃)
+    let f : ℚ := (a ^ 2 + r₃ ^ 2) / (2 * r₃)
+    a ^ 2 + b ^ 2 = e ^ 2 ∧ a ^ 2 + c ^ 2 = f ^ 2 := by
+  intro b e c f
   constructor
-  · dsimp [b₂, c₂]
+  · dsimp [b, e]
     field_simp [hr₂]
     ring
-  · dsimp [b₃, c₃]
+  · dsimp [c, f]
+    field_simp [hr₃]
+    ring
+
+theorem divisor_system_sound_rational_with_b_c
+    (a r₂ r₃ : ℚ) (hr₂ : r₂ ≠ 0) (hr₃ : r₃ ≠ 0) :
+    let b : ℚ := (a ^ 2 - r₂ ^ 2) / (2 * r₂)
+    let c : ℚ := (a ^ 2 - r₃ ^ 2) / (2 * r₃)
+    a ^ 2 + b ^ 2 = ((a ^ 2 + r₂ ^ 2) / (2 * r₂)) ^ 2 ∧
+      a ^ 2 + c ^ 2 = ((a ^ 2 + r₃ ^ 2) / (2 * r₃)) ^ 2 := by
+  intro b c
+  constructor
+  · dsimp [b]
+    field_simp [hr₂]
+    ring
+  · dsimp [c]
     field_simp [hr₃]
     ring
 
 theorem divisor_system_complete_rational
-    {a b₂ c₂ b₃ c₃ : ℚ}
-    (h₂ : a ^ 2 + b₂ ^ 2 = c₂ ^ 2)
-    (h₃ : a ^ 2 + b₃ ^ 2 = c₃ ^ 2)
-    (h₂lt : b₂ < c₂)
-    (h₃lt : b₃ < c₃) :
+    {a b e c f : ℚ}
+    (h₂ : a ^ 2 + b ^ 2 = e ^ 2)
+    (h₃ : a ^ 2 + c ^ 2 = f ^ 2)
+    (h₂lt : b < e)
+    (h₃lt : c < f) :
     ∃ r₂ r₃ : ℚ,
       r₂ ≠ 0 ∧
       r₃ ≠ 0 ∧
-      b₂ = (a ^ 2 - r₂ ^ 2) / (2 * r₂) ∧
-      c₂ = (a ^ 2 + r₂ ^ 2) / (2 * r₂) ∧
-      b₃ = (a ^ 2 - r₃ ^ 2) / (2 * r₃) ∧
-      c₃ = (a ^ 2 + r₃ ^ 2) / (2 * r₃) := by
-  refine ⟨c₂ - b₂, c₃ - b₃, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      b = (a ^ 2 - r₂ ^ 2) / (2 * r₂) ∧
+      e = (a ^ 2 + r₂ ^ 2) / (2 * r₂) ∧
+      c = (a ^ 2 - r₃ ^ 2) / (2 * r₃) ∧
+      f = (a ^ 2 + r₃ ^ 2) / (2 * r₃) := by
+  refine ⟨e - b, f - c, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact sub_ne_zero.mpr (ne_of_gt h₂lt)
   · exact sub_ne_zero.mpr (ne_of_gt h₃lt)
-  · have hr₂ : c₂ - b₂ ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₂lt)
-    have ha₂ : a ^ 2 = (c₂ - b₂) * (c₂ + b₂) := by nlinarith [h₂]
+  · have hr₂ : e - b ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₂lt)
+    have ha₂ : a ^ 2 = (e - b) * (e + b) := by nlinarith [h₂]
     rw [ha₂]
     field_simp [hr₂]
     ring
-  · have hr₂ : c₂ - b₂ ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₂lt)
-    have ha₂ : a ^ 2 = (c₂ - b₂) * (c₂ + b₂) := by nlinarith [h₂]
+  · have hr₂ : e - b ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₂lt)
+    have ha₂ : a ^ 2 = (e - b) * (e + b) := by nlinarith [h₂]
     rw [ha₂]
     field_simp [hr₂]
     ring
-  · have hr₃ : c₃ - b₃ ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₃lt)
-    have ha₃ : a ^ 2 = (c₃ - b₃) * (c₃ + b₃) := by nlinarith [h₃]
+  · have hr₃ : f - c ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₃lt)
+    have ha₃ : a ^ 2 = (f - c) * (f + c) := by nlinarith [h₃]
     rw [ha₃]
     field_simp [hr₃]
     ring
-  · have hr₃ : c₃ - b₃ ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₃lt)
-    have ha₃ : a ^ 2 = (c₃ - b₃) * (c₃ + b₃) := by nlinarith [h₃]
+  · have hr₃ : f - c ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₃lt)
+    have ha₃ : a ^ 2 = (f - c) * (f + c) := by nlinarith [h₃]
     rw [ha₃]
     field_simp [hr₃]
     ring
 
 theorem divisor_system_complete_integer
-    {a b₂ c₂ b₃ c₃ : ℤ}
-    (h₂ : a ^ 2 + b₂ ^ 2 = c₂ ^ 2)
-    (h₃ : a ^ 2 + b₃ ^ 2 = c₃ ^ 2)
-    (h₂lt : b₂ < c₂)
-    (h₃lt : b₃ < c₃) :
+    {a b e c f : ℤ}
+    (h₂ : a ^ 2 + b ^ 2 = e ^ 2)
+    (h₃ : a ^ 2 + c ^ 2 = f ^ 2)
+    (h₂lt : b < e)
+    (h₃lt : c < f) :
     ∃ r₂ r₃ : ℚ,
       r₂ ≠ 0 ∧
       r₃ ≠ 0 ∧
-      (b₂ : ℚ) = ((a : ℚ) ^ 2 - r₂ ^ 2) / (2 * r₂) ∧
-      (c₂ : ℚ) = ((a : ℚ) ^ 2 + r₂ ^ 2) / (2 * r₂) ∧
-      (b₃ : ℚ) = ((a : ℚ) ^ 2 - r₃ ^ 2) / (2 * r₃) ∧
-      (c₃ : ℚ) = ((a : ℚ) ^ 2 + r₃ ^ 2) / (2 * r₃) := by
-  have h₂Q : (a : ℚ) ^ 2 + (b₂ : ℚ) ^ 2 = (c₂ : ℚ) ^ 2 := by
+      (b : ℚ) = ((a : ℚ) ^ 2 - r₂ ^ 2) / (2 * r₂) ∧
+      (e : ℚ) = ((a : ℚ) ^ 2 + r₂ ^ 2) / (2 * r₂) ∧
+      (c : ℚ) = ((a : ℚ) ^ 2 - r₃ ^ 2) / (2 * r₃) ∧
+      (f : ℚ) = ((a : ℚ) ^ 2 + r₃ ^ 2) / (2 * r₃) := by
+  have h₂Q : (a : ℚ) ^ 2 + (b : ℚ) ^ 2 = (e : ℚ) ^ 2 := by
     exact_mod_cast h₂
-  have h₃Q : (a : ℚ) ^ 2 + (b₃ : ℚ) ^ 2 = (c₃ : ℚ) ^ 2 := by
+  have h₃Q : (a : ℚ) ^ 2 + (c : ℚ) ^ 2 = (f : ℚ) ^ 2 := by
     exact_mod_cast h₃
-  have h₂ltQ : (b₂ : ℚ) < (c₂ : ℚ) := by
+  have h₂ltQ : (b : ℚ) < (e : ℚ) := by
     exact_mod_cast h₂lt
-  have h₃ltQ : (b₃ : ℚ) < (c₃ : ℚ) := by
+  have h₃ltQ : (c : ℚ) < (f : ℚ) := by
     exact_mod_cast h₃lt
   exact divisor_system_complete_rational h₂Q h₃Q h₂ltQ h₃ltQ
 
