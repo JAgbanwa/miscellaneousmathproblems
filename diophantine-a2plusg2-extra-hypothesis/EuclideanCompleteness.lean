@@ -134,7 +134,6 @@ theorem rational_pythagorean_euclid_complete
         X = (((m : ℚ) ^ 2 - (n : ℚ) ^ 2) / ((m : ℚ) ^ 2 + (n : ℚ) ^ 2)) := by
       rw [hXt, ht]
       field_simp [hm]
-      ring
     have hYmn :
         Y = (2 * (m : ℚ) * (n : ℚ)) / ((m : ℚ) ^ 2 + (n : ℚ) ^ 2) := by
       rw [hYt, ht]
@@ -164,7 +163,6 @@ theorem rational_pythagorean_euclid_complete
         _ = K * ((m : ℚ) ^ 2 - (n : ℚ) ^ 2) := by
               dsimp [K]
               field_simp [hmn_den_ne]
-              ring
     · have hy : y = z * Y := by
         dsimp [Y]
         have : y / z = Y := by rfl
@@ -182,7 +180,6 @@ theorem rational_pythagorean_euclid_complete
               ring
     · dsimp [K]
       field_simp [hmn_den_ne]
-      ring
 
 end EuclideanParametrization
 
