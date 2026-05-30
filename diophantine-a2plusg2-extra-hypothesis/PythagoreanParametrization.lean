@@ -202,7 +202,7 @@ theorem int_solution_gives_rational_param
   refine ⟨?_, ?_, ?_⟩
   · simpa [hr] using hy
   · simpa [hr] using hz
-  · simpa [hr] using hdiff
+  · simp [hr] at hdiff ⊢
 
 end IntegerCorollary
 
