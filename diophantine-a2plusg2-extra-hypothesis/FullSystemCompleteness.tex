@@ -1,0 +1,279 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\title{Completeness of the Full Three-Equation System}
+\author{}
+\date{}
+\maketitle
+
+\paragraph{System.}
+Consider
+\[
+a^2 + \left(\frac{a^2-r_2^2}{2r_2}\right)^2
+=
+\left(\frac{a^2+r_2^2}{2r_2}\right)^2,
+\]
+\[
+a^2 + \left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+\left(\frac{a^2+r_3^2}{2r_3}\right)^2,
+\]
+\[
+\left(\frac{a^{2}-r_{2}^{2}}{2r_{2}}\right)^{2}
++
+\left(\frac{a^{2}-r_{3}^{2}}{2r_{3}}\right)^{2}
+= g^{2}.
+\]
+Define
+\[
+b_2:=\frac{a^2-r_2^2}{2r_2},\quad
+c_2:=\frac{a^2+r_2^2}{2r_2},\quad
+b_3:=\frac{a^2-r_3^2}{2r_3},\quad
+c_3:=\frac{a^2+r_3^2}{2r_3}.
+\]
+Then the system is exactly
+\[
+a^2+b_2^2=c_2^2,\qquad a^2+b_3^2=c_3^2,\qquad b_2^2+b_3^2=g^2.
+\]
+
+\begin{theorem}[Rational completeness]
+Let $a,b_2,c_2,b_3,c_3,g\in\mathbb Q$ satisfy
+\[
+a^2+b_2^2=c_2^2,\qquad
+a^2+b_3^2=c_3^2,\qquad
+b_2^2+b_3^2=g^2,
+\]
+with orientation assumptions
+\[
+b_2<c_2,\qquad b_3<c_3,
+\]
+and $g\neq 0$. Then there exist
+\[
+r_2,r_3,K\in\mathbb Q,\qquad m,n\in\mathbb Z,
+\]
+such that
+\[
+r_2\neq 0,\quad r_3\neq 0,
+\]
+\[
+b_2=\frac{a^2-r_2^2}{2r_2},\quad
+c_2=\frac{a^2+r_2^2}{2r_2},\quad
+b_3=\frac{a^2-r_3^2}{2r_3},\quad
+c_3=\frac{a^2+r_3^2}{2r_3},
+\]
+and simultaneously
+\[
+b_2=K(m^2-n^2),\qquad
+b_3=2Kmn,\qquad
+g=K(m^2+n^2).
+\]
+\end{theorem}
+
+\begin{proof}
+Split the argument in two standard completeness statements.
+
+\medskip
+\noindent\textbf{Step 1: first two equations.}
+From
+\[
+a^2+b_i^2=c_i^2,\qquad b_i<c_i\qquad (i=2,3),
+\]
+set
+\[
+r_i:=c_i-b_i\neq 0.
+\]
+Then
+\[
+a^2=(c_i-b_i)(c_i+b_i)=r_i(c_i+b_i),
+\]
+so $c_i+b_i=a^2/r_i$. Solving
+\[
+c_i-b_i=r_i,\qquad c_i+b_i=\frac{a^2}{r_i}
+\]
+gives
+\[
+b_i=\frac{a^2-r_i^2}{2r_i},\qquad
+c_i=\frac{a^2+r_i^2}{2r_i}.
+\]
+Hence the divisor parameterization is complete for the first two equations.
+
+\medskip
+\noindent\textbf{Step 2: third equation.}
+Now use
+\[
+b_2^2+b_3^2=g^2,\qquad g\neq 0.
+\]
+By the rational Euclidean completeness theorem for Pythagorean triples, there exist
+$K\in\mathbb Q$ and $m,n\in\mathbb Z$ such that
+\[
+b_2=K(m^2-n^2),\qquad
+b_3=2Kmn,\qquad
+g=K(m^2+n^2).
+\]
+Combining Step 1 and Step 2 gives the stated simultaneous parameterization.
+\end{proof}
+
+\begin{theorem}[Integer completeness (as a corollary)]
+Let $a,b_2,c_2,b_3,c_3,g\in\mathbb Z$ satisfy the same three equations and
+\[
+b_2<c_2,\qquad b_3<c_3,\qquad g\neq 0.
+\]
+Then the same conclusion holds after embedding into $\mathbb Q$:
+there exist $r_2,r_3,K\in\mathbb Q$ and $m,n\in\mathbb Z$ satisfying the same formulas.
+\end{theorem}
+
+\begin{proof}
+Cast the integer equations and inequalities to $\mathbb Q$ and apply the rational theorem.
+\end{proof}
+
+\paragraph{What ``encompasses all solutions'' means here.}
+Under the mild orientation convention $b_i<c_i$ (to avoid the $r_i=0$ denominator)
+and the nondegenerate condition $g\neq 0$ for the Euclidean step, every rational or
+integer solution of the full three-equation system is captured by the displayed
+parameter families $(r_2,r_3)$ and $(K,m,n)$.
+
+\end{document}
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\begin{document}
+
+\title{Completeness of the Full Three-Equation System}
+\author{}
+\date{}
+\maketitle
+
+\paragraph{System.}
+For $a,r_2,r_3,g\in\mathbb{Q}$ with $r_2r_3\neq 0$, consider
+\[
+a^2+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
+=
+\left(\frac{a^2+r_2^2}{2r_2}\right)^2,
+\]
+\[
+a^2+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+\left(\frac{a^2+r_3^2}{2r_3}\right)^2,
+\]
+\[
+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
++
+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+g^2.
+\]
+
+Define
+\[
+b_2:=\frac{a^2-r_2^2}{2r_2},\quad
+c_2:=\frac{a^2+r_2^2}{2r_2},\quad
+b_3:=\frac{a^2-r_3^2}{2r_3},\quad
+c_3:=\frac{a^2+r_3^2}{2r_3}.
+\]
+Then the system is exactly
+\[
+a^2+b_2^2=c_2^2,\qquad
+a^2+b_3^2=c_3^2,\qquad
+b_2^2+b_3^2=g^2.
+\]
+
+\begin{proposition}[Soundness]
+For every $a,r_2,r_3,g\in\mathbb{Q}$ with $r_2r_3\neq 0$, if
+\[
+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
++
+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+g^2,
+\]
+then $(a,b_2,c_2,b_3,c_3,g)$ satisfies
+\[
+a^2+b_2^2=c_2^2,\qquad
+a^2+b_3^2=c_3^2,\qquad
+b_2^2+b_3^2=g^2.
+\]
+\end{proposition}
+
+\begin{proof}
+The first two identities are polynomial identities (clear denominators and expand):
+\[
+4a^2r_i^2+(a^2-r_i^2)^2=(a^2+r_i^2)^2,\qquad i\in\{2,3\}.
+\]
+So $a^2+b_i^2=c_i^2$ for $i=2,3$. The third equality is exactly the displayed hypothesis after substituting the definitions of $b_2,b_3$.
+\end{proof}
+
+\begin{theorem}[Completeness over $\mathbb{Q}$]
+Let $a,b_2,c_2,b_3,c_3,g\in\mathbb{Q}$ satisfy
+\[
+a^2+b_2^2=c_2^2,\qquad
+a^2+b_3^2=c_3^2,\qquad
+b_2^2+b_3^2=g^2,
+\]
+and assume
+\[
+b_2<c_2,\qquad b_3<c_3.
+\]
+Then there exist nonzero $r_2,r_3\in\mathbb{Q}$ such that
+\[
+b_2=\frac{a^2-r_2^2}{2r_2},\qquad
+c_2=\frac{a^2+r_2^2}{2r_2},\qquad
+b_3=\frac{a^2-r_3^2}{2r_3},\qquad
+c_3=\frac{a^2+r_3^2}{2r_3},
+\]
+and
+\[
+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
++
+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+g^2.
+\]
+One may take
+\[
+r_2=c_2-b_2,\qquad r_3=c_3-b_3.
+\]
+\end{theorem}
+
+\begin{proof}
+From the two Pythagorean equations and $b_i<c_i$, the standard divisor reconstruction gives
+\[
+r_i:=c_i-b_i\neq 0,\quad
+b_i=\frac{a^2-r_i^2}{2r_i},\quad
+c_i=\frac{a^2+r_i^2}{2r_i}\qquad (i=2,3).
+\]
+Now substitute these expressions into $b_2^2+b_3^2=g^2$; this yields
+\[
+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
++
+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+g^2.
+\]
+Hence every rational solution of the three-equation system (with the orientation convention $b_i<c_i$) is encompassed by this parameterization.
+\end{proof}
+
+\begin{theorem}[Integer-input corollary]
+If $a,b_2,c_2,b_3,c_3,g\in\mathbb{Z}$ satisfy
+\[
+a^2+b_2^2=c_2^2,\qquad
+a^2+b_3^2=c_3^2,\qquad
+b_2^2+b_3^2=g^2,
+\]
+with $b_2<c_2$ and $b_3<c_3$, then there exist nonzero $r_2,r_3\in\mathbb{Q}$ satisfying the same formulas above. Thus the same divisor system is complete for integer solutions (with rational parameters).
+\end{theorem}
+
+\begin{proof}
+View the integer data in $\mathbb{Q}$ and apply the previous theorem.
+\end{proof}
+
+\paragraph{Conclusion.}
+Under the same orientation assumptions used in the Lean development, the displayed divisor formulas (plus the third equation for $g$) capture all rational solutions and therefore all integer solutions.
+
+\end{document}
