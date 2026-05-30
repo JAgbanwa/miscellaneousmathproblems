@@ -114,6 +114,60 @@ f=\frac{a^2+r_3^2}{2r_3}.
 \]
 \end{proof}
 
+\begin{theorem}[Completeness for rational solutions of the full three-equation system]
+Let $a,b,c,e,f,g\in\mathbb{Q}$ satisfy
+\[
+a^2+b^2=e^2,\qquad
+a^2+c^2=f^2,\qquad
+b^2+c^2=g^2,
+\]
+and assume
+\[
+b<e,\qquad c<f.
+\]
+Then there exist $r_2,r_3\in\mathbb{Q}$ with $r_2\neq 0$, $r_3\neq 0$ such that
+\[
+b=\frac{a^2-r_2^2}{2r_2},\qquad
+e=\frac{a^2+r_2^2}{2r_2},\qquad
+c=\frac{a^2-r_3^2}{2r_3},\qquad
+f=\frac{a^2+r_3^2}{2r_3},
+\]
+and
+\[
+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
++
+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+g^2.
+\]
+In fact one can take
+\[
+r_2=e-b,\qquad r_3=f-c.
+\]
+\end{theorem}
+
+\begin{proof}
+Define $r_2:=e-b$ and $r_3:=f-c$. The strict inequalities give $r_2,r_3\neq 0$.
+
+From the first two equations, exactly as above,
+\[
+b=\frac{a^2-r_2^2}{2r_2},\quad
+e=\frac{a^2+r_2^2}{2r_2},\quad
+c=\frac{a^2-r_3^2}{2r_3},\quad
+f=\frac{a^2+r_3^2}{2r_3}.
+\]
+Now substitute the formulas for $b$ and $c$ into $b^2+c^2=g^2$:
+\[
+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
++
+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+g^2.
+\]
+Hence every rational solution of the full three-equation system (under
+$b<e$, $c<f$) arises from the divisor parameters $r_2,r_3$.
+\end{proof}
+
 \paragraph{Conclusion.}
 Under the orientation assumptions $b<e$ and $c<f$ used in the Lean formalization
 (\texttt{divisor\_system\_complete\_integer}), the parametrized system is complete:
