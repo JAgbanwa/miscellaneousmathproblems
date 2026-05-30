@@ -95,22 +95,17 @@ theorem derive_product_identity
           (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 := by
     have hgeom' := hgeom
     field_simp [hr2qz, hr3qz] at hgeom'
-    have h4 :
-        ((r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
-            (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2) * 4 =
-          ((r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2) * 16 := by
-      have htmp := hgeom'
-      ring_nf at htmp ⊢
-      exact htmp
-    have hdiv :=
-      congrArg (fun x : ℚ => x / 4) h4
-    have hAeq :
+    have hgeom'' :
         (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
             (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 =
-          (4 : ℚ) * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2 := by
-      ring_nf at hdiv ⊢
-      exact hdiv
-    exact hAeq.symm
+          (r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2 * 4 := by
+      nlinarith [hgeom']
+    calc
+      (4 : ℚ) * (r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2
+          = (r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2 * 4 := by ring
+      _ = (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
+            (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 := by
+            exact hgeom''.symm
 
   have hexpQ :
       (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
