@@ -120,8 +120,8 @@ theorem derive_product_identity
                 ring
         _ = 4 * ((r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2 * 4) := by
               have htmp := hgeom'
-              ring_nf at htmp
-              nlinarith [htmp]
+              ring_nf at htmp ⊢
+              exact htmp
         _ = ((r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2) * 16 := by ring
     have hdiv :
         ((((a ^ 2 - r2 ^ 2 : ℤ) : ℚ) ^ 2) * (r3 : ℚ) ^ 2 +
