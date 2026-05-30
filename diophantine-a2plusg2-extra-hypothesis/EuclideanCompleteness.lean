@@ -183,5 +183,85 @@ theorem rational_pythagorean_euclid_complete
 
 end EuclideanParametrization
 
+section DivisorSystemCompleteness
+
+theorem divisor_system_sound_rational
+    (a r₂ r₃ : ℚ) (hr₂ : r₂ ≠ 0) (hr₃ : r₃ ≠ 0) :
+    let b₂ : ℚ := (a ^ 2 - r₂ ^ 2) / (2 * r₂)
+    let c₂ : ℚ := (a ^ 2 + r₂ ^ 2) / (2 * r₂)
+    let b₃ : ℚ := (a ^ 2 - r₃ ^ 2) / (2 * r₃)
+    let c₃ : ℚ := (a ^ 2 + r₃ ^ 2) / (2 * r₃)
+    a ^ 2 + b₂ ^ 2 = c₂ ^ 2 ∧ a ^ 2 + b₃ ^ 2 = c₃ ^ 2 := by
+  intro b₂ c₂ b₃ c₃
+  constructor
+  · dsimp [b₂, c₂]
+    field_simp [hr₂]
+    ring
+  · dsimp [b₃, c₃]
+    field_simp [hr₃]
+    ring
+
+theorem divisor_system_complete_rational
+    {a b₂ c₂ b₃ c₃ : ℚ}
+    (h₂ : a ^ 2 + b₂ ^ 2 = c₂ ^ 2)
+    (h₃ : a ^ 2 + b₃ ^ 2 = c₃ ^ 2)
+    (h₂lt : b₂ < c₂)
+    (h₃lt : b₃ < c₃) :
+    ∃ r₂ r₃ : ℚ,
+      r₂ ≠ 0 ∧
+      r₃ ≠ 0 ∧
+      b₂ = (a ^ 2 - r₂ ^ 2) / (2 * r₂) ∧
+      c₂ = (a ^ 2 + r₂ ^ 2) / (2 * r₂) ∧
+      b₃ = (a ^ 2 - r₃ ^ 2) / (2 * r₃) ∧
+      c₃ = (a ^ 2 + r₃ ^ 2) / (2 * r₃) := by
+  refine ⟨c₂ - b₂, c₃ - b₃, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · exact sub_ne_zero.mpr (ne_of_gt h₂lt)
+  · exact sub_ne_zero.mpr (ne_of_gt h₃lt)
+  · have hr₂ : c₂ - b₂ ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₂lt)
+    have ha₂ : a ^ 2 = (c₂ - b₂) * (c₂ + b₂) := by nlinarith [h₂]
+    rw [ha₂]
+    field_simp [hr₂]
+    ring
+  · have hr₂ : c₂ - b₂ ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₂lt)
+    have ha₂ : a ^ 2 = (c₂ - b₂) * (c₂ + b₂) := by nlinarith [h₂]
+    rw [ha₂]
+    field_simp [hr₂]
+    ring
+  · have hr₃ : c₃ - b₃ ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₃lt)
+    have ha₃ : a ^ 2 = (c₃ - b₃) * (c₃ + b₃) := by nlinarith [h₃]
+    rw [ha₃]
+    field_simp [hr₃]
+    ring
+  · have hr₃ : c₃ - b₃ ≠ 0 := sub_ne_zero.mpr (ne_of_gt h₃lt)
+    have ha₃ : a ^ 2 = (c₃ - b₃) * (c₃ + b₃) := by nlinarith [h₃]
+    rw [ha₃]
+    field_simp [hr₃]
+    ring
+
+theorem divisor_system_complete_integer
+    {a b₂ c₂ b₃ c₃ : ℤ}
+    (h₂ : a ^ 2 + b₂ ^ 2 = c₂ ^ 2)
+    (h₃ : a ^ 2 + b₃ ^ 2 = c₃ ^ 2)
+    (h₂lt : b₂ < c₂)
+    (h₃lt : b₃ < c₃) :
+    ∃ r₂ r₃ : ℚ,
+      r₂ ≠ 0 ∧
+      r₃ ≠ 0 ∧
+      (b₂ : ℚ) = ((a : ℚ) ^ 2 - r₂ ^ 2) / (2 * r₂) ∧
+      (c₂ : ℚ) = ((a : ℚ) ^ 2 + r₂ ^ 2) / (2 * r₂) ∧
+      (b₃ : ℚ) = ((a : ℚ) ^ 2 - r₃ ^ 2) / (2 * r₃) ∧
+      (c₃ : ℚ) = ((a : ℚ) ^ 2 + r₃ ^ 2) / (2 * r₃) := by
+  have h₂Q : (a : ℚ) ^ 2 + (b₂ : ℚ) ^ 2 = (c₂ : ℚ) ^ 2 := by
+    exact_mod_cast h₂
+  have h₃Q : (a : ℚ) ^ 2 + (b₃ : ℚ) ^ 2 = (c₃ : ℚ) ^ 2 := by
+    exact_mod_cast h₃
+  have h₂ltQ : (b₂ : ℚ) < (c₂ : ℚ) := by
+    exact_mod_cast h₂lt
+  have h₃ltQ : (b₃ : ℚ) < (c₃ : ℚ) := by
+    exact_mod_cast h₃lt
+  exact divisor_system_complete_rational h₂Q h₃Q h₂ltQ h₃ltQ
+
+end DivisorSystemCompleteness
+
 end DiophantineA2PlusG2ExtraHypothesis
 

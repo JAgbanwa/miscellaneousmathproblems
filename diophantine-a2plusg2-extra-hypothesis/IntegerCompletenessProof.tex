@@ -1,0 +1,100 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+
+\title{Completeness of the Divisor Parameterization for Integer Solutions}
+\author{}
+\date{}
+\maketitle
+
+Consider integer unknowns
+\[
+a,b_2,c_2,b_3,c_3\in\mathbb Z
+\]
+satisfying
+\[
+a^2+b_2^2=c_2^2,\qquad a^2+b_3^2=c_3^2,
+\]
+with the nondegeneracy assumptions
+\[
+b_2<c_2,\qquad b_3<c_3.
+\]
+
+\begin{theorem}
+The system above is equivalent to the existence of nonzero rational parameters
+\[
+r_2,r_3\in\mathbb Q^\times
+\]
+such that
+\[
+b_2=\frac{a^2-r_2^2}{2r_2},\qquad
+c_2=\frac{a^2+r_2^2}{2r_2},
+\]
+\[
+b_3=\frac{a^2-r_3^2}{2r_3},\qquad
+c_3=\frac{a^2+r_3^2}{2r_3}.
+\]
+In particular, every integer solution of the two Pythagorean equations arises from this parameterization.
+\end{theorem}
+
+\begin{proof}
+\textbf{(Soundness)}  
+Fix $a\in\mathbb Z$ and nonzero $r_2,r_3\in\mathbb Q$. Define
+\[
+b_i:=\frac{a^2-r_i^2}{2r_i},\qquad c_i:=\frac{a^2+r_i^2}{2r_i}\quad (i=2,3).
+\]
+Then, for each $i$,
+\[
+a^2+b_i^2-c_i^2
+=a^2+\left(\frac{a^2-r_i^2}{2r_i}\right)^2
+ -\left(\frac{a^2+r_i^2}{2r_i}\right)^2
+=0
+\]
+by direct expansion, so $a^2+b_i^2=c_i^2$.
+
+\medskip
+\textbf{(Completeness)}  
+Now let integers $a,b_i,c_i$ satisfy
+\[
+a^2+b_i^2=c_i^2,\qquad b_i<c_i\qquad (i=2,3).
+\]
+Set
+\[
+r_i:=c_i-b_i\in\mathbb Z_{>0}\subset\mathbb Q^\times.
+\]
+From $a^2+b_i^2=c_i^2$ we get
+\[
+a^2=(c_i-b_i)(c_i+b_i)=r_i(c_i+b_i),
+\]
+hence
+\[
+c_i+b_i=\frac{a^2}{r_i}.
+\]
+Solving the linear system in $b_i,c_i$:
+\[
+2c_i=(c_i+b_i)+(c_i-b_i)=\frac{a^2}{r_i}+r_i,
+\]
+\[
+2b_i=(c_i+b_i)-(c_i-b_i)=\frac{a^2}{r_i}-r_i.
+\]
+Therefore
+\[
+c_i=\frac{a^2+r_i^2}{2r_i},\qquad
+b_i=\frac{a^2-r_i^2}{2r_i},
+\]
+for $i=2,3$, exactly as claimed.
+
+So every integer solution is captured by these formulas (with $r_i=c_i-b_i$), and every such formula gives a rational Pythagorean solution.
+\end{proof}
+
+\paragraph{Remark.}
+If one wants $b_i,c_i$ to be integers for prescribed integers $a,r_i$, one must additionally impose divisibility/parity constraints ensuring
+\[
+\frac{a^2\pm r_i^2}{2r_i}\in\mathbb Z.
+\]
+The theorem above is a completeness statement: given an integer solution, appropriate $r_i$ always exist.
+
+\end{document}

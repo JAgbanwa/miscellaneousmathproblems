@@ -1,0 +1,133 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\begin{document}
+
+\title{Completeness of the Divisor System}
+\author{}
+\date{}
+\maketitle
+
+\paragraph{System under consideration.}
+For $a,r_2,r_3 \in \mathbb{Q}$ with $r_2r_3\neq 0$, define
+\[
+b_2:=\frac{a^2-r_2^2}{2r_2},\qquad
+c_2:=\frac{a^2+r_2^2}{2r_2},\qquad
+b_3:=\frac{a^2-r_3^2}{2r_3},\qquad
+c_3:=\frac{a^2+r_3^2}{2r_3}.
+\]
+Then the two equations
+\[
+a^2+b_2^2=c_2^2,\qquad a^2+b_3^2=c_3^2
+\]
+are exactly
+\[
+a^2+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
+=
+\left(\frac{a^2+r_2^2}{2r_2}\right)^2,
+\]
+\[
+a^2+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+\left(\frac{a^2+r_3^2}{2r_3}\right)^2.
+\]
+
+\begin{proposition}[Soundness]
+For every $a,r_2,r_3\in\mathbb{Q}$ with $r_2r_3\neq 0$, the above formulas satisfy
+\[
+a^2+\left(\frac{a^2-r_2^2}{2r_2}\right)^2
+=
+\left(\frac{a^2+r_2^2}{2r_2}\right)^2,\qquad
+a^2+\left(\frac{a^2-r_3^2}{2r_3}\right)^2
+=
+\left(\frac{a^2+r_3^2}{2r_3}\right)^2.
+\]
+\end{proposition}
+
+\begin{proof}
+For $i\in\{2,3\}$, clear denominators in
+\[
+a^2+\left(\frac{a^2-r_i^2}{2r_i}\right)^2
+\stackrel{?}{=}
+\left(\frac{a^2+r_i^2}{2r_i}\right)^2
+\]
+by multiplying by $4r_i^2$:
+\[
+4a^2r_i^2+(a^2-r_i^2)^2
+\stackrel{?}{=}
+(a^2+r_i^2)^2.
+\]
+Expanding both sides gives
+\[
+a^4+2a^2r_i^2+r_i^4
+=
+a^4+2a^2r_i^2+r_i^4.
+\]
+So both equations hold identically.
+\end{proof}
+
+\begin{theorem}[Completeness for integer solutions]
+Let $a,b_2,c_2,b_3,c_3\in\mathbb{Z}$ satisfy
+\[
+a^2+b_2^2=c_2^2,\qquad a^2+b_3^2=c_3^2,
+\]
+and assume the oriented-leg conditions
+\[
+b_2<c_2,\qquad b_3<c_3.
+\]
+Then there exist $r_2,r_3\in\mathbb{Q}$ with $r_2\neq 0$, $r_3\neq 0$ such that
+\[
+b_2=\frac{a^2-r_2^2}{2r_2},\qquad
+c_2=\frac{a^2+r_2^2}{2r_2},\qquad
+b_3=\frac{a^2-r_3^2}{2r_3},\qquad
+c_3=\frac{a^2+r_3^2}{2r_3}.
+\]
+In fact one can take
+\[
+r_2=c_2-b_2,\qquad r_3=c_3-b_3.
+\]
+\end{theorem}
+
+\begin{proof}
+Set $r_2:=c_2-b_2$ and $r_3:=c_3-b_3$. Since $b_i<c_i$, we have $r_i\neq 0$.
+
+From $a^2+b_2^2=c_2^2$:
+\[
+a^2=(c_2-b_2)(c_2+b_2)=r_2(c_2+b_2).
+\]
+Hence
+\[
+\frac{a^2-r_2^2}{2r_2}
+=\frac{r_2(c_2+b_2)-r_2^2}{2r_2}
+=\frac{c_2+b_2-r_2}{2}
+=\frac{c_2+b_2-(c_2-b_2)}{2}
+=b_2,
+\]
+and similarly
+\[
+\frac{a^2+r_2^2}{2r_2}
+=\frac{c_2+b_2+r_2}{2}
+=\frac{c_2+b_2+(c_2-b_2)}{2}
+=c_2.
+\]
+The same argument with $(b_3,c_3,r_3)$ gives
+\[
+b_3=\frac{a^2-r_3^2}{2r_3},\qquad
+c_3=\frac{a^2+r_3^2}{2r_3}.
+\]
+So every integer solution of the two Pythagorean equations (with $b_i<c_i$) arises
+from the displayed divisor system.
+\end{proof}
+
+\paragraph{Conclusion.}
+Under the orientation convention $b_i<c_i$ used in the Lean formalization
+(\texttt{divisor\_system\_complete\_integer}), the parametrized system is
+\emph{complete}: it encompasses all integer solutions of
+\[
+a^2+b_2^2=c_2^2,\qquad a^2+b_3^2=c_3^2.
+\]
+
+\end{document}
