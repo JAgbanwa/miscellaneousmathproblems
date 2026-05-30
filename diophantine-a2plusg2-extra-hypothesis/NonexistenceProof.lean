@@ -114,12 +114,14 @@ theorem derive_product_identity
       calc
         ((((a ^ 2 - r2 ^ 2 : ℤ) : ℚ) ^ 2) * (r3 : ℚ) ^ 2 +
             (((a ^ 2 - r3 ^ 2 : ℤ) : ℚ) ^ 2) * (r2 : ℚ) ^ 2) * 4
-            = ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 * (2 * (r3 : ℚ)) ^ 2 +
-                ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 * (2 * (r2 : ℚ)) ^ 2 := by
+            = 4 * ((r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
+                (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2) := by
                 simp [Int.cast_sub, Int.cast_pow]
                 ring
-        _ = (g : ℚ) ^ 2 * ((2 * (r2 : ℚ)) ^ 2 * (2 * (r3 : ℚ)) ^ 2) := by
-              simpa [mul_assoc, mul_comm, mul_left_comm] using hgeom'
+        _ = 4 * ((r2 : ℚ) ^ 2 * (r3 : ℚ) ^ 2 * (g : ℚ) ^ 2 * 4) := by
+              have htmp := hgeom'
+              ring_nf at htmp
+              nlinarith [htmp]
         _ = ((r3 : ℚ) ^ 2 * (r2 : ℚ) ^ 2 * (g : ℚ) ^ 2) * 16 := by ring
     have hdiv :
         ((((a ^ 2 - r2 ^ 2 : ℤ) : ℚ) ^ 2) * (r3 : ℚ) ^ 2 +
@@ -135,7 +137,8 @@ theorem derive_product_identity
             (((a ^ 2 - r3 ^ 2 : ℤ) : ℚ) ^ 2) * (r2 : ℚ) ^ 2 := hdiv.symm
       _ = (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
             (r2 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r3 : ℚ) ^ 2) ^ 2 := by
-            simp [Int.cast_sub, Int.cast_pow, mul_assoc, mul_comm, mul_left_comm]
+            simp [Int.cast_sub, Int.cast_pow]
+            ring
 
   have hexpQ :
       (r3 : ℚ) ^ 2 * ((a : ℚ) ^ 2 - (r2 : ℚ) ^ 2) ^ 2 +
