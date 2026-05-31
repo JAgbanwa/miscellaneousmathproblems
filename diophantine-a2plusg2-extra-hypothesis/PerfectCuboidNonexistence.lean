@@ -959,4 +959,81 @@ theorem parametrized_faces_and_no_space_diagonal
   refine ⟨_, _, _, _, hsys.1, hsys.2.1, hsys.2.2, ?_⟩
   exact no_integer_hypotenuse a r2 r3 g hgeom hr2 hr3 hextra
 
+section GlobalBridge
+
+def IsPositivePerfectCuboid (a b c d e f g : ℤ) : Prop :=
+  0 < a ∧ 0 < b ∧ 0 < c ∧ 0 < d ∧ 0 < e ∧ 0 < f ∧ 0 < g ∧
+    IsPerfectCuboid a b c d e f g
+
+lemma int_lt_of_sq_lt_sq_of_pos {x y : ℤ} (hx : 0 < x) (hy : 0 < y) (hxy : x ^ 2 < y ^ 2) :
+    x < y := by
+  nlinarith
+
+/-- Global contradiction schema:
+if the divisor-parameterized `a^2 + g^2 = d^2` equation has no rational solution
+for all inputs, then no positive perfect cuboid exists. -/
+theorem no_positive_perfect_cuboid_of_global_no_rational_space_diagonal
+    (hNoRat :
+      ∀ a r₂ r₃ g : ℚ, r₂ ≠ 0 → r₃ ≠ 0 →
+        ((a ^ 2 - r₂ ^ 2) / (2 * r₂)) ^ 2 + ((a ^ 2 - r₃ ^ 2) / (2 * r₃)) ^ 2 = g ^ 2 →
+        ¬ ∃ d : ℚ, a ^ 2 + g ^ 2 = d ^ 2) :
+    ¬ ∃ a b c d e f g : ℤ, IsPositivePerfectCuboid a b c d e f g := by
+  intro h
+  rcases h with ⟨a, b, c, d, e, f, g, hpos⟩
+  rcases hpos with ⟨ha, hb, hc, hd, he, hf, hgpos, hcuboid⟩
+  rcases hcuboid with ⟨h₂, h₃, hg, hspace⟩
+
+  have hbe_sq : b ^ 2 < e ^ 2 := by
+    have ha_sq_pos : 0 < a ^ 2 := by nlinarith [ha]
+    have hsum : b ^ 2 + a ^ 2 = e ^ 2 := by
+      nlinarith [h₂]
+    nlinarith [ha_sq_pos, hsum]
+  have hcf_sq : c ^ 2 < f ^ 2 := by
+    have ha_sq_pos : 0 < a ^ 2 := by nlinarith [ha]
+    have hsum : c ^ 2 + a ^ 2 = f ^ 2 := by
+      nlinarith [h₃]
+    nlinarith [ha_sq_pos, hsum]
+  have h₂lt : b < e := int_lt_of_sq_lt_sq_of_pos hb he hbe_sq
+  have h₃lt : c < f := int_lt_of_sq_lt_sq_of_pos hc hf hcf_sq
+
+  rcases divisor_system_with_g_complete_integer h₂ h₃ hg h₂lt h₃lt with
+    ⟨r₂, r₃, hr₂, hr₃, hbParam, heParam, hcParam, hfParam, hgeom⟩
+
+  have hNoRatHere : ¬ ∃ dQ : ℚ, (a : ℚ) ^ 2 + (g : ℚ) ^ 2 = dQ ^ 2 :=
+    hNoRat (a := (a : ℚ)) (r₂ := r₂) (r₃ := r₃) (g := (g : ℚ)) hr₂ hr₃ hgeom
+
+  have hspaceQ : (a : ℚ) ^ 2 + (g : ℚ) ^ 2 = (d : ℚ) ^ 2 := by
+    exact_mod_cast hspace
+
+  exact hNoRatHere ⟨(d : ℚ), hspaceQ⟩
+
+/-- Final global form directly aligned with the hypotheses/signature used by
+`no_integer_hypotenuse` (from the nonexistence development).
+
+Interpretation: if every hypothetical positive perfect cuboid instance yields
+integer parameters satisfying those exact hypotheses, then positive perfect
+cuboids do not exist. -/
+theorem no_positive_perfect_cuboid_of_no_integer_hypotenuse_schema
+    (hSchema :
+      ∀ a b c d e f g : ℤ, IsPositivePerfectCuboid a b c d e f g →
+        ∃ r2 r3 : ℤ,
+          (((a ^ 2 - r2 ^ 2 : ℤ) : ℚ) / (2 * r2)) ^ 2 +
+              ((((a ^ 2 - r3 ^ 2 : ℤ) : ℚ) / (2 * r3)) ^ 2) =
+            (g : ℚ) ^ 2 ∧
+          r2 ∣ a ∧
+          r3 ∣ a ∧
+          (∃ p : ℕ, Nat.Prime p ∧ p % 4 = 3 ∧
+            Odd (padicValNat p (Int.natAbs (r2 ^ 2 + r3 ^ 2))))) :
+    ¬ ∃ a b c d e f g : ℤ, IsPositivePerfectCuboid a b c d e f g := by
+  intro h
+  rcases h with ⟨a, b, c, d, e, f, g, hPosCuboid⟩
+  rcases hSchema a b c d e f g hPosCuboid with
+    ⟨r2, r3, hgeom, hr2, hr3, hextra⟩
+  rcases hPosCuboid with ⟨ha, hb, hc, hd, he, hf, hg, hcuboid⟩
+  have hNoD : ¬ ∃ d0 : ℤ, a ^ 2 + g ^ 2 = d0 ^ 2 :=
+    no_integer_hypotenuse a r2 r3 g hgeom hr2 hr3 hextra
+  exact hNoD ⟨d, hcuboid.2.2.2⟩
+
+end GlobalBridge
+
 end DiophantineA2PlusG2ExtraHypothesis
