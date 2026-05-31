@@ -18,109 +18,86 @@ Rewrite the equation as
 x^{3}+6 = -y^{2}(z^{2}-1).
 \end{equation}
 
-Set $X := -x$. Since the right-hand side of \eqref{eq:main} is negative when
-$y\neq 0$ and $|z|\ge 2$, any solution with $y\neq 0$ must satisfy
-$x^{3}+6<0$. Thus $x\le -3$, and because $x\equiv 3\pmod 4$ we have
-$x\le -5$ and hence $X\ge 5$ with $X\equiv 1\pmod 4$.
+We split into four exhaustive cases.
+
+\paragraph{Case 1: $y=0$.}
+If $y = 0$ then \eqref{eq:main} reduces to $x^{3} = -6$. No integer cube
+equals $-6$, because $(-2)^3 = -8$ and $(-1)^3 = -1$. Hence there is no
+solution with $y=0$.
+
+\paragraph{Case 2: $z=0$, $y\neq 0$.}
+If $z = 0$ then \eqref{eq:main} becomes
+\begin{equation}\label{eq:mordell}
+y^{2} = x^{3} + 6.
+\end{equation}
+This is Mordell's equation with parameter $6$. It is a classical result that
+this elliptic curve has no integer points. In particular, the curve with
+LMFDB label \texttt{24.a3} has rank $0$ over $\mathbb Q$ and no rational
+points besides the point at infinity. Therefore there is no integer solution
+with $z=0$ and $y\neq 0$.
+
+\paragraph{Case 3: $z=\pm 1$, $y\neq 0$.}
+If $z = \pm 1$ then $z^{2}-1 = 0$ and \eqref{eq:main} reduces again to
+$x^{3} = -6$. As in Case 1, this is impossible.
+
+\paragraph{Case 4: $|z|\ge 2$, $y\neq 0$.}
+Since $z$ is even, $z^{2}-1$ is an odd integer and $z^{2}-1 \ge 3$. Because
+$y\neq 0$, the right-hand side of \eqref{eq:main} is at most $-3$. Thus
+$6+x^{3} \le -3$, which forces $x^{3} \le -9$ and therefore $x \le -3$. Because
+$x\equiv 3 \pmod 4$, in fact $x \le -5$. Set $X := -x\ge 5$, so
+$X \equiv 1 \pmod 4$.
 
 Rewrite \eqref{eq:main} as
 \begin{equation}\label{eq:Xeq}
-X^{3}+6 = y^{2}(z^{2}-1),
+X^{3}+6 = y^{2}(z^{2}-1).
 \end{equation}
-where $X\in\mathbb Z_{>0}$, $X\equiv 1\pmod 4$, $y$ is odd, and $z$ is even.
+The right-hand side is odd, so $X$ is odd.
 
-\paragraph{1) Coprimality of $X$ and $y$.}
-Suppose a prime $p$ divides both $X$ and $y$. Since $y$ is odd, $p$ is odd.
-Then $p$ divides $X^{3}+6$ and therefore divides $6$. Thus $p=3$.
-Write $X = 3X'$ and $y = 3y'$. Substituting in \eqref{eq:Xeq} gives
-\[27X'^{3}+6 = 9y'^{2}(z^{2}-1).
-\]
-Dividing by $3$ yields
-\[9X'^{3}+2 = 3y'^{2}(z^{2}-1).
-\]
-The left-hand side is congruent to $2$ modulo $3$, while the right-hand side is
-congruent to $0$ modulo $3$. This is impossible. Hence no prime divides both
-$X$ and $y$, i.e.
-\begin{equation}\label{eq:coprime}
-\gcd(X,y)=1.
+Since $z$ is even, both $z-1$ and $z+1$ are odd and coprime. One of them is
+congruent to $1$ modulo $4$ and the other is congruent to $3$ modulo $4$.
+Because $y$ is odd, $y^{2}\equiv 1 \pmod 4$. Hence
+\begin{equation}\label{eq:rhs-mod4}
+\{(z-1)y^{2},\;(z+1)y^{2}\} \equiv \{1,3\} \pmod 4.
 \end{equation}
 
-\paragraph{2) Parity and modulo~4 properties.}
-Because $z$ is even, both $z-1$ and $z+1$ are odd. Their product
-$z^{2}-1$ is therefore odd, and $y^{2}(z^{2}-1)$ is odd. In particular,
-$X^{3}+6$ is odd, so $X$ is odd. Combined with $X\equiv 1\pmod 4$, we obtain
-
+On the other hand,
 \begin{equation}\label{eq:mod4}
-X+2 \equiv 3 \pmod 4,
-\qquad
-X^{2}-2X+4 \equiv 3 \pmod 4.
+X^{3} + 6 \equiv 1 \pmod 4
 \end{equation}
-
-The factorization
+for $X \equiv 1 \pmod 4$. Factor the left-hand side as
 \begin{equation}\label{eq:factor}
-X^{3}+6 = (X+2)(X^{2}-2X+4)
+X^{3}+6 = (X+2)(X^{2}-2X+4).
 \end{equation}
-takes the form of two coprime odd factors. Indeed,
+Because $X\equiv 1 \pmod 4$, both factors on the right-hand side of
+\eqref{eq:factor} are odd and congruent to $3$ modulo $4$.
+
+A short gcd computation gives
 \begin{align*}
 \gcd(X+2, X^{2}-2X+4)
 &= \gcd(X+2, (X^{2}-2X+4) - (X-4)(X+2)) \\
 &= \gcd(X+2, 12).
 \end{align*}
-Because $X\equiv 1\pmod 4$, the number $X+2$ is an odd integer congruent to
-$3$ modulo $4$. Thus $\gcd(X+2,12)$ divides $3$.
-
-If $3 \mid X+2$, then $X\equiv 1\pmod 3$ and hence $X^{3}+6\equiv 1\pmod 3$.
-But $z$ is even, so $z\equiv 0$ or $2 \pmod 3$, and therefore
-$z^{2}-1 \equiv 2$ or $0 \pmod 3$. Since $y$ is odd, $y^{2}\equiv 1\pmod 3$.
-Thus the right-hand side of \eqref{eq:Xeq} is congruent to $2$ or $0$ modulo $3$,
-contradicting $X^{3}+6\equiv 1\pmod 3$. Consequently $3\nmid X+2$ and we have
-
+Since $X\equiv 1 \pmod 4$, $X+2 \equiv 3 \pmod 4$. If $3 \mid X+2$, then
+$X\equiv 1 \pmod 3$ and therefore $X^{3}+6\equiv 1 \pmod 3$. But with $z$ even
+we have $z^{2}-1 \equiv 0$ or $2 \pmod 3$, and with $y$ odd we have
+$y^{2} \equiv 1 \pmod 3$. Hence the right-hand side of \eqref{eq:Xeq} is
+congruent to $0$ or $2$ modulo $3$, a contradiction. Thus $3\nmid X+2$, and
 \begin{equation}\label{eq:gcd1}
 \gcd(X+2, X^{2}-2X+4) = 1.
 \end{equation}
 
-\paragraph{3) The parity of $z\pm 1$.}
-Since $z$ is even, $z-1$ and $z+1$ are odd and coprime. One of them is
-congruent to $1$ modulo $4$ and the other to $3$ modulo $4$.
-(Indeed, any even $z$ satisfies $z\equiv 0$ or $2 \pmod 4$, so
-$z-1 \equiv 3$ and $z+1 \equiv 1$, or vice versa.)
+Now compare \eqref{eq:factor} and \eqref{eq:Xeq}. The right-hand side of
+\eqref{eq:Xeq} factors as
+\[y^{2}(z-1)(z+1),\]
+and because $z-1$ and $z+1$ are coprime, their prime divisors must be split
+between the coprime factors $(X+2)$ and $(X^{2}-2X+4)$. Since $y^{2}$ is a
+square and every odd square is congruent to $1$ modulo $4$, the two factors on
+the right-hand side must be congruent to $1$ and $3$ modulo $4$, respectively.
+By contrast, the two factors on the left-hand side of \eqref{eq:factor} are both
+congruent to $3$ modulo $4$. This is impossible.
 
-Because $y$ is odd, $y^{2}\equiv 1 \pmod 4$.
-Therefore any odd integer obtained by multiplying one of $z-1$ or $z+1$ by
-$y^{2}$ has the same residue class modulo $4$ as the original factor.
-In particular,
-\begin{equation}\label{eq:rhs-mod4}
-\{(z-1)y^{2}, (z+1)y^{2}\} \equiv \{1,3\} \pmod 4.
-\end{equation}
-
-\paragraph{4) Final contradiction.}
-Equation~\eqref{eq:Xeq} can be rewritten using \eqref{eq:factor} as
-\begin{equation}\label{eq:split}
-(X+2)(X^{2}-2X+4) = y^{2}(z-1)(z+1).
-\end{equation}
-The left-hand side is a product of two coprime odd integers by
-\eqref{eq:gcd1}. Since $z-1$ and $z+1$ are coprime, the prime divisors of
-$(z-1)(z+1)$ must split between the two coprime left factors without overlap.
-Because $y^{2}$ is a square and every odd square is congruent to $1$ modulo $4$,
-the residue of each factor modulo $4$ is determined entirely by the odd part
-coming from either $z-1$ or $z+1$.
-
-One of $z-1$ and $z+1$ is $1\pmod 4$ and the other is $3\pmod 4$. Hence in
-any factorisation of $y^{2}(z-1)(z+1)$ into two coprime odd factors, one of the
-resulting factors must be congruent to $1$ modulo $4$ and the other to $3$ modulo
-$4$. This follows from the fact that an odd square is $1$ modulo $4$, so the
-parity class of each factor is unchanged by the square multiplier.
-
-However, from \eqref{eq:mod4} both factors on the left-hand side of
-\eqref{eq:split} are congruent to $3$ modulo $4$. This is impossible if the
-right-hand side splits as one factor congruent to $1$ and one factor congruent
-to $3$ modulo $4$. Therefore no integer solution can exist.
-
-\paragraph{5) Conclusion.}
-The assumptions $z$ even, $y$ odd, and $x\equiv 3 \pmod 4$ force
-$x\le -5$, $X=-x\ge 5$, $X\equiv 1\pmod 4$, and coprimality
-$\gcd(X,y)=1$. The factorisation argument above then yields a rigid mod-$4$
-contradiction. Hence the original equation has no integer solution under the
-given hypotheses.
+\paragraph{Conclusion.}
+The four exhaustive cases all fail. Therefore there are no integers $x,y,z$ with
+$z$ even, $y$ odd, and $x\equiv 3 \pmod 4$ satisfying the given equation.
 
 \end{document}
