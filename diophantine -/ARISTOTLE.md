@@ -14,3 +14,11 @@ Results proved, following the paper's lemmas:
 - `complete_solution` (Theorem 1): the integer solutions are exactly the triples `x = ε·n`, `2y = σ·a − ε·n³`, `2z = τ·b` with `n` admissible, `(a,b) ∈ Rₙ`, and `ε, σ, τ ∈ {±1}` (the `/2` in the paper is rendered faithfully as `2y = …`, `2z = …`).
 - `Rrep_nonempty_iff` (Lemma 16): `Rₙ` is nonempty iff `n` is admissible.
 The two-squares criterion was already available in Mathlib, so I used it directly rather than re-deriving the Gaussian-integer development; all of the paper's number-theoretic reduction (Sections 2 and 4) is formalized in full.
+
+This project was edited by [Aristotle](https://aristotle.harmonic.fun).
+To cite Aristotle:
+- Tag @Aristotle-Harmonic on GitHub PRs/issues
+- Add as co-author to commits:
+```
+Co-authored-by: Aristotle (Harmonic) <aristotle-harmonic@harmonic.fun>
+```
