@@ -231,7 +231,8 @@ theorem Rrep_nonempty_iff (n : ℕ) :
       have := hab.2.2.2.1; ( have := hab.2.2.2.2; ( norm_num [ Int.even_iff ] at *; ) );
       obtain ⟨ k, rfl ⟩ := this; simp_all +decide [ IsSol ] ;
       cases abs_cases a <;> nlinarith [ Int.ediv_mul_cancel ( show 2 ∣ a - ↑n ^ 3 from even_iff_two_dvd.mp ( by apply_fun Even at *; simp_all +decide [ parity_simps ] ) ) ];
-    convert necessary_form hx using 1;
+    have hAdm := necessary_form hx
+    rwa [Int.natAbs_natCast] at hAdm
   · obtain ⟨c, d, hcd⟩ : ∃ c d : ℤ, c ^ 2 + d ^ 2 = (n : ℤ) ^ 6 - 4 ∧ c ≠ 0 ∧ d ≠ 0 ∧ (Odd c ↔ Even d) := by
       have h_sum_sq : ∃ c d : ℤ, c ^ 2 + d ^ 2 = (n : ℤ) ^ 6 - 4 := by
         have := sumsq_iff_even_exp ( n ^ 6 - 4 );
