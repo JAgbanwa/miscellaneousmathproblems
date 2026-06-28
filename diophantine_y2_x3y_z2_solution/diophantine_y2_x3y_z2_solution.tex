@@ -1,0 +1,754 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  citecolor=blue
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Zi}{\mathbb Z[i]}
+\newcommand{\Norm}{\operatorname N}
+\newcommand{\vp}{v_p}
+
+\title{A Complete Integer Solution of\\[3pt]
+\texorpdfstring{$y^2+x^3y+z^2+1=0$}{y2+x3y+z2+1=0}}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We solve the Diophantine equation
+\[
+        y^2+x^3y+z^2+1=0
+\]
+completely over the integers.  The solution is reduced, by completing the square, to representations of
+$x^6-4$ as a sum of two squares.  For completeness, the classical two-squares criterion is proved from first principles using the Euclidean arithmetic of the Gaussian integers.
+\end{abstract}
+
+\section{Statement of the answer}
+
+For a positive integer $n$, define
+\[
+\mathcal R_n
+=
+\{(a,b)\in \Z_{>0}^2: a^2+b^2=n^6-4,\ a\equiv 1\pmod 2,\ b\equiv0\pmod2\}.
+\]
+Also define
+\[
+\mathcal N
+=
+\{n\in\Z_{>0}: n\equiv3\pmod {12}\text{ and }\vp(n^6-4)\text{ is even for every prime }p\equiv3\pmod4\}.
+\]
+
+\begin{theorem}[Complete solution]
+The integer solutions of
+\[
+        y^2+x^3y+z^2+1=0
+\]
+are exactly the triples
+\[
+\boxed{
+        x=\varepsilon n,
+        \qquad
+        y=\frac{\sigma a-\varepsilon n^3}{2},
+        \qquad
+        z=\tau\frac b2
+}
+\]
+where
+\[
+        n\in\mathcal N,
+        \qquad
+        (a,b)\in\mathcal R_n,
+        \qquad
+        \varepsilon,\sigma,\tau\in\{\pm1\}.
+\]
+Equivalently, for a positive integer $n$, one has $\mathcal R_n\ne\varnothing$ if and only if
+\[
+        n\equiv3\pmod {12}
+\]
+and every prime $p\equiv3\pmod4$ occurs to an even exponent in $n^6-4$.
+\end{theorem}
+
+The proof occupies the rest of the note.  The formulation above is finite and effective: for a given $n$, factor $n^6-4$ and check the exponents of the primes congruent to $3$ modulo $4$.
+
+\section{Elementary reduction to a sum of two squares}
+
+\begin{lemma}[The square-completion identity]
+For integers $x,y,z$, the equation
+\[
+        y^2+x^3y+z^2+1=0
+\]
+is equivalent to
+\[
+        (2y+x^3)^2+(2z)^2=x^6-4.
+\]
+\end{lemma}
+
+\begin{proof}
+Multiplying the original equation by $4$ gives
+\[
+        4y^2+4x^3y+4z^2+4=0.
+\]
+Since
+\[
+        4y^2+4x^3y=(2y+x^3)^2-x^6,
+\]
+this is equivalent to
+\[
+        (2y+x^3)^2-x^6+4z^2+4=0,
+\]
+which is precisely
+\[
+        (2y+x^3)^2+(2z)^2=x^6-4.
+\]
+The algebra is reversible, so the two equations are equivalent.
+\end{proof}
+
+\begin{lemma}[First congruence obstructions]
+If $(x,y,z)\in\Z^3$ satisfies
+\[
+        y^2+x^3y+z^2+1=0,
+\]
+then $x$ is odd and $3\mid x$.
+\end{lemma}
+
+\begin{proof}
+First suppose that $x$ is even.  Then $x^3y$ is divisible by $4$, and the original equation gives
+\[
+        y^2+z^2+1\equiv0\pmod4.
+\]
+But a square modulo $4$ is either $0$ or $1$, so $y^2+z^2$ is congruent only to $0,1$, or $2$ modulo $4$, never to $3$ modulo $4$.  This contradiction proves that $x$ is odd.
+
+Now suppose that $3\nmid x$.  By the square-completion identity,
+\[
+        (2y+x^3)^2+(2z)^2=x^6-4.
+\]
+The quadratic residues modulo $9$ are
+\[
+        0,1,4,7.
+\]
+Indeed, this is obtained by squaring the residue classes $0,1,\ldots,8$.  No sum of two elements of $\{0,1,4,7\}$ is congruent to $6$ modulo $9$: the possible sums are
+\[
+        0,1,2,4,5,7,8 \pmod9.
+\]
+On the other hand, if $3\nmid x$, then $x^6\equiv1\pmod9$, and hence
+\[
+        x^6-4\equiv1-4\equiv6\pmod9.
+\]
+Thus the right-hand side of the square-completion identity is congruent to $6$ modulo $9$, while the left-hand side is a sum of two squares modulo $9$, impossible.  Therefore $3\mid x$.
+\end{proof}
+
+\begin{lemma}[Parity of representations]
+Let $n$ be odd and suppose
+\[
+        a^2+b^2=n^6-4
+\]
+with $a,b\in\Z$.  Then neither $a$ nor $b$ is zero.  Moreover, exactly one of $a,b$ is odd and the other is even.  After interchanging the two coordinates if necessary, the representation may be written with $a$ odd and $b$ even.
+\end{lemma}
+
+\begin{proof}
+Since $n$ is odd, $n^2\equiv1\pmod8$, so $n^6\equiv1\pmod8$.  Hence
+\[
+        n^6-4\equiv5\pmod8.
+\]
+No square is congruent to $5$ modulo $8$, so neither coordinate can be zero.  Also, because $n^6-4$ is odd, exactly one of $a,b$ is odd and the other is even.  Therefore we can label the odd coordinate by $a$ and the even coordinate by $b$.
+\end{proof}
+
+\section{The two-squares theorem, proved self-containedly}
+
+We need the classical criterion for an integer to be a sum of two squares.  To keep the solution self-contained, we prove it here.
+
+\subsection{Gaussian integers}
+
+\begin{definition}
+The Gaussian integers are
+\[
+        \Zi=\{u+vi:u,v\in\Z\}.
+\]
+For $\alpha=u+vi\in\Zi$, define its norm by
+\[
+        \Norm(\alpha)=\alpha\overline{\alpha}=u^2+v^2.
+\]
+\end{definition}
+
+\begin{lemma}[Multiplicativity of the norm]
+For all $\alpha,\beta\in\Zi$,
+\[
+        \Norm(\alpha\beta)=\Norm(\alpha)\Norm(\beta).
+\]
+\end{lemma}
+
+\begin{proof}
+Using complex conjugation,
+\[
+        \Norm(\alpha\beta)
+        =\alpha\beta\overline{\alpha\beta}
+        =\alpha\beta\overline\alpha\overline\beta
+        =(\alpha\overline\alpha)(\beta\overline\beta)
+        =\Norm(\alpha)\Norm(\beta).
+\]
+\end{proof}
+
+\begin{lemma}[Euclidean division in $\Zi$]
+For any $\alpha,\beta\in\Zi$ with $\beta\ne0$, there exist $q,r\in\Zi$ such that
+\[
+        \alpha=q\beta+r
+        \qquad\text{and}\qquad
+        \Norm(r)<\Norm(\beta).
+\]
+\end{lemma}
+
+\begin{proof}
+Write $\alpha/\beta=s+ti$ with $s,t\in\mathbb R$.  Choose integers $m,n$ satisfying
+\[
+        |s-m|\le\frac12,
+        \qquad
+        |t-n|\le\frac12,
+\]
+and set $q=m+ni\in\Zi$.  Define $r=\alpha-q\beta$.  Then
+\[
+        r=\beta\left(\frac{\alpha}{\beta}-q\right),
+\]
+and therefore
+\[
+\Norm(r)
+=\Norm(\beta)\left|\frac{\alpha}{\beta}-q\right|^2
+\le
+\Norm(\beta)\left(\frac14+\frac14\right)
+=\frac12\Norm(\beta)<\Norm(\beta).
+\]
+Thus the desired division exists.
+\end{proof}
+
+\begin{lemma}[$\Zi$ is a unique factorization domain]
+Every nonzero nonunit Gaussian integer factors as a product of irreducible Gaussian integers, and this factorization is unique up to multiplication by units and reordering.
+\end{lemma}
+
+\begin{proof}
+The preceding Euclidean division gives the Euclidean algorithm in $\Zi$.  Hence for any $\alpha,\beta\in\Zi$, not both zero, there is a greatest common divisor $d$ and Gaussian integers $u,v$ such that
+\[
+        d=u\alpha+v\beta.
+\]
+This is obtained exactly as over $\Z$: repeatedly divide with remainder of strictly smaller norm until the last nonzero remainder appears, and then back-substitute.
+
+We next show that every irreducible element of $\Zi$ is prime.  Let $\pi\in\Zi$ be irreducible and suppose
+\[
+        \pi\mid \alpha\beta.
+\]
+Let $d$ be a greatest common divisor of $\pi$ and $\alpha$.  Since $d\mid\pi$ and $\pi$ is irreducible, either $d$ is a unit or $d$ is associated to $\pi$.  If $d$ is associated to $\pi$, then $\pi\mid\alpha$.  If $d$ is a unit, Bezout's identity gives
+\[
+        u\pi+v\alpha=1
+\]
+for some $u,v\in\Zi$.  Multiplying by $\beta$ gives
+\[
+        u\pi\beta+v\alpha\beta=\beta.
+\]
+Both terms on the left are divisible by $\pi$, because $\pi\mid\alpha\beta$.  Hence $\pi\mid\beta$.  Thus an irreducible element dividing a product divides one of the factors; that is, every irreducible is prime.
+
+Existence of factorizations follows by descent on the positive integer norm.  If a nonzero nonunit $\gamma\in\Zi$ has no factorization into irreducibles, choose such a counterexample with $\Norm(\gamma)$ minimal.  Then $\gamma$ is not irreducible, so
+\[
+        \gamma=\delta\eta
+\]
+with $\delta,\eta$ nonunits.  Hence
+\[
+        1<\Norm(\delta)<\Norm(\gamma),
+        \qquad
+        1<\Norm(\eta)<\Norm(\gamma).
+\]
+By minimality, both $\delta$ and $\eta$ factor into irreducibles, and therefore so does $\gamma$, a contradiction.
+
+Uniqueness is now standard and follows from primality of irreducibles.  If
+\[
+        \pi_1\cdots\pi_r=\rho_1\cdots\rho_s
+\]
+are two factorizations into irreducibles, then $\pi_1$ divides the product on the right, so $\pi_1$ divides some $\rho_j$.  Since $\rho_j$ is irreducible, $\pi_1$ and $\rho_j$ are associates.  Cancel them and repeat by induction.  This proves uniqueness up to units and reordering.
+\end{proof}
+
+\subsection{\texorpdfstring{Rational primes in $\Zi$}{Rational primes in Z[i]}}
+
+\begin{lemma}[Fermat's little theorem]
+Let $p$ be a rational prime and let $u\in\Z$ with $p\nmid u$.  Then
+\[
+        u^{p-1}\equiv1\pmod p.
+\]
+\end{lemma}
+
+\begin{proof}
+Multiplication by $u$ permutes the nonzero residue classes modulo $p$.  Therefore
+\[
+        u\cdot 2u\cdot 3u\cdots (p-1)u
+        \equiv
+        1\cdot2\cdot3\cdots(p-1)
+        \pmod p.
+\]
+The right-hand product is not divisible by $p$, so it may be cancelled modulo $p$, giving
+\[
+        u^{p-1}\equiv1\pmod p.
+\]
+\end{proof}
+
+\begin{lemma}[Wilson's theorem]
+If $p$ is a rational prime, then
+\[
+        (p-1)!\equiv-1\pmod p.
+\]
+\end{lemma}
+
+\begin{proof}
+Modulo $p$, each nonzero residue has a multiplicative inverse.  The only residues equal to their own inverse are the solutions of
+\[
+        t^2\equiv1\pmod p,
+\]
+namely $t\equiv1$ and $t\equiv-1\pmod p$.  Therefore, in the product of all nonzero residues modulo $p$, every residue except $1$ and $-1$ pairs with its distinct inverse, and each such pair contributes $1$.  Thus
+\[
+        (p-1)!\equiv 1\cdot(-1)\equiv-1\pmod p.
+\]
+\end{proof}
+
+\begin{lemma}[The residue of $-1$ modulo an odd prime]
+Let $p$ be an odd rational prime.
+\begin{enumerate}
+\item If $p\equiv3\pmod4$, then $-1$ is not a quadratic residue modulo $p$.
+\item If $p\equiv1\pmod4$, then $-1$ is a quadratic residue modulo $p$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+First let $p\equiv3\pmod4$.  If $t^2\equiv-1\pmod p$, then $p\nmid t$, so Fermat's little theorem gives $t^{p-1}\equiv1\pmod p$.  But $(p-1)/2$ is odd, and therefore
+\[
+        t^{p-1}=(t^2)^{(p-1)/2}\equiv(-1)^{(p-1)/2}\equiv-1\pmod p,
+\]
+a contradiction.  Hence $-1$ is not a quadratic residue modulo $p$.
+
+Now let $p\equiv1\pmod4$.  Wilson's theorem gives
+\[
+        (p-1)!\equiv-1\pmod p.
+\]
+Pairing the factors $j$ and $p-j$ for $1\le j\le (p-1)/2$ gives
+\[
+        (p-1)!
+        =\prod_{j=1}^{(p-1)/2}j(p-j)
+        \equiv
+        (-1)^{(p-1)/2}\left(\left(\frac{p-1}{2}\right)!\right)^2
+        \pmod p.
+\]
+Since $p\equiv1\pmod4$, the exponent $(p-1)/2$ is even.  Therefore
+\[
+        \left(\left(\frac{p-1}{2}\right)!\right)^2\equiv-1\pmod p,
+\]
+so $-1$ is a quadratic residue modulo $p$.
+\end{proof}
+
+\begin{lemma}[Behavior of rational primes in $\Zi$]
+Let $p$ be a rational prime.
+\begin{enumerate}
+\item $2=(1+i)(1-i)$, so $2$ is a norm: $2=\Norm(1+i)$.
+\item If $p\equiv3\pmod4$, then $p$ is irreducible, hence prime, in $\Zi$.
+\item If $p\equiv1\pmod4$, then there are integers $a,b$ such that
+\[
+        p=a^2+b^2=\Norm(a+bi).
+\]
+Equivalently, $p$ factors nontrivially in $\Zi$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+The identity for $2$ is immediate:
+\[
+        (1+i)(1-i)=2.
+\]
+
+Let $p\equiv3\pmod4$.  Suppose $p$ were reducible in $\Zi$.  Then
+\[
+        p=\alpha\beta
+\]
+with $\alpha,\beta$ nonunits.  Taking norms gives
+\[
+        p^2=\Norm(\alpha)\Norm(\beta).
+\]
+Because $\alpha$ and $\beta$ are nonunits, their norms exceed $1$.  Since $p$ is rationally prime, this forces
+\[
+        \Norm(\alpha)=\Norm(\beta)=p.
+\]
+Writing $\alpha=a+bi$, we obtain
+\[
+        a^2+b^2=p.
+\]
+If $b=0$, then $a^2=p$, impossible.  Thus $b\not\equiv0\pmod p$, and reducing modulo $p$ gives
+\[
+        \left(ab^{-1}\right)^2\equiv -1\pmod p,
+\]
+contradicting the fact that $-1$ is not a quadratic residue modulo primes $p\equiv3\pmod4$.  Therefore $p$ is irreducible in $\Zi$.  Since $\Zi$ is a unique factorization domain, irreducible elements are prime, so $p$ is prime in $\Zi$.
+
+Now let $p\equiv1\pmod4$.  By the preceding lemma, choose $t\in\Z$ such that
+\[
+        t^2\equiv-1\pmod p.
+\]
+Then
+\[
+        p\mid t^2+1=(t+i)(t-i)
+\]
+in $\Zi$.  If $p$ were prime in $\Zi$, it would divide $t+i$ or $t-i$.  But $p\mid t+i$ in $\Zi$ would mean that both real and imaginary parts of $t+i$ are divisible by $p$, i.e. $p\mid t$ and $p\mid1$, impossible.  Similarly, $p\nmid t-i$.  Hence $p$ is not prime in $\Zi$, and therefore not irreducible.  So
+\[
+        p=\alpha\beta
+\]
+with $\alpha,\beta$ nonunits.  Taking norms again gives
+\[
+        p^2=\Norm(\alpha)\Norm(\beta),
+\]
+and hence $\Norm(\alpha)=p$ and $\Norm(\beta)=p$.  Writing $\alpha=a+bi$ gives
+\[
+        p=a^2+b^2.
+\]
+This proves the claim.
+\end{proof}
+
+\subsection{The criterion}
+
+\begin{theorem}[Two-squares criterion]
+Let $M$ be a positive integer.  Then $M$ is representable as
+\[
+        M=A^2+B^2
+\]
+with $A,B\in\Z$ if and only if every rational prime $p\equiv3\pmod4$ occurs to an even exponent in the prime factorization of $M$.
+\end{theorem}
+
+\begin{proof}
+First suppose $M=A^2+B^2$.  Put
+\[
+        \alpha=A+Bi\in\Zi.
+\]
+Then
+\[
+        M=\Norm(\alpha)=\alpha\overline{\alpha}.
+\]
+Let $p\equiv3\pmod4$ be a rational prime.  By the preceding lemma, $p$ is prime in $\Zi$.  In the unique factorization of $\alpha$, suppose $p$ occurs to exponent $e$.  Since $\overline p=p$, the same exponent $e$ occurs in the unique factorization of $\overline\alpha$.  Therefore the exponent of $p$ in
+\[
+        \alpha\overline\alpha=M
+\]
+is $2e$, an even integer.  Hence every rational prime $p\equiv3\pmod4$ has even exponent in $M$.
+
+Conversely, suppose every prime $p\equiv3\pmod4$ has even exponent in $M$.  Write the rational prime factorization of $M$ as
+\[
+        M=2^e
+        \prod_{p\equiv1\, (4)}p^{e_p}
+        \prod_{q\equiv3\, (4)}q^{2f_q}.
+\]
+For $2$, use $2=\Norm(1+i)$.  For each prime $p\equiv1\pmod4$, the preceding lemma gives a Gaussian integer $\pi_p$ with
+\[
+        \Norm(\pi_p)=p.
+\]
+For each prime $q\equiv3\pmod4$, the Gaussian integer $q$ itself has norm
+\[
+        \Norm(q)=q^2.
+\]
+Define
+\[
+        \gamma=(1+i)^e
+        \prod_{p\equiv1\, (4)}\pi_p^{e_p}
+        \prod_{q\equiv3\, (4)}q^{f_q}
+        \in\Zi.
+\]
+By multiplicativity of the norm,
+\[
+        \Norm(\gamma)=M.
+\]
+Writing $\gamma=A+Bi$ gives
+\[
+        M=A^2+B^2.
+\]
+This proves both directions.
+\end{proof}
+
+\section{Completion of the Diophantine solution}
+
+We now return to
+\[
+        y^2+x^3y+z^2+1=0.
+\]
+
+\begin{lemma}[Necessary form of $|x|$]
+Let $(x,y,z)$ be an integer solution, and put $n=|x|$.  Then
+\[
+        n\equiv3\pmod {12},
+\]
+and every prime $p\equiv3\pmod4$ occurs to an even exponent in $n^6-4$.
+\end{lemma}
+
+\begin{proof}
+By the congruence lemma, $x$ is odd and $3\mid x$.  Hence $n$ is odd and $3\mid n$.  By the square-completion identity,
+\[
+        (2y+x^3)^2+(2z)^2=n^6-4.
+\]
+Thus $n^6-4$ is a sum of two squares.  By the two-squares criterion, every prime $p\equiv3\pmod4$ occurs to an even exponent in $n^6-4$.
+
+It remains to prove $n\equiv3\pmod4$.  Since $3\mid n$ and $n>0$, we have $n\ge3$.  Suppose, for contradiction, that $n\equiv1\pmod4$.  Then
+\[
+        n^3-2\equiv3\pmod4,
+        \qquad
+        n^3+2\equiv3\pmod4.
+\]
+Moreover,
+\[
+        \gcd(n^3-2,n^3+2)\mid4.
+\]
+Both $n^3-2$ and $n^3+2$ are odd, so in fact
+\[
+        \gcd(n^3-2,n^3+2)=1.
+\]
+Now an odd integer congruent to $3$ modulo $4$ must contain some prime congruent to $3$ modulo $4$ to an odd exponent: indeed, primes congruent to $1$ modulo $4$ contribute $1$ modulo $4$, while primes congruent to $3$ modulo $4$ contribute $-1$ modulo $4$, so the total number of prime factors congruent to $3$ modulo $4$, counted with multiplicity, must be odd.
+
+Therefore each of the coprime integers $n^3-2$ and $n^3+2$ contains a prime $\equiv3\pmod4$ to an odd exponent.  Since the two factors are coprime, that prime remains to an odd exponent in their product
+\[
+        (n^3-2)(n^3+2)=n^6-4,
+\]
+contradicting the two-squares criterion.  Hence $n\not\equiv1\pmod4$.  Since $n$ is odd, $n\equiv3\pmod4$.
+
+Combining $3\mid n$ with $n\equiv3\pmod4$ gives
+\[
+        n\equiv3\pmod {12}.
+\]
+This proves the lemma.
+\end{proof}
+
+\begin{lemma}[Sufficiency and reconstruction]
+Let $n\in\mathcal N$, let $(a,b)\in\mathcal R_n$, and choose signs
+\[
+        \varepsilon,\sigma,\tau\in\{\pm1\}.
+\]
+Define
+\[
+        x=\varepsilon n,
+        \qquad
+        y=\frac{\sigma a-\varepsilon n^3}{2},
+        \qquad
+        z=\tau\frac b2.
+\]
+Then $x,y,z$ are integers and
+\[
+        y^2+x^3y+z^2+1=0.
+\]
+Conversely, every integer solution arises in this way.
+\end{lemma}
+
+\begin{proof}
+First observe that $x$ is an integer.  Since $n\equiv3\pmod {12}$, $n$ is odd, so $n^3$ is odd.  Since $a$ is odd, $\sigma a-\varepsilon n^3$ is even; hence $y\in\Z$.  Since $b$ is even, $z\in\Z$.
+
+Now compute
+\[
+        2y+x^3
+        =\sigma a-\varepsilon n^3+(\varepsilon n)^3.
+\]
+Because $\varepsilon^3=\varepsilon$, this simplifies to
+\[
+        2y+x^3=\sigma a.
+\]
+Similarly,
+\[
+        2z=\tau b.
+\]
+Therefore
+\[
+        (2y+x^3)^2+(2z)^2=a^2+b^2=n^6-4=x^6-4.
+\]
+By the square-completion identity, this is equivalent to
+\[
+        y^2+x^3y+z^2+1=0.
+\]
+Thus every triple constructed in the stated way is a solution.
+
+Conversely, let $(x,y,z)$ be any integer solution and set
+\[
+        n=|x|,
+        \qquad
+        \varepsilon=\operatorname{sgn}(x).
+\]
+The necessary-form lemma gives $n\in\mathcal N$.  Define
+\[
+        A=2y+x^3,
+        \qquad
+        B=2z.
+\]
+Then
+\[
+        A^2+B^2=n^6-4.
+\]
+Since $x$ is odd, $A=2y+x^3$ is odd, and $B=2z$ is even.  The parity lemma shows that neither $A$ nor $B$ is zero.  Put
+\[
+        a=|A|,
+        \qquad
+        b=|B|,
+        \qquad
+        \sigma=\operatorname{sgn}(A),
+        \qquad
+        \tau=\operatorname{sgn}(B).
+\]
+Then $(a,b)\in\mathcal R_n$, and
+\[
+        2y+x^3=A=\sigma a.
+\]
+Since $x=\varepsilon n$, this gives
+\[
+        2y=\sigma a-\varepsilon n^3,
+        \qquad
+        y=\frac{\sigma a-\varepsilon n^3}{2}.
+\]
+Also
+\[
+        z=\tau\frac b2.
+\]
+Thus the solution has exactly the asserted form.
+\end{proof}
+
+\begin{lemma}[Non-emptiness of $\mathcal R_n$]
+For a positive integer $n$, the set $\mathcal R_n$ is nonempty if and only if
+\[
+        n\equiv3\pmod {12}
+\]
+and every prime $p\equiv3\pmod4$ occurs to an even exponent in $n^6-4$.
+\end{lemma}
+
+\begin{proof}
+Suppose first that $\mathcal R_n$ is nonempty, and choose $(a,b)\in\mathcal R_n$.  Then $a^2+b^2=n^6-4$, so the two-squares criterion gives the required even-exponent condition.  Also, reducing $a^2+b^2=n^6-4$ modulo $2$ gives $1\equiv n^6\pmod2$, so $n$ is odd.  Therefore
+\[
+        x=n,
+        \qquad
+        y=\frac{a-n^3}{2},
+        \qquad
+        z=\frac b2
+\]
+are integers, and the square-completion identity gives
+\[
+        y^2+x^3y+z^2+1=0.
+\]
+Applying the necessary-form lemma to this solution gives $n\equiv3\pmod {12}$.
+
+Conversely, suppose $n\equiv3\pmod {12}$ and every prime $p\equiv3\pmod4$ occurs to an even exponent in $n^6-4$.  By the two-squares criterion, there exist integers $c,d$ such that
+\[
+        c^2+d^2=n^6-4.
+\]
+Because $n$ is odd,
+\[
+        n^6-4\equiv5\pmod8.
+\]
+The parity lemma then shows that neither $c$ nor $d$ is zero and exactly one of them is odd.  Taking absolute values and, if necessary, interchanging the two coordinates, we obtain positive integers $a,b$ with
+\[
+        a^2+b^2=n^6-4,
+        \qquad
+        a\text{ odd},
+        \qquad
+        b\text{ even}.
+\]
+Thus $(a,b)\in\mathcal R_n$, so $\mathcal R_n\ne\varnothing$.
+\end{proof}
+
+The complete theorem follows from the reconstruction lemma and the non-emptiness lemma.
+
+\section{Examples}
+
+For $n=3$, one has
+\[
+        3^6-4=729-4=725.
+\]
+The positive representations with the first coordinate odd and the second even are
+\[
+        725=25^2+10^2=23^2+14^2=7^2+26^2.
+\]
+Taking $x=3$ gives the following solutions:
+\[
+\begin{array}{c|c|c}
+(a,b)& y & z \\
+\hline
+(25,10)& -1,-26 & \pm5 \\
+(23,14)& -2,-25 & \pm7 \\
+(7,26)& -10,-17 & \pm13
+\end{array}
+\]
+Thus, for example,
+\[
+        (x,y,z)=(3,-1,5)
+\]
+is a solution, since
+\[
+        (-1)^2+3^3(-1)+5^2+1=1-27+25+1=0.
+\]
+The symmetry
+\[
+        (x,y,z)\mapsto(-x,-y,z)
+\]
+preserves the equation, so the corresponding solutions with $x=-3$ are obtained by changing the sign of $y$.
+
+A larger example is obtained from
+\[
+        87^6-4=653251^2+83002^2.
+\]
+Taking
+\[
+        x=87,
+        \qquad
+        a=653251,
+        \qquad
+        b=83002,
+        \qquad
+        \sigma=1,
+        \qquad
+        \tau=1
+\]
+gives
+\[
+        y=\frac{653251-87^3}{2}
+        =\frac{653251-658503}{2}
+        =-2626,
+        \qquad
+        z=41501.
+\]
+Hence
+\[
+        (87,-2626,41501)
+\]
+is another integer solution.
+
+\section{Concluding form}
+
+The equation
+\[
+        y^2+x^3y+z^2+1=0
+\]
+has no sporadic solutions outside the family described above.  Every solution is governed by a representation
+\[
+        |x|^6-4=a^2+b^2
+\]
+with $a$ odd and $b$ even, and the exact admissibility condition on $|x|$ is the two-squares condition
+\[
+        \vp(|x|^6-4)\equiv0\pmod2
+        \qquad\text{for every prime }p\equiv3\pmod4,
+\]
+together with
+\[
+        |x|\equiv3\pmod {12}.
+\]
+This gives a full unconditional classification of the integer solutions.
+
+\end{document}
