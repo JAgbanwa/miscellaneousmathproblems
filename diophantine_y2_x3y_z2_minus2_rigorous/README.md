@@ -9,3 +9,11 @@ The formalisation lives in `RequestProject/Main.lean`, in namespace `Diophantine
 - `xx_strictMono`: `n ↦ xₙ₊₁` is strictly monotone, ensuring the triples are pairwise distinct.
 - `solutionSet` and `infinite_solutions`: the main result — the solution set `{(x,y,z) ∈ ℤ³ | y² + x³y + z² − 2 = 0}` is infinite, proved by injecting `n ↦ (xₙ₊₁, yₙ₊₁, zₙ₊₁)` into it.
 The statement `infinite_solutions : solutionSet.Infinite` faithfully captures the paper's claim that the Diophantine equation has infinitely many integer solutions.
+
+This project was edited by [Aristotle](https://aristotle.harmonic.fun).
+To cite Aristotle:
+- Tag @Aristotle-Harmonic on GitHub PRs/issues
+- Add as co-author to commits:
+```
+Co-authored-by: Aristotle (Harmonic) <aristotle-harmonic@harmonic.fun>
+```
