@@ -4,95 +4,172 @@ open scoped Classical
 set_option maxHeartbeats 8000000
 set_option maxRecDepth 4000
 /-!
-# An explicit infinite family of integer solutions to `y² + x³y + z² - 2 = 0`
-This file formalises the paper *An Explicit Infinite Family of Integer Solutions to
-`y² + x³y + z² − 2 = 0`*.
-The equation under study is
-`y² + x³ y + z² − 2 = 0`  (1.1)
-and the main result (Theorem 1.1) is that it has infinitely many integer solutions.
-The construction uses the Pell-type sequence
-`(c₀, d₀) = (1, 0)`, `cₙ₊₁ = 3cₙ + 4dₙ`, `dₙ₊₁ = 2cₙ + 3dₙ`  (1.2)
-and explicit formulas (1.3) for the solution triples.
+# Infinitely many integer solutions of `y² + x³y + z² + 1 = 0`
+This file formalises the paper *"Infinitely Many Integer Solutions of
+`y² + x³y + z² + 1 = 0`"*.
+The proof has three ingredients:
+1. **Reduction** (`reduction`): completing the square reduces the construction of
+   solutions to representing `n⁶ - 4` as a sum of two integer squares, for `n` odd.
+2. **A rational two–square construction** (`tangent_identity`): a tangent-plane
+   identity on `A² + B² = u³ - 4`, together with an explicit generalized Pell
+   equation, gives infinitely many odd integers `N` for which `N⁶ - 4` is a sum of
+   two *rational* squares.
+3. **Rational to integral** (`rat_to_int`): the two-squares theorem converts the
+   rational representations into integer representations.
 -/
-namespace DiophantineY2X3Y
-/-- The Pell pair sequence `(cₙ, dₙ)` defined by `(c₀, d₀) = (1, 0)`,
-`cₙ₊₁ = 3cₙ + 4dₙ`, `dₙ₊₁ = 2cₙ + 3dₙ`. -/
-def cd : ℕ → ℤ × ℤ
-  | 0 => (1, 0)
-  | (n + 1) => (3 * (cd n).1 + 4 * (cd n).2, 2 * (cd n).1 + 3 * (cd n).2)
-/-- The `c` component of the Pell sequence. -/
-def c (n : ℕ) : ℤ := (cd n).1
-/-- The `d` component of the Pell sequence. -/
-def d (n : ℕ) : ℤ := (cd n).2
-@[simp] lemma c_zero : c 0 = 1 := rfl
-@[simp] lemma d_zero : d 0 = 0 := rfl
-lemma c_succ (n : ℕ) : c (n + 1) = 3 * c n + 4 * d n := rfl
-lemma d_succ (n : ℕ) : d (n + 1) = 2 * c n + 3 * d n := rfl
-/-- Auxiliary quantity `aₙ = 2cₙ² − 1`. -/
-def a (n : ℕ) : ℤ := 2 * (c n) ^ 2 - 1
-/-- Auxiliary quantity `Rₙ = 2cₙ(aₙ − 1)`. -/
-def R (n : ℕ) : ℤ := 2 * c n * (a n - 1)
-/-- Auxiliary quantity `Sₙ = aₙ² − aₙ − 1`. -/
-def S (n : ℕ) : ℤ := (a n) ^ 2 - a n - 1
-/-- The `x` component of the constructed solution: `xₙ = 4cₙdₙ`. -/
-def xx (n : ℕ) : ℤ := 4 * c n * d n
-/-- The `z` component of the constructed solution: `zₙ = aₙ(Rₙ − Sₙ)`. -/
-def zz (n : ℕ) : ℤ := a n * (R n - S n)
-/-- The `y` component of the constructed solution.
-In the paper `yₙ = aₙ(Rₙ + Sₙ) − xₙ³/2`; since `xₙ = 4cₙdₙ` we have
-`xₙ³/2 = 32 cₙ³ dₙ³`, which we use to avoid integer division. -/
-def yy (n : ℕ) : ℤ := a n * (R n + S n) - 32 * (c n) ^ 3 * (d n) ^ 3
-/-- Lemma 3.1 (Pell identity): `cₙ² − 2dₙ² = 1` for all `n`. -/
-lemma pell (n : ℕ) : (c n) ^ 2 - 2 * (d n) ^ 2 = 1 := by
-  induction' n with n ih <;> norm_num [ *, c_succ, d_succ ];
+namespace Diophantine
+/-! ## Part 1 : the reduction lemma -/
+/-
+**Lemma 1.1.** If `n` is odd and `n⁶ - 4 = a² + b²` for integers `a, b`, then the
+equation `y² + n³y + z² + 1 = 0` has an integer solution.
+-/
+lemma reduction (n a b : ℤ) (hodd : Odd n) (hab : n ^ 6 - 4 = a ^ 2 + b ^ 2) :
+    ∃ y z : ℤ, y ^ 2 + n ^ 3 * y + z ^ 2 + 1 = 0 := by
+  obtain ⟨ k, rfl ⟩ : ∃ k, n = 2 * k + 1 := hodd;
+  -- Since $a$ and $b$ have opposite parity, we can assume without loss of generality that $a$ is odd and $b$ is even.
+  by_cases ha_odd : Odd a;
+  · -- Since $a$ is odd, we can write $a = 2m + 1$ for some integer $m$.
+    obtain ⟨ m, rfl ⟩ : ∃ m, a = 2 * m + 1 := ha_odd;
+    obtain ⟨ z, rfl ⟩ := even_iff_two_dvd.mp ( show Even b from by replace hab := congr_arg ( · % 4 ) hab ; rcases Int.even_or_odd' b with ⟨ c, rfl | rfl ⟩ <;> ring_nf at * <;> norm_num [ Int.add_emod, Int.sub_emod, Int.mul_emod ] at * );
+    exact ⟨ m - k * ( 4 * k ^ 2 + 6 * k + 3 ), z, by linarith ⟩;
+  · -- Since $a$ is even and $b$ is odd, we can set $b - (2k + 1)^3 = 2y$ and $a = 2z$.
+    obtain ⟨ y, hy ⟩ : ∃ y, b - (2 * k + 1) ^ 3 = 2 * y := by
+      exact even_iff_two_dvd.mp ( by apply_fun Even at *; simp_all +decide [ parity_simps ] )
+    obtain ⟨ z, hz ⟩ : ∃ z, a = 2 * z := by
+      exact even_iff_two_dvd.mp ( by simpa using ha_odd );
+    exact ⟨ y, z, by rw [ sub_eq_iff_eq_add ] at hy; subst_vars; linarith ⟩
+/-! ## Part 2 : the tangent-plane (rational two-square) identity -/
+/-
+**Lemma 2.1 (Tangent-plane identity).** Let `u, a, b` be integers with
+`a² + b² = u³ - 4 =: S ≠ 0`, and let `N, R` be integers with
+`R² = 4 S N² - u (u³ + 32)`.  Then `N⁶ - 4` is a sum of two rational squares.
+-/
+lemma tangent_identity (u a b N R : ℤ)
+    (hS : a ^ 2 + b ^ 2 = u ^ 3 - 4)
+    (hSne : u ^ 3 - 4 ≠ 0)
+    (hR : R ^ 2 = 4 * (u ^ 3 - 4) * N ^ 2 - u * (u ^ 3 + 32)) :
+    ∃ A B : ℚ, ((N : ℚ) ^ 6 - 4) = A ^ 2 + B ^ 2 := by
+  use (a * (3 * u^2 * N^2 - u^3 - 8) - b * (N^2 - u) * R) / (2 * (u^3 - 4)), (b * (3 * u^2 * N^2 - u^3 - 8) + a * (N^2 - u) * R) / (2 * (u^3 - 4));
+  field_simp;
+  rw [ eq_div_iff ] <;> norm_cast;
+  · grind +ring;
+  · positivity
+/-! ## Part 3 : the explicit generalized Pell family -/
+/-- The constant `D = 3543121`. -/
+def Dc : ℤ := 3543121
+/-- The constant `C = 214359365`. -/
+def Cc : ℤ := 214359365
+/-- The fundamental solution component `P`. -/
+def Pc : ℤ := 53319160674725436041296699414748449
+/-- The fundamental solution component `Q`. -/
+def Qc : ℤ := 28326330128303226243386806483560
+/-- The base solution component `X₀`. -/
+def X0 : ℤ := 410154078658987088294
+/-- The base solution component `N₀`. -/
+def N0 : ℤ := 217898400660155259
+/-- The Pell sequence `(Xₖ, Nₖ)` from Lemma 3.1. -/
+def pellPair : ℕ → ℤ × ℤ
+  | 0 => (X0, N0)
+  | (k + 1) =>
+      let p := pellPair k
+      (Pc * p.1 + Dc * Qc * p.2, Qc * p.1 + Pc * p.2)
+/-- The `X`-component of the Pell sequence. -/
+def Xpell (k : ℕ) : ℤ := (pellPair k).1
+/-- The `N`-component of the Pell sequence. -/
+def Npell (k : ℕ) : ℤ := (pellPair k).2
+@[simp] lemma Xpell_zero : Xpell 0 = X0 := rfl
+@[simp] lemma Npell_zero : Npell 0 = N0 := rfl
+lemma Xpell_succ (k : ℕ) : Xpell (k + 1) = Pc * Xpell k + Dc * Qc * Npell k := rfl
+lemma Npell_succ (k : ℕ) : Npell (k + 1) = Qc * Xpell k + Pc * Npell k := rfl
+/-
+The Pell norm identity: `Xₖ² - D Nₖ² = -C` for all `k`.
+-/
+lemma pell_norm (k : ℕ) : (Xpell k) ^ 2 - Dc * (Npell k) ^ 2 = -Cc := by
+  induction' k with k ih <;> norm_num [ Xpell_succ, Npell_succ, Xpell_zero, Npell_zero, Dc, Cc, Pc, Qc, X0, N0 ] at *;
   grind
-/-- `cₙ > 0` for all `n`. -/
-lemma c_pos (n : ℕ) : 0 < c n := by
-  induction' n with n ih;
-  · decide +revert;
-  · -- By definition of $c$, we have $c (n + 1) = 3 * c n + 4 * d n$.
-    have h_c_succ : c (n + 1) = 3 * c n + 4 * d n := by
-      rfl;
-    nlinarith [ pell n ]
-/-- `dₙ ≥ 0` for all `n`. -/
-lemma d_nonneg (n : ℕ) : 0 ≤ d n := by
-  induction' n with n ih <;> norm_num [ * ];
-  exact add_nonneg ( mul_nonneg zero_le_two ( c_pos n |> le_of_lt ) ) ( mul_nonneg zero_le_three ih )
-/-- `dₙ > 0` for all `n ≥ 1`. -/
-lemma d_pos (n : ℕ) : 0 < d (n + 1) := by
-  exact Nat.recOn n ( by decide ) fun n ih => by rw [ d_succ ] ; linarith [ c_pos n, c_succ n, d_succ n ] ;
-/-- `cₙ` is strictly increasing: `cₙ < cₙ₊₁`. -/
-lemma c_lt (n : ℕ) : c n < c (n + 1) := by
-  exact by have := c_succ n; have := d_succ n; have := c_pos n; have := d_nonneg n; norm_num at *; linarith;
-/-- `dₙ` is strictly increasing: `dₙ < dₙ₊₁`. -/
-lemma d_lt (n : ℕ) : d n < d (n + 1) := by
-  norm_num [ d_succ ];
-  linarith [ c_pos n, d_nonneg n ]
-/-- The main algebraic identity (Theorem 1.1 / Lemma 5.1): for every `n`,
-the triple `(xₙ, yₙ, zₙ)` solves the equation `y² + x³y + z² − 2 = 0`. -/
-lemma solution (n : ℕ) :
-    (yy n) ^ 2 + (xx n) ^ 3 * (yy n) + (zz n) ^ 2 - 2 = 0 := by
-      unfold yy xx zz a R S;
-      unfold a;
-      grind +suggestions
-/-- The sequence `n ↦ xₙ₊₁` is strictly monotone (so the produced solutions are distinct). -/
-lemma xx_strictMono : StrictMono (fun n : ℕ => xx (n + 1)) := by
+/-
+Both components of the Pell sequence are positive.
+-/
+lemma pell_pos (k : ℕ) : 0 < Xpell k ∧ 0 < Npell k := by
+  induction' k with k ih;
+  · native_decide +revert;
+  · exact ⟨ by rw [ Xpell_succ ] ; exact add_pos ( mul_pos ( by decide ) ih.1 ) ( mul_pos ( by decide ) ih.2 ), by rw [ Npell_succ ] ; exact add_pos ( mul_pos ( by decide ) ih.1 ) ( mul_pos ( by decide ) ih.2 ) ⟩
+/-
+The parity is preserved: `Xₖ` is even and `Nₖ` is odd for all `k`.
+-/
+lemma pell_parity (k : ℕ) : Even (Xpell k) ∧ Odd (Npell k) := by
+  induction' k with k ih;
+  · native_decide;
+  · grind +locals
+/-
+The sequence `Nₖ` is strictly increasing, hence injective.
+-/
+lemma Npell_strictMono : StrictMono Npell := by
   refine' strictMono_nat_of_lt_succ _;
-  intro n;
-  unfold xx;
-  gcongr <;> nlinarith [ c_pos n, c_pos ( n + 1 ), d_pos n, d_pos ( n + 1 ), c_lt n, c_lt ( n + 1 ), d_lt n, d_lt ( n + 1 ) ]
-/-- The set of integer solutions to `y² + x³y + z² − 2 = 0`. -/
-def solutionSet : Set (ℤ × ℤ × ℤ) :=
-  {p | p.2.1 ^ 2 + p.1 ^ 3 * p.2.1 + p.2.2 ^ 2 - 2 = 0}
-/-- **Theorem 1.1.** The equation `y² + x³y + z² − 2 = 0` has infinitely many
-integer solutions. -/
-theorem infinite_solutions : solutionSet.Infinite := by
-  -- Define the function `f: ℕ → ℤ × ℤ × ℤ` by `f n = (xx (n+1), yy (n+1), zz (n+1))`.
-  set f : ℕ → ℤ × ℤ × ℤ := fun n => (xx (n + 1), yy (n + 1), zz (n + 1));
-  -- Show that `f` is injective.
-  have h_inj : Function.Injective f := by
-    intros m n hmn
-    simp [f] at hmn
-    exact xx_strictMono.injective hmn.left;
-  exact Set.infinite_of_injective_forall_mem h_inj fun n => solution _
-end DiophantineY2X3Y
+  intro k; rw [ Npell_succ ] ; nlinarith [ pell_pos k, show Qc > 0 from by decide, show Pc > 1 from by native_decide ] ;
+/-! ## Part 4 : rational sums of two squares are integral sums of two squares -/
+/-
+**Lemma 4.2.** If a positive integer `m` is a sum of two *rational* squares, then it
+is a sum of two *integer* squares.
+-/
+lemma rat_to_int (m : ℤ) (hm : 0 < m) (A B : ℚ) (h : (m : ℚ) = A ^ 2 + B ^ 2) :
+    ∃ r s : ℤ, m = r ^ 2 + s ^ 2 := by
+  -- By clearing denominators, we can rewrite the equation as $m * d^2 = p^2 + q^2$ for some integers $p, q, d$.
+  obtain ⟨p, q, d, hpq, hd⟩ : ∃ p q d : ℤ, d ≠ 0 ∧ m * d^2 = p^2 + q^2 := by
+    obtain ⟨p, q, d, hd_pos, h_eq⟩ : ∃ p q d : ℤ, d > 0 ∧ A = p / d ∧ B = q / d := by
+      use A.num * B.den, B.num * A.den, A.den * B.den;
+      simp +decide [ mul_div_mul_comm, Rat.num_div_den ];
+      exact ⟨ mul_pos ( Nat.cast_pos.mpr A.pos ) ( Nat.cast_pos.mpr B.pos ), by rw [ div_mul_div_cancel₀ ( Nat.cast_ne_zero.mpr A.pos.ne' ) ] ; simp +decide [ Rat.num_div_den ] ⟩;
+    use p, q, d;
+    simp_all +decide [ ne_of_gt ];
+    have hd0 : (d : ℚ) ≠ 0 := by exact_mod_cast hd_pos.ne'
+    field_simp [hd0] at h
+    exact_mod_cast h
+  have h_factor : ∀ r ∈ Nat.primeFactors (Int.natAbs (m * d^2)), r % 4 = 3 → Even (padicValNat r (Int.natAbs (m * d^2))) := by
+    intros r hr hr_mod
+    have h_factor : ∀ {x y : ℕ}, x^2 + y^2 ≠ 0 → (∀ r ∈ Nat.primeFactors (x^2 + y^2), r % 4 = 3 → Even (padicValNat r (x^2 + y^2))) := by
+      have := @Nat.eq_sq_add_sq_iff;
+      exact fun { x y } hxy r hr hr_mod => this.mp ⟨ x, y, rfl ⟩ r hr hr_mod;
+    convert h_factor ( show ( Int.natAbs p ) ^ 2 + ( Int.natAbs q ) ^ 2 ≠ 0 from ?_ ) r ?_ hr_mod using 1;
+    · rw [ hd, Int.natAbs_add_of_nonneg ( sq_nonneg _ ) ( sq_nonneg _ ), Int.natAbs_pow, Int.natAbs_pow ];
+    · contrapose! hr; aesop;
+    · simp_all +decide [ ← Int.natCast_dvd_natCast ];
+      grind +splitImp;
+  have h_factor_m : ∀ r ∈ Nat.primeFactors (Int.natAbs m), r % 4 = 3 → Even (padicValNat r (Int.natAbs m)) := by
+    intro r hr hr'; specialize h_factor r; simp_all +decide ;
+    simp_all +decide [ ← hd, Int.natAbs_mul, Nat.Prime.dvd_mul ];
+    haveI := Fact.mk hr.1; rw [ padicValNat.mul, padicValNat.pow ] at h_factor <;> simp_all +decide [ parity_simps ] ;
+  have := @Nat.eq_sq_add_sq_iff;
+  obtain ⟨ x, y, hxy ⟩ := this.mpr h_factor_m; exact ⟨ x, y, by linarith [ abs_of_pos hm ] ⟩ ;
+/-! ## Part 5 : the infinitude theorem -/
+/-
+For every `k`, the integer `Nₖ⁶ - 4` is a sum of two integer squares.
+-/
+lemma Npell_sq_add_sq (k : ℕ) :
+    ∃ r s : ℤ, (Npell k) ^ 6 - 4 = r ^ 2 + s ^ 2 := by
+  have h_tangent : ∃ A B : ℚ, ((Npell k : ℚ)^6 - 4) = A^2 + B^2 := by
+    convert tangent_identity 242 578 3720 ( Npell k ) ( 4 * Xpell k ) _ _ _ using 1 <;> norm_num;
+    have := pell_norm k; norm_num [ Dc, Cc ] at this; linarith;
+  have h_pos : 0 < Npell k ^ 6 - 4 := by
+    exact sub_pos_of_lt ( by nlinarith [ pow_le_pow_left₀ ( by norm_num ) ( show Npell k ≥ 2 by exact le_trans ( by decide ) ( Npell_strictMono.monotone ( Nat.zero_le k ) ) ) 6 ] );
+  obtain ⟨ A, B, h ⟩ := h_tangent; exact_mod_cast rat_to_int _ ( mod_cast h_pos ) _ _ ( by simpa [ ← @Rat.cast_inj ℝ ] using h ) ;
+/-- For every `k`, the equation has an integer solution with `x = Nₖ`. -/
+lemma exists_sol (k : ℕ) :
+    ∃ p : ℤ × ℤ, p.1 ^ 2 + (Npell k) ^ 3 * p.1 + p.2 ^ 2 + 1 = 0 := by
+  obtain ⟨r, s, hrs⟩ := Npell_sq_add_sq k
+  obtain ⟨y, z, hyz⟩ := reduction (Npell k) r s (pell_parity k).2 hrs
+  exact ⟨(y, z), hyz⟩
+/-- The set of integer solutions of `y² + x³y + z² + 1 = 0`. -/
+def SolSet : Set (ℤ × ℤ × ℤ) :=
+  {p | p.2.1 ^ 2 + p.1 ^ 3 * p.2.1 + p.2.2 ^ 2 + 1 = 0}
+/-
+**Theorem 5.1.** The Diophantine equation `y² + x³y + z² + 1 = 0` has infinitely many
+integer solutions.
+-/
+theorem infinitely_many_solutions : SolSet.Infinite := by
+  by_contra h_contra;
+  -- By definition of $f$, we know that for each $k$, $(Npell k, (exists_sol k).choose.1, (exists_sol k).choose.2)$ is a solution.
+  have h_sol : ∀ k, (Npell k, (exists_sol k).choose.1, (exists_sol k).choose.2) ∈ SolSet := by
+    exact fun k => Exists.choose_spec ( exists_sol k );
+  exact h_contra <| Set.infinite_of_injective_forall_mem ( fun k m hkm => by simpa using Npell_strictMono.injective <| by injection hkm ) h_sol
+end Diophantine
