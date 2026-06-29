@@ -11,7 +11,7 @@ $$z^2 + y^2 z + x^3 - x - 1 = 0$$
 
 ## Key Structural Results
 
-### Factorization Characterization
+### Factorization Characterization 
 The equation is equivalent to:
 $$z(z + y^2) = 1 + x - x^3$$
 
